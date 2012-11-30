@@ -29,7 +29,7 @@ function checkoutQwt() {
         fi
     fi
 
-    svn -q co https://qwt.svn.sourceforge.net/svnroot/qwt/$1/$2
+    svn -q co https://svn.code.sf.net/p/qwt/code/$1/$2
     if [ $? -ne 0 ]
     then
         echo "Can't access sourceforge SVN"
@@ -86,11 +86,11 @@ function cleanQwt {
 
     if [ "$SUFFIX" != "" ]
     then
-        sed -i -e "s/\$\$VERSION-svn/\$\$VERSION-$SUFFIX/" qwtconfig.pri 
+        sed -i -e "s/\$\$VERSION-svn/\$\$VERSION-$SUFFIX/" qwtconfig.pri
         sed -i -e "s/\$\${QwtVersion}-svn/\$\${QwtVersion}/" qwt.prf 
     else
         sed -i -e "s/\$\$VERSION-svn/\$\$VERSION/" qwtconfig.pri
-        sed -i -e "s/\$\${QwtVersion}-svn/\$\${QwtVersion}/" qwt.prf  
+        sed -i -e "s/\$\${QwtVersion}-svn/\$\${QwtVersion}/" qwt.prf
     fi
 
     cd - > /dev/null
@@ -131,6 +131,9 @@ function createDocs {
         sed -i -e '/GENERATE_LATEX/d' -e '/GENERATE_MAN/d' Doxyfile.doc
         echo 'GENERATE_LATEX = YES' >> Doxyfile.doc
         echo 'GENERATE_MAN = YES' >> Doxyfile.doc
+
+#        sed -i -e '/INLINE_INHERITED_MEMB/d' Doxyfile.doc
+#        echo 'INLINE_INHERITED_MEMB = NO' >> Doxyfile.doc
     fi
 
     if [ $GENERATE_QCH -ne 0 ]
