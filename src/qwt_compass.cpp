@@ -170,7 +170,7 @@ QwtCompassRose *QwtCompass::rose()
 /*!
   Handles key events
 
-  Beside the keys described in QwtDial::keyPressEvent numbers
+  Beside the keys described in QwtDial::keyPressEvent() numbers
   from 1-9 (without 5) set the direction according to their
   position on the num pad.
 
@@ -258,7 +258,7 @@ QMap<double, QString> &QwtCompass::labelMap()
   map. The default map consists of the labels N, NE, E, SE, S, SW, W, NW.
 
   \warning The map will have no effect for values that are no major
-           tick values. Major ticks can be changed by QwtScaleDraw::setScale
+           tick values. Major ticks can be changed by QwtScaleDraw::setScale()
 
   \sa labelMap(), scaleDraw(), setScale()
 */

@@ -788,7 +788,7 @@ int QwtThermo::borderWidth() const
                   of the thermometer
   \param maxValue value corresponding to the upper or 
                   right end of the thermometer
-  \param logarithmic logarithmic mapping, true or false
+  \param logarithmic Logarithmic mapping, true or false
 */
 void QwtThermo::setRange( 
     double minValue, double maxValue, bool logarithmic )

@@ -160,7 +160,7 @@ void QwtPlotSvgItem::draw( QPainter *painter,
   Render the SVG data
 
   \param painter Painter
-  \param viewBox View Box, see QSvgRenderer::viewBox
+  \param viewBox View Box, see QSvgRenderer::viewBox()
   \param rect Target rectangle on the paint device
 */
 void QwtPlotSvgItem::render( QPainter *painter,
@@ -184,7 +184,7 @@ void QwtPlotSvgItem::render( QPainter *painter,
 }
 
 /*!
-  Calculate the viewBox from rect and boundingRect().
+  Calculate the view box from rect and boundingRect().
 
   \param rect Rectangle in scale coordinates
   \return View box, see QSvgRenderer::viewBox()

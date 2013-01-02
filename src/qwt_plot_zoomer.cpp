@@ -59,7 +59,7 @@ QwtPlotZoomer::QwtPlotZoomer( QwtPlotCanvas *canvas, bool doReplot ):
   \param xAxis X axis of the zoomer
   \param yAxis Y axis of the zoomer
   \param canvas Plot canvas to observe, also the parent object
-  \param doReplot Call replot for the attached plot before initializing
+  \param doReplot Call QwtPlot::replot() for the attached plot before initializing
                   the zoomer with its scales. This might be necessary,
                   when the plot is in a state with pending scale changes.
 
@@ -162,7 +162,7 @@ QRectF QwtPlotZoomer::zoomBase() const
 /*!
   Reinitialized the zoom stack with scaleRect() as base.
 
-  \param doReplot Call replot for the attached plot before initializing
+  \param doReplot Call QwtPlot::replot() for the attached plot before initializing
                   the zoomer with its scales. This might be necessary,
                   when the plot is in a state with pending scale changes.
 
@@ -274,7 +274,7 @@ void QwtPlotZoomer::zoom( const QRectF &rect )
   \brief Zoom in or out
 
   Activate a rectangle on the zoom stack with an offset relative
-  to the current position. Negative values of offest will zoom out,
+  to the current position. Negative values of offset will zoom out,
   positive zoom in. A value of 0 zooms out to the zoom base.
 
   \param offset Offset relative to the current position of the zoom stack.

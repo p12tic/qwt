@@ -181,7 +181,7 @@ QwtPlotRenderer::LayoutFlags QwtPlotRenderer::layoutFlags() const
 /*!
   Render a plot to a file
 
-  The format of the document will be autodetected from the
+  The format of the document will be auto-detected from the
   suffix of the file name.
 
   \param plot Plot widget
@@ -635,7 +635,7 @@ void QwtPlotRenderer::renderLegend( const QwtPlot *plot,
   \param widget Widget representing a legend item
   \param rect Bounding rectangle
 
-  \note When widget is not derived from QwtLegendItem renderLegendItem
+  \note When widget is not derived from QwtLegendItem renderLegendItem()
         does nothing and needs to be overloaded
 */
 void QwtPlotRenderer::renderLegendItem( const QwtPlot *plot,

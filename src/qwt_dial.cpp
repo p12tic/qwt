@@ -107,7 +107,7 @@ double QwtDialScaleDraw::penWidth() const
 }
 
 /*!
-  Call QwtDial::scaleLabel of the parent dial widget.
+  Call QwtDial::scaleLabel() of the parent dial widget.
 
   \param value Value to display
 

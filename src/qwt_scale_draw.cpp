@@ -241,7 +241,7 @@ int QwtScaleDraw::minLabelDist( const QFont &font ) const
 
     // The distance we need until there is
     // the height of the label font. This height is needed
-    // for the neighbour labal.
+    // for the neighbored label.
 
     double labelDist = fmHeight / qFastSin( angle ) * qFastCos( angle );
     if ( labelDist < 0 )
@@ -330,7 +330,7 @@ int QwtScaleDraw::minLength( const QFont &font ) const
     int lengthForTicks = 0;
     if ( hasComponent( QwtAbstractScaleDraw::Ticks ) )
     {
-        const double pw = qMax( 1, penWidth() );  // penwidth can be zero
+        const double pw = qMax( 1, penWidth() );  // pen width can be zero
         lengthForTicks = qCeil( ( majorCount + minorCount ) * ( pw + 1.0 ) );
     }
 
@@ -651,8 +651,9 @@ void QwtScaleDraw::drawLabel( QPainter *painter, double value ) const
 }
 
 /*!
-  Find the bounding rectangle for the label. The coordinates of
-  the rect are absolute coordinates ( calculated from pos() ).
+  \brief Find the bounding rectangle for the label.
+
+  The coordinates of the rectangle are absolute ( calculated from pos() ).
   in direction of the tick.
 
   \param font Font used for painting

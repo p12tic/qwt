@@ -259,7 +259,7 @@ void QwtDoubleRange::setStep( double vstep )
   \verbatim point = value + n * width \endverbatim
 
   if the user tries to set a new value which is outside the range.
-  If the range is nonperiodic (the default), values outside the
+  If the range is non-periodic (the default), values outside the
   range will be clipped.
 
   \param tf true for a periodic range
@@ -341,7 +341,7 @@ double QwtDoubleRange::step() const
   \brief Returns the value of the second border of the range
 
   maxValue returns the value which has been specified
-  as the second parameter in  QwtDoubleRange::setRange.
+  as the second parameter in setRange().
 
   \sa setRange()
 */
@@ -354,7 +354,7 @@ double QwtDoubleRange::maxValue() const
   \brief Returns the value at the first border of the range
 
   minValue returns the value which has been specified
-  as the first parameter in  setRange().
+  as the first parameter in setRange().
 
   \sa setRange()
 */
@@ -387,7 +387,7 @@ double QwtDoubleRange::value() const
 /*!
   \brief Returns the exact value
 
-  The exact value is the value which QwtDoubleRange::value would return
+  The exact value is the value which value() would return
   if the value were not adjusted to the step raster. It differs from
   the current value only if fitValue() or incValue() have been used before. 
   This function is intended for internal use in derived classes.

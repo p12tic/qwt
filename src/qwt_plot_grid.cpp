@@ -63,7 +63,7 @@ int QwtPlotGrid::rtti() const
   \brief Enable or disable vertical grid lines
   \param on Enable (true) or disable
 
-  \sa Minor gridlines can be enabled or disabled with
+  \sa Minor grid lines can be enabled or disabled with
       enableXMin()
 */
 void QwtPlotGrid::enableX( bool on )
@@ -76,9 +76,9 @@ void QwtPlotGrid::enableX( bool on )
 }
 
 /*!
-  \brief Enable or disable horizontal gridlines
+  \brief Enable or disable horizontal grid lines
   \param on Enable (true) or disable
-  \sa Minor gridlines can be enabled or disabled with enableYMin()
+  \sa Minor grid lines can be enabled or disabled with enableYMin()
 */
 void QwtPlotGrid::enableY( bool on )
 {
@@ -90,7 +90,7 @@ void QwtPlotGrid::enableY( bool on )
 }
 
 /*!
-  \brief Enable or disable  minor vertical gridlines.
+  \brief Enable or disable  minor vertical grid lines.
   \param on Enable (true) or disable
   \sa enableX()
 */
@@ -104,7 +104,7 @@ void QwtPlotGrid::enableXMin( bool on )
 }
 
 /*!
-  \brief Enable or disable minor horizontal gridlines
+  \brief Enable or disable minor horizontal grid lines
   \param on Enable (true) or disable
   \sa enableY()
 */
@@ -331,7 +331,7 @@ bool QwtPlotGrid::yEnabled() const
 }
 
 /*!
-  \return true if minor horizontal gridlines are enabled
+  \return true if minor horizontal grid lines are enabled
   \sa enableYMin()
 */
 bool QwtPlotGrid::yMinEnabled() const

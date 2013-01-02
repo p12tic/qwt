@@ -134,7 +134,7 @@ const QwtPlot *QwtPlotPicker::plot() const
 }
 
 /*!
-  Return normalized bounding rect of the axes
+  Return normalized bounding rectangle of the axes
 
   \sa QwtPlot::autoReplot(), QwtPlot::replot().
 */

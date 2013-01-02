@@ -346,7 +346,7 @@ QSize QwtSlider::handleSize() const
   overload QwtScaleDraw::label().
 
   \param scaleDraw ScaleDraw object, that has to be created with
-                   new and will be deleted in ~QwtSlider or the next
+                   new and will be deleted in ~QwtSlider() or the next
                    call of setScaleDraw().
 
   \sa scaleDraw()
@@ -593,7 +593,7 @@ void QwtSlider::changeEvent( QEvent *event )
 
 /*!
   Recalculate the slider's geometry and layout based on
-  the current rect and fonts.
+  the current geometry and fonts.
   \param update_geometry  notify the layout system and call update
          to redraw the scale
 */
@@ -749,7 +749,7 @@ QSize QwtSlider::sizeHint() const
 
 /*!
   \brief Return a minimum size hint
-  \warning The return value of QwtSlider::minimumSizeHint() depends on
+  \warning The return value depends on
            the font and the scale.
 */
 QSize QwtSlider::minimumSizeHint() const

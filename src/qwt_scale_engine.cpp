@@ -278,7 +278,7 @@ QList<double> QwtScaleEngine::strip( const QList<double>& ticks,
   \brief Build an interval for a value
 
   In case of v == 0.0 the interval is [-0.5, 0.5],
-  otherwide it is [0.5 * v, 1.5 * v]
+  otherwise it is [0.5 * v, 1.5 * v]
 */
 
 QwtInterval QwtScaleEngine::buildInterval( double v ) const

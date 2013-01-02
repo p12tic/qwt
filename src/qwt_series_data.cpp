@@ -523,7 +523,7 @@ QRectF QwtSyntheticPointData::rectOfInterest() const
 }
 
 /*!
-  \brief Calculate the bounding rect
+  \brief Calculate the bounding rectangle
 
   This implementation iterates over all points, what could often
   be implemented much faster using the characteristics of the series.
@@ -567,9 +567,9 @@ QPointF QwtSyntheticPointData::sample( size_t index ) const
 /*!
    Calculate a x-value from an index
 
-   x values are calculated by deviding an interval into
+   x values are calculated by dividing an interval into
    equidistant steps. If !interval().isValid() the
-   interval is calculated from the "rect of interest".
+   interval is calculated from the "rectangle of interest".
 
    \sa interval(), rectOfInterest(), y()
 */

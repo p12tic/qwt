@@ -266,7 +266,7 @@ double QwtRichTextEngine::heightForWidth( const QFont& font, int flags,
   Returns the size, that is needed to render text
 
   \param font Font of the text
-  \param flags Bitwise OR of the flags used like in QPainter::drawText
+  \param flags Bitwise OR of the flags used like in QPainter::drawText()
   \param text Text to be rendered
 
   \return Caluclated size

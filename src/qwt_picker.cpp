@@ -35,7 +35,7 @@ public:
 
     /*
        For a tracker text with a background we can use the background
-       rect as mask. Also for "regular" Qt widgets >= 4.3.0 we
+       rectangle as mask. Also for "regular" Qt widgets >= 4.3.0 we
        don't need to mask the text anymore.
      */
     bool d_hasTextMask;
@@ -72,7 +72,7 @@ public:
 
     /*
       On X11 the widget below the picker widgets gets paint events
-      with a region that is the bounding rect of the mask, if it is complex.
+      with a region that is the bounding rectangle of the mask, if it is complex.
       In case of (f.e) a CrossRubberBand and a text this creates complete
       repaints of the widget. So we better use two different widgets.
      */
@@ -562,7 +562,7 @@ QwtText QwtPicker::trackerText( const QPoint &pos ) const
 /*!
   Calculate the mask for the rubber band overlay
 
-   \param painter Painter, initialized with clip rect
+   \param painter Painter, initialized with a clip region
 
    \sa rubberBand(), RubberBand
 */
@@ -794,10 +794,10 @@ QRect QwtPicker::trackerRect( const QFont &font ) const
 /*!
   \brief Event filter
 
-  When isEnabled() == true all events of the observed widget are filtered.
+  When isEnabled() is true all events of the observed widget are filtered.
   Mouse and keyboard events are translated into widgetMouse- and widgetKey-
   and widgetWheel-events. Paint and Resize events are handled to keep
-  rubberband and tracker up to date.
+  rubber band and tracker up to date.
 
   \param object Object to be filtered
   \param event Event
@@ -1448,7 +1448,7 @@ void QwtPicker::updateDisplay()
         delete tw;
 }
 
-//! \return Widget displaying the rubberband
+//! \return Widget displaying the rubber band
 const QWidget *QwtPicker::rubberBandWidget() const
 {
     return d_data->rubberBandWidget;

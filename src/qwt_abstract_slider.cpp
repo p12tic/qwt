@@ -288,7 +288,7 @@ void QwtAbstractSlider::setPosition( const QPoint &p )
 
   If tracking is enabled, the slider emits a
   valueChanged() signal whenever its value
-  changes (the default behaviour). If tracking
+  changes (the default behavior). If tracking
   is disabled, the value changed() signal will only
   be emitted if:<ul>
   <li>the user releases the mouse
@@ -335,7 +335,7 @@ void QwtAbstractSlider::mouseMoveEvent( QMouseEvent *e )
 
 /*!
    Wheel Event handler
-   \param e Whell event
+   \param e Wheel event
 */
 void QwtAbstractSlider::wheelEvent( QWheelEvent *e )
 {
@@ -368,9 +368,9 @@ void QwtAbstractSlider::wheelEvent( QWheelEvent *e )
 /*!
   Handles key events
 
-  - Key_Down, KeyLeft\n
+  - Qt::Key_Down, Qt::Key_Left\n
     Decrement by 1
-  - Key_Up, Key_Right\n
+  - Qt::Key_Up, Qt::Key_Right\n
     Increment by 1
 
   \param e Key event
@@ -420,10 +420,12 @@ void QwtAbstractSlider::keyPressEvent( QKeyEvent *e )
 
 /*!
    Qt timer event
-   \param e Timer event
+   \param event Timer event
 */
-void QwtAbstractSlider::timerEvent( QTimerEvent * )
+void QwtAbstractSlider::timerEvent( QTimerEvent *event )
 {
+    Q_UNUSED( event )
+
     const double inc = step();
 
     switch ( d_data->scrollMode )

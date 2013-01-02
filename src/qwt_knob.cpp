@@ -58,7 +58,7 @@ public:
     double totalAngle;
     double nTurns;
 
-    mutable QRectF knobRect; // bounding rect of the knob without scale
+    mutable QRectF knobRect; // bounding rectangle of the knob without scale
 };
 
 /*!
@@ -322,7 +322,7 @@ void QwtKnob::changeEvent( QEvent *event )
 
 /*!
    Recalculate the knob's geometry and layout based on
-   the current rect and fonts.
+   the current rectangle and fonts.
 
    \param update_geometry notify the layout system and call update
                           to redraw the scale
@@ -652,7 +652,7 @@ QSize QwtKnob::sizeHint() const
 
 /*!
   \brief Return a minimum size hint
-  \warning The return value of QwtKnob::minimumSizeHint() depends on the
+  \warning The return value depends on the
            font and the scale.
 */
 QSize QwtKnob::minimumSizeHint() const

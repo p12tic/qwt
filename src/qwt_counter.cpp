@@ -142,7 +142,7 @@ void QwtCounter::setEditable( bool editable )
     d_data->valueEdit->setReadOnly( !editable );
 }
 
-//! returns whether the line edit is edatble. (default is yes)
+//! returns whether the line edit is editable. (default is yes)
 bool QwtCounter::editable() const
 {
     return d_data->editable;
@@ -327,7 +327,7 @@ int QwtCounter::incSteps( QwtCounter::Button button ) const
 /*!
   \brief Set a new value
 
-  Calls QwtDoubleRange::setValue and does all visual updates.
+  Calls QwtDoubleRange::setValue() and does all visual updates.
 
   \param value New value
   \sa QwtDoubleRange::setValue()
