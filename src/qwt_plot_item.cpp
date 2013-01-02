@@ -306,7 +306,7 @@ bool QwtPlotItem::isVisible() const
 }
 
 /*!
-   Update the legend and call QwtPlot::autoRefresh for the
+   Update the legend and call QwtPlot::autoRefresh() for the
    parent plot.
 
    \sa updateLegend()
@@ -325,7 +325,7 @@ void QwtPlotItem::itemChanged()
 /*!
    Set X and Y axis
 
-   The item will painted according to the coordinates its Axes.
+   The item will painted according to the coordinates of its Axes.
 
    \param xAxis X Axis ( QwtPlot::xBottom or QwtPlot::xTop )
    \param yAxis Y Axis ( QwtPlot::yLeft or QwtPlot::yRight )
@@ -511,10 +511,10 @@ void QwtPlotItem::updateScaleDiv( const QwtScaleDiv &xScaleDiv,
 }
 
 /*!
-   \brief Calculate the bounding scale rect of 2 maps
+   \brief Calculate the bounding scale rectangle of 2 maps
 
-   \param xMap X map
-   \param yMap Y map
+   \param xMap Maps x-values into pixel coordinates.
+   \param yMap Maps y-values into pixel coordinates.
 
    \return Bounding scale rect of the scale maps, not normalized
 */
@@ -526,10 +526,10 @@ QRectF QwtPlotItem::scaleRect( const QwtScaleMap &xMap,
 }
 
 /*!
-   \brief Calculate the bounding paint rect of 2 maps
+   \brief Calculate the bounding paint rectangle of 2 maps
 
-   \param xMap X map
-   \param yMap Y map
+   \param xMap Maps x-values into pixel coordinates.
+   \param yMap Maps y-values into pixel coordinates.
 
    \return Bounding paint rect of the scale maps, not normalized
 */

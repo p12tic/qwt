@@ -193,7 +193,7 @@ QwtDial::Shadow QwtDial::frameShadow() const
 }
 
 /*!
-  Sets the line width
+  Sets the line width of the frame
 
   \param lineWidth Line width
   \sa setFrameShadow()
@@ -220,7 +220,7 @@ int QwtDial::lineWidth() const
 }
 
 /*!
-  \return bounding rect of the circle inside the frame
+  \return bounding rectangle of the circle inside the frame
   \sa setLineWidth(), scaleInnerRect(), boundingRect()
 */
 QRectF QwtDial::innerRect() const
@@ -230,7 +230,7 @@ QRectF QwtDial::innerRect() const
 }
 
 /*!
-  \return bounding rect of the dial including the frame
+  \return bounding rectangle of the dial including the frame
   \sa setLineWidth(), scaleInnerRect(), innerRect()
 */
 QRectF QwtDial::boundingRect() const
@@ -246,7 +246,7 @@ QRectF QwtDial::boundingRect() const
 }
 
 /*!
-  \return rect inside the scale
+  \return rectangle inside the scale
   \sa setLineWidth(), boundingRect(), innerRect()
 */
 QRectF QwtDial::scaleInnerRect() const
@@ -265,7 +265,7 @@ QRectF QwtDial::scaleInnerRect() const
 }
 
 /*!
-  \brief Change the mode of the meter.
+  \brief Change the mode of the dial.
   \param mode New mode
 
   The value of the meter is indicated by the difference
@@ -289,7 +289,7 @@ void QwtDial::setMode( Mode mode )
 }
 
 /*!
-  \return mode of the dial.
+  \return Mode of the dial.
 
   The value of the dial is indicated by the difference
   between the origin and the direction of the needle.
@@ -579,15 +579,15 @@ void QwtDial::drawContents( QPainter *painter ) const
   \param center Center of the dial
   \param radius Length for the needle
   \param direction Direction of the needle in degrees, counter clockwise
-  \param cg ColorGroup
+  \param colorGroup ColorGroup
 */
 void QwtDial::drawNeedle( QPainter *painter, const QPointF &center,
-    double radius, double direction, QPalette::ColorGroup cg ) const
+    double radius, double direction, QPalette::ColorGroup colorGroup ) const
 {
     if ( d_data->needle )
     {
         direction = 360.0 - direction; // counter clockwise
-        d_data->needle->draw( painter, center, radius, direction, cg );
+        d_data->needle->draw( painter, center, radius, direction, colorGroup );
     }
 }
 
@@ -669,12 +669,10 @@ void QwtDial::drawScaleContents( QPainter *painter,
 /*!
   Set a needle for the dial
 
-  Qwt is missing a set of good looking needles.
-  Contributions are very welcome.
-
   \param needle Needle
+
   \warning The needle will be deleted, when a different needle is
-    set or in ~QwtDial()
+           set or in ~QwtDial()
 */
 void QwtDial::setNeedle( QwtDialNeedle *needle )
 {

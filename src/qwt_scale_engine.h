@@ -127,6 +127,7 @@ public:
 protected:
     bool contains( const QwtInterval &, double val ) const;
     QList<double> strip( const QList<double>&, const QwtInterval & ) const;
+
     double divideInterval( double interval, int numSteps ) const;
 
     QwtInterval buildInterval( double v ) const;

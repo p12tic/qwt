@@ -383,7 +383,7 @@ QRectF QwtPlotSpectrogram::pixelHint( const QRectF &area ) const
 /*!
    \brief Render an image from data and color map.
 
-   For each pixel of rect the value is mapped into a color.
+   For each pixel of area the value is mapped into a color.
 
   \param xMap X-Scale Map
   \param yMap Y-Scale Map
@@ -520,14 +520,14 @@ void QwtPlotSpectrogram::renderTile(
 /*!
    \brief Return the raster to be used by the CONREC contour algorithm.
 
-   A larger size will improve the precisision of the CONREC algorithm,
+   A larger size will improve the precision of the CONREC algorithm,
    but will slow down the time that is needed to calculate the lines.
 
    The default implementation returns rect.size() / 2 bounded to
    the resolution depending on pixelSize().
 
-   \param area Rect, where to calculate the contour lines
-   \param rect Rect in pixel coordinates, where to paint the contour lines
+   \param area Rectangle, where to calculate the contour lines
+   \param rect Rectangle in pixel coordinates, where to paint the contour lines
    \return Raster to be used by the CONREC contour algorithm.
 
    \note The size will be bounded to rect.size().
@@ -619,7 +619,7 @@ void QwtPlotSpectrogram::drawContourLines( QPainter *painter,
   \param painter Painter
   \param xMap Maps x-values into pixel coordinates.
   \param yMap Maps y-values into pixel coordinates.
-  \param canvasRect Contents rect of the canvas in painter coordinates
+  \param canvasRect Contents rectangle of the canvas in painter coordinates
 
   \sa setDisplayMode(), renderImage(),
       QwtPlotRasterItem::draw(), drawContourLines()

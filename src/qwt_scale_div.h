@@ -89,6 +89,8 @@ Q_DECLARE_TYPEINFO(QwtScaleDiv, Q_MOVABLE_TYPE);
    Change the interval
    \param lowerBound lower bound
    \param upperBound upper bound
+
+   \note lowerBound might be greater than upperBound for inverted scales
 */
 inline void QwtScaleDiv::setInterval( double lowerBound, double upperBound )
 {
@@ -129,4 +131,5 @@ inline double QwtScaleDiv::range() const
 {
     return d_upperBound - d_lowerBound;
 }
+
 #endif

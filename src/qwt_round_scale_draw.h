@@ -47,9 +47,9 @@ public:
     virtual double extent( const QFont & ) const;
 
 protected:
-    virtual void drawTick( QPainter *p, double val, double len ) const;
-    virtual void drawBackbone( QPainter *p ) const;
-    virtual void drawLabel( QPainter *p, double val ) const;
+    virtual void drawTick( QPainter *, double val, double len ) const;
+    virtual void drawBackbone( QPainter * ) const;
+    virtual void drawLabel( QPainter *, double val ) const;
 
 private:
     QwtRoundScaleDraw( const QwtRoundScaleDraw & );

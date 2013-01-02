@@ -54,7 +54,7 @@ QwtMatrixRasterData::~QwtMatrixRasterData()
    \param mode Resampling mode
    \sa resampleMode(), value()
 */
-void QwtMatrixRasterData::setResampleMode(ResampleMode mode)
+void QwtMatrixRasterData::setResampleMode( ResampleMode mode )
 {
     d_data->resampleMode = mode;
 }

@@ -24,7 +24,7 @@ static const double _eps = 1.0e-6;
 /*!
   Ceil a value, relative to an interval
 
-  \param value Value to ceil
+  \param value Value to be ceiled
   \param intervalSize Interval size
 
   \sa floorEps()
@@ -41,7 +41,7 @@ double QwtScaleArithmetic::ceilEps( double value,
 /*!
   Floor a value, relative to an interval
 
-  \param value Value to floor
+  \param value Value to be floored
   \param intervalSize Interval size
 
   \sa floorEps()
@@ -356,8 +356,8 @@ void QwtScaleEngine::setReference( double r )
 }
 
 /*!
- \return the reference value
- \sa setReference(), setAttribute()
+  \return the reference value
+  \sa setReference(), setAttribute()
 */
 double QwtScaleEngine::reference() const
 {
@@ -422,7 +422,7 @@ void QwtLinearScaleEngine::autoScale( int maxNumSteps,
    \param x2 Second interval limit
    \param maxMajSteps Maximum for the number of major steps
    \param maxMinSteps Maximum number of minor steps
-   \param stepSize Step size. If stepSize == 0, the scaleEngine
+   \param stepSize Step size. If stepSize == 0, the engine
                    calculates one.
 
    \sa QwtScaleEngine::stepSize(), QwtScaleEngine::subDivide()
@@ -711,7 +711,7 @@ void QwtLog10ScaleEngine::autoScale( int maxNumSteps,
    \param x2 Second interval limit
    \param maxMajSteps Maximum for the number of major steps
    \param maxMinSteps Maximum number of minor steps
-   \param stepSize Step size. If stepSize == 0, the scaleEngine
+   \param stepSize Step size. If stepSize == 0, the engine
                    calculates one.
 
    \sa QwtScaleEngine::stepSize(), QwtLog10ScaleEngine::subDivide()

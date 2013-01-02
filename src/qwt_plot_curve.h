@@ -119,7 +119,7 @@ public:
           A QwtCurveFitter tries to
           interpolate/smooth the curve, before it is painted.
 
-          \note Curve fitting requires temorary memory
+          \note Curve fitting requires temporary memory
           for calculating coefficients and additional points.
           If painting in QwtPlotCurve::Fitted mode is slow it might be better
           to fit the points, before they are passed to QwtPlotCurve.

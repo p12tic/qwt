@@ -51,7 +51,7 @@ static inline QRectF qwtBoundingRect( const QwtSetSample &sample )
 }
 
 /*!
-  \brief Calculate the bounding rect of a series subset
+  \brief Calculate the bounding rectangle of a series subset
 
   Slow implementation, that iterates over the series.
 
@@ -105,7 +105,7 @@ QRectF qwtBoundingRectT(
 }
 
 /*!
-  \brief Calculate the bounding rect of a series subset
+  \brief Calculate the bounding rectangle of a series subset
 
   Slow implementation, that iterates over the series.
 
@@ -122,7 +122,7 @@ QRectF qwtBoundingRect(
 }
 
 /*!
-  \brief Calculate the bounding rect of a series subset
+  \brief Calculate the bounding rectangle of a series subset
 
   Slow implementation, that iterates over the series.
 
@@ -139,7 +139,7 @@ QRectF qwtBoundingRect(
 }
 
 /*!
-  \brief Calculate the bounding rect of a series subset
+  \brief Calculate the bounding rectangle of a series subset
 
   The horizontal coordinates represent the azimuth, the
   vertical coordinates the radius.
@@ -159,7 +159,7 @@ QRectF qwtBoundingRect(
 }
 
 /*!
-  \brief Calculate the bounding rect of a series subset
+  \brief Calculate the bounding rectangle of a series subset
 
   Slow implementation, that iterates over the series.
 
@@ -176,7 +176,7 @@ QRectF qwtBoundingRect(
 }
 
 /*!
-  \brief Calculate the bounding rect of a series subset
+  \brief Calculate the bounding rectangle of a series subset
 
   Slow implementation, that iterates over the series.
 
@@ -203,7 +203,7 @@ QwtPointSeriesData::QwtPointSeriesData(
 }
 
 /*!
-  \brief Calculate the bounding rect
+  \brief Calculate the bounding rectangle
 
   The bounding rectangle is calculated once by iterating over all
   points and is stored for all following requests.
@@ -229,7 +229,7 @@ QwtPoint3DSeriesData::QwtPoint3DSeriesData(
 }
 
 /*!
-  \brief Calculate the bounding rect
+  \brief Calculate the bounding rectangle
 
   The bounding rectangle is calculated once by iterating over all
   points and is stored for all following requests.
@@ -255,7 +255,7 @@ QwtIntervalSeriesData::QwtIntervalSeriesData(
 }
 
 /*!
-  \brief Calculate the bounding rect
+  \brief Calculate the bounding rectangle
 
   The bounding rectangle is calculated once by iterating over all
   points and is stored for all following requests.
@@ -281,7 +281,7 @@ QwtSetSeriesData::QwtSetSeriesData(
 }
 
 /*!
-  \brief Calculate the bounding rect
+  \brief Calculate the bounding rectangle
 
   The bounding rectangle is calculated once by iterating over all
   points and is stored for all following requests.
@@ -330,7 +330,7 @@ QwtPointArrayData::QwtPointArrayData( const double *x,
 }
 
 /*!
-  \brief Calculate the bounding rect
+  \brief Calculate the bounding rectangle
 
   The bounding rectangle is calculated once by iterating over all
   points and is stored for all following requests.
@@ -396,7 +396,7 @@ QwtCPointerData::QwtCPointerData(
 }
 
 /*!
-  \brief Calculate the bounding rect
+  \brief Calculate the bounding rectangle
 
   The bounding rectangle is calculated once by iterating over all
   points and is stored for all following requests.

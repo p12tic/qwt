@@ -28,7 +28,7 @@ class QwtSymbol;
   a symbol, a label or any combination of them, which can
   be drawn around a center point inside a bounding rectangle.
 
-  The QwtPlotMarker::setSymbol() member assigns a symbol to the marker.
+  The setSymbol() member assigns a symbol to the marker.
   The symbol is drawn at the specified point.
 
   With setLabel(), a label can be assigned to the marker.

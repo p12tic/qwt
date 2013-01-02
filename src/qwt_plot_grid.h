@@ -24,7 +24,7 @@ class QwtScaleDiv;
 
   The QwtPlotGrid class can be used to draw a coordinate grid.
   A coordinate grid consists of major and minor vertical
-  and horizontal gridlines. The locations of the gridlines
+  and horizontal grid lines. The locations of the grid lines
   are determined by the X and Y scale divisions which can
   be assigned with setXDiv() and setYDiv().
   The draw() member draws the grid within a bounding

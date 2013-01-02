@@ -670,10 +670,10 @@ void QwtPlotCanvas::setPaintAttribute( PaintAttribute attribute, bool on )
 }
 
 /*!
-  Test wether a paint attribute is enabled
+  Test whether a paint attribute is enabled
 
   \param attribute Paint attribute
-  \return true if the attribute is enabled
+  \return true, if the attribute is enabled
   \sa setPaintAttribute()
 */
 bool QwtPlotCanvas::testPaintAttribute( PaintAttribute attribute ) const

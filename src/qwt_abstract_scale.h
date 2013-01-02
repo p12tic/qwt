@@ -22,7 +22,7 @@ class QwtInterval;
   \brief An abstract base class for classes containing a scale
 
   QwtAbstractScale is used to provide classes with a QwtScaleDraw,
-  and a QwtScaleDiv. The QwtScaleDiv might be set explicitely
+  and a QwtScaleDiv. The QwtScaleDiv might be set explicitly
   or calculated by a QwtScaleEngine.
 */
 

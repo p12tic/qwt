@@ -17,8 +17,8 @@
   \brief The Wheel Widget
 
   The wheel widget can be used to change values over a very large range
-  in very small steps. Using the setMass member, it can be configured
-  as a flywheel.
+  in very small steps. Using the setMass() member, it can be configured
+  as a flying wheel.
 
   \sa The radio example.
 */

@@ -111,7 +111,7 @@ QPointF QwtRoundScaleDraw::center() const
       this range will be clipped.
   <li>For angles more than 359 degrees above or below min(angle1, angle2),
       scale marks will not be drawn.
-  <li>If you need a counterclockwise scale, use QwtScaleDiv::setRange
+  <li>If you need a counterclockwise scale, use QwtScaleDiv::setInterval()
   </ul>
 */
 void QwtRoundScaleDraw::setAngleRange( double angle1, double angle2 )

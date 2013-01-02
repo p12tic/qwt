@@ -208,7 +208,7 @@ void QwtPicker::PickerWidget::resizeEvent( QResizeEvent *event )
   Constructor
 
   Creates an picker that is enabled, but without a state machine.
-  rubberband and tracker are disabled.
+  rubber band and tracker are disabled.
 
   \param parent Parent widget, that will be observed
  */
@@ -222,7 +222,7 @@ QwtPicker::QwtPicker( QWidget *parent ):
 /*!
   Constructor
 
-  \param rubberBand Rubberband style
+  \param rubberBand Rubber band style
   \param trackerMode Tracker mode
   \param parent Parent widget, that will be observed
  */
@@ -333,9 +333,9 @@ const QWidget *QwtPicker::parentWidget() const
 }
 
 /*!
-  Set the rubberband style
+  Set the rubber band style
 
-  \param rubberBand Rubberband style
+  \param rubberBand Rubber band style
          The default value is NoRubberBand.
 
   \sa rubberBand(), RubberBand, setRubberBandPen()
@@ -346,7 +346,7 @@ void QwtPicker::setRubberBand( RubberBand rubberBand )
 }
 
 /*!
-  \return Rubberband style
+  \return Rubber band style
   \sa setRubberBand(), RubberBand, rubberBandPen()
 */
 QwtPicker::RubberBand QwtPicker::rubberBand() const
@@ -507,7 +507,7 @@ QPen QwtPicker::trackerPen() const
 /*!
   Set the pen for the rubberband
 
-  \param pen Rubberband pen
+  \param pen Rubber band pen
   \sa rubberBandPen(), setRubberBand()
 */
 void QwtPicker::setRubberBandPen( const QPen &pen )
@@ -520,7 +520,7 @@ void QwtPicker::setRubberBandPen( const QPen &pen )
 }
 
 /*!
-  \return Rubberband pen
+  \return Rubber band pen
   \sa setRubberBandPen(), rubberBand()
 */
 QPen QwtPicker::rubberBandPen() const
@@ -560,7 +560,7 @@ QwtText QwtPicker::trackerText( const QPoint &pos ) const
 }
 
 /*!
-   Draw a rubberband, depending on rubberBand()
+  Calculate the mask for the rubber band overlay
 
    \param painter Painter, initialized with clip rect
 
@@ -948,7 +948,7 @@ void QwtPicker::widgetLeaveEvent( QEvent *event )
 }
 
 /*!
-  Handle a mouse relase event for the observed widget.
+  Handle a mouse release event for the observed widget.
 
   \param mouseEvent Mouse event
 
@@ -1073,7 +1073,7 @@ void QwtPicker::widgetKeyReleaseEvent( QKeyEvent *keyEvent )
 /*!
   Passes an event to the state machine and executes the resulting
   commands. Append and Move commands use the current position
-  of the cursor (QCursor::pos()).
+  of the cursor ( QCursor::pos() ).
 
   \param event Event
 */
@@ -1202,7 +1202,7 @@ bool QwtPicker::end( bool ok )
 }
 
 /*!
-   Reset the state machine and terminate (end(false)) the selection
+   Reset the state machine and terminate ( end(false) ) the selection
 */
 void QwtPicker::reset()
 {
@@ -1214,7 +1214,7 @@ void QwtPicker::reset()
 }
 
 /*!
-  Append a point to the selection and update rubberband and tracker.
+  Append a point to the selection and update rubber band and tracker.
   The appended() signal is emitted.
 
   \param pos Additional point
@@ -1284,11 +1284,11 @@ void QwtPicker::remove()
 }
 
 /*!
-  \brief Validate and fixup the selection
+  \brief Validate and fix up the selection
 
   Accepts all selections unmodified
 
-  \param selection Selection to validate and fixup
+  \param selection Selection to validate and fix up
   \return true, when accepted, false otherwise
 */
 bool QwtPicker::accept( QPolygon &selection ) const

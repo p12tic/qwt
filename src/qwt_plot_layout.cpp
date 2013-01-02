@@ -56,7 +56,6 @@ public:
 /*
   Extract all layout relevant data from the plot components
 */
-
 void QwtPlotLayout::LayoutData::init( const QwtPlot *plot, const QRectF &rect )
 {
     // legend
@@ -202,7 +201,7 @@ QwtPlotLayout::~QwtPlotLayout()
               -1 means margin at all borders.
   \sa canvasMargin()
 
-  \warning The margin will have no effect when alignCanvasToScales is true
+  \warning The margin will have no effect when alignCanvasToScales() is true
 */
 
 void QwtPlotLayout::setCanvasMargin( int margin, int axis )
@@ -233,6 +232,7 @@ int QwtPlotLayout::canvasMargin( int axis ) const
 
 /*!
   Change the align-canvas-to-axis-scales setting. The canvas may:
+
   - extend beyond the axis scale ends to maximize its size,
   - align with the axis scale ends to control its size.
 
@@ -266,8 +266,8 @@ bool QwtPlotLayout::alignCanvasToScales() const
   Change the spacing of the plot. The spacing is the distance
   between the plot components.
 
-  \param spacing new spacing
-  \sa setMargin(), spacing()
+  \param spacing New spacing
+  \sa setCanvasMargin(), spacing()
 */
 void QwtPlotLayout::setSpacing( int spacing )
 {
@@ -275,7 +275,7 @@ void QwtPlotLayout::setSpacing( int spacing )
 }
 
 /*!
-  \return spacing
+  \return Spacing
   \sa margin(), setSpacing()
 */
 int QwtPlotLayout::spacing() const
@@ -286,8 +286,8 @@ int QwtPlotLayout::spacing() const
 /*!
   \brief Specify the position of the legend
   \param pos The legend's position.
-  \param ratio Ratio between legend and the bounding rect
-               of title, canvas and axes. The legend will be shrinked
+  \param ratio Ratio between legend and the bounding rectangle
+               of title, canvas and axes. The legend will be shrunk
                if it would need more space than the given ratio.
                The ratio is limited to ]0.0 .. 1.0]. In case of <= 0.0
                it will be reset to the default ratio.
@@ -350,8 +350,8 @@ QwtPlot::LegendPosition QwtPlotLayout::legendPosition() const
 
 /*!
   Specify the relative size of the legend in the plot
-  \param ratio Ratio between legend and the bounding rect
-               of title, canvas and axes. The legend will be shrinked
+  \param ratio Ratio between legend and the bounding rectangle
+               of title, canvas and axes. The legend will be shrunk
                if it would need more space than the given ratio.
                The ratio is limited to ]0.0 .. 1.0]. In case of <= 0.0
                it will be reset to the default ratio.
@@ -605,8 +605,10 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
 
 /*!
   Find the geometry for the legend
+
   \param options Options how to layout the legend
   \param rect Rectangle where to place the legend
+
   \return Geometry for the legend
   \sa Options
 */
@@ -668,8 +670,10 @@ QRectF QwtPlotLayout::layoutLegend( Options options,
 
 /*!
   Align the legend to the canvas
+
   \param canvasRect Geometry of the canvas
   \param legendRect Maximum geometry for the legend
+
   \return Geometry for the aligned legend
 */
 QRectF QwtPlotLayout::alignLegend( const QRectF &canvasRect,
@@ -703,7 +707,7 @@ QRectF QwtPlotLayout::alignLegend( const QRectF &canvasRect,
   of their widgets in orientation of the text.
 
   \param options Options how to layout the legend
-  \param rect Bounding rect for title, axes and canvas.
+  \param rect Bounding rectangle for title, axes and canvas.
   \param dimTitle Expanded height of the title widget
   \param dimAxis Expanded heights of the axis in axis orientation.
 
@@ -1059,7 +1063,7 @@ void QwtPlotLayout::alignScales( int options,
   \brief Recalculate the geometry of all components.
 
   \param plot Plot to be layout
-  \param plotRect Rect where to place the components
+  \param plotRect Rectangle where to place the components
   \param options Layout options
 
   \sa invalidate(), titleRect(),

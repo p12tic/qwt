@@ -46,7 +46,7 @@ public:
                  of the pixmap buffer when possible. 
 
           Using a backing store might improve the performance
-          significantly, when workin with widget overlays ( like rubberbands ).
+          significantly, when working with widget overlays ( like rubber bands ).
           Disabling the cache might improve the performance for
           incremental paints (using QwtPlotDirectPainter ).
 

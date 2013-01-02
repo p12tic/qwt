@@ -20,9 +20,13 @@ class QwtColorMap;
 /*!
   \brief A plot item, which displays a spectrogram
 
-  A spectrogram displays threedimenional data, where the 3rd dimension
+  A spectrogram displays 3-dimensional data, where the 3rd dimension
   ( the intensity ) is displayed using colors. The colors are calculated
   from the values using a color map.
+
+  On multi core systems the performance of the image composition
+  can often be improved by dividing the area into tiles - each of them
+  rendered in a different thread ( see setRenderThreadCount() ).
 
   In ContourMode contour lines are painted for the contour levels.
 

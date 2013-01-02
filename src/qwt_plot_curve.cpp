@@ -190,7 +190,7 @@ QwtPlotCurve::CurveStyle QwtPlotCurve::style() const
 }
 
 /*!
-  Assign a symbol
+  \brief Assign a symbol
 
   The curve will take the ownership of the symbol, hence the previously
   set symbol will be delete by setting a new one. If \p symbol is 
@@ -281,7 +281,7 @@ const QBrush& QwtPlotCurve::brush() const
   \param painter Painter
   \param xMap Maps x-values into pixel coordinates.
   \param yMap Maps y-values into pixel coordinates.
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param from Index of the first point to be painted
   \param to Index of the last point to be painted. If to < 0 the
          curve will be painted to its last point.
@@ -329,7 +329,7 @@ void QwtPlotCurve::drawSeries( QPainter *painter,
   \param style curve style, see QwtPlotCurve::CurveStyle
   \param xMap x map
   \param yMap y map
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param from index of the first point to be painted
   \param to index of the last point to be painted
   \sa draw(), drawDots(), drawLines(), drawSteps(), drawSticks()
@@ -374,7 +374,7 @@ void QwtPlotCurve::drawCurve( QPainter *painter, int style,
   \param painter Painter
   \param xMap x map
   \param yMap y map
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param from index of the first point to be painted
   \param to index of the last point to be painted
 
@@ -436,7 +436,7 @@ void QwtPlotCurve::drawLines( QPainter *painter,
   \param painter Painter
   \param xMap x map
   \param yMap y map
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param from index of the first point to be painted
   \param to index of the last point to be painted
 
@@ -487,7 +487,7 @@ void QwtPlotCurve::drawSticks( QPainter *painter,
   \param painter Painter
   \param xMap x map
   \param yMap y map
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param from index of the first point to be painted
   \param to index of the last point to be painted
 
@@ -538,7 +538,7 @@ void QwtPlotCurve::drawDots( QPainter *painter,
   \param painter Painter
   \param xMap x map
   \param yMap y map
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param from index of the first point to be painted
   \param to index of the last point to be painted
 
@@ -681,7 +681,7 @@ QwtCurveFitter *QwtPlotCurve::curveFitter() const
   \param painter Painter
   \param xMap x map
   \param yMap y map
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param polygon Polygon - will be modified !
 
   \sa setBrush(), setBaseline(), setStyle()
@@ -773,7 +773,7 @@ void QwtPlotCurve::closePolyline( QPainter *painter,
   \param symbol Curve symbol
   \param xMap x map
   \param yMap y map
-  \param canvasRect Contents rect of the canvas
+  \param canvasRect Contents rectangle of the canvas
   \param from Index of the first point to be painted
   \param to Index of the last point to be painted
 
@@ -889,7 +889,7 @@ double QwtPlotCurve::baseline() const
 
   \param pos Position, where to look for the closest curve point
   \param dist If dist != NULL, closestPoint() returns the distance between
-              the position and the clostest curve point
+              the position and the closest curve point
   \return Index of the closest curve point, or -1 if none can be found
           ( f.e when the curve has no points )
   \note closestPoint() implements a dumb algorithm, that iterates
@@ -1052,7 +1052,7 @@ void QwtPlotCurve::drawLegendIdentifier(
 }
 
 /*!
-  Initialize data with an array of points (explicitly shared).
+  Initialize data with an array of points.
 
   \param samples Vector of points
 */
@@ -1121,5 +1121,6 @@ void QwtPlotCurve::setSamples( const QVector<double> &xData,
     d_series = new QwtPointArrayData( xData, yData );
     itemChanged();
 }
+
 #endif // !QWT_NO_COMPAT
 

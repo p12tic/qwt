@@ -17,7 +17,7 @@
 /*!
   \brief QwtPlotZoomer provides stacked zooming for a plot widget
 
-  QwtPlotZoomer offers rubberband selections on the plot canvas,
+  QwtPlotZoomer offers rubber band selections on the plot canvas,
   translating the selected rectangles into plot coordinates and
   adjusting the axes to them. Zooming can repeated as often as
   possible, limited only by maxStackDepth() or minZoomSize().

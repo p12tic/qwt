@@ -87,11 +87,11 @@ bool QwtScaleDiv::operator==( const QwtScaleDiv &other ) const
 
 /*!
   \brief Inequality
-  \return true if this instance is not equal to s
+  \return true if this instance is not equal to other
 */
-bool QwtScaleDiv::operator!=( const QwtScaleDiv &s ) const
+bool QwtScaleDiv::operator!=( const QwtScaleDiv &other ) const
 {
-    return ( !( *this == s ) );
+    return ( !( *this == other ) );
 }
 
 //! Invalidate the scale division
@@ -129,7 +129,7 @@ bool QwtScaleDiv::contains( double value ) const
     return value >= min && value <= max;
 }
 
-//! Invert the scale divison
+//! Invert the scale division
 void QwtScaleDiv::invert()
 {
     qSwap( d_lowerBound, d_upperBound );

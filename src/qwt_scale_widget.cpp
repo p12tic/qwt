@@ -305,22 +305,23 @@ void QwtScaleWidget::setLabelRotation( double rotation )
 
 /*!
   Set a scale draw
-  sd has to be created with new and will be deleted in
+
+  scaleDraw has to be created with new and will be deleted in
   ~QwtScaleWidget() or the next call of setScaleDraw().
 
-  \param sd ScaleDraw object
+  \param scaleDraw ScaleDraw object
   \sa scaleDraw()
 */
-void QwtScaleWidget::setScaleDraw( QwtScaleDraw *sd )
+void QwtScaleWidget::setScaleDraw( QwtScaleDraw *scaleDraw )
 {
-    if ( sd == NULL || sd == d_data->scaleDraw )
+    if ( ( scaleDraw == NULL ) || ( scaleDraw == d_data->scaleDraw ) )
         return;
 
     if ( d_data->scaleDraw )
-        sd->setAlignment( d_data->scaleDraw->alignment() );
+        scaleDraw->setAlignment( d_data->scaleDraw->alignment() );
 
     delete d_data->scaleDraw;
-    d_data->scaleDraw = sd;
+    d_data->scaleDraw = scaleDraw;
 
     layoutScale();
 }
@@ -436,7 +437,7 @@ void QwtScaleWidget::draw( QPainter *painter ) const
   Calculate the the rectangle for the color bar
 
   \param rect Bounding rectangle for all components of the scale
-  \return Rectabgle for the color bar
+  \return Rectangle for the color bar
 */
 QRectF QwtScaleWidget::colorBarRect( const QRectF& rect ) const
 {
@@ -490,7 +491,7 @@ QRectF QwtScaleWidget::colorBarRect( const QRectF& rect ) const
 }
 
 /*!
-  Event handler for resize event
+  Event handler for resize events
   \param event Resize event
 */
 void QwtScaleWidget::resizeEvent( QResizeEvent *event )
@@ -501,7 +502,7 @@ void QwtScaleWidget::resizeEvent( QResizeEvent *event )
 
 /*!
   Recalculate the scale's geometry and layout based on
-  the current rect and fonts.
+  the current geometry and fonts.
 
   \param update_geometry Notify the layout system and call update
                          to redraw the scale

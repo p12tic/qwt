@@ -50,7 +50,7 @@ class QwtScaleDiv;
     - ...
 
   Depending on the QwtPlotItem::ItemAttribute flags, an item is included
-  into autoscaling or has an entry on the legnd.
+  into autoscaling or has an entry on the legend.
 
   Before misusing the existing item classes it might be better to
   implement a new type of plot item

@@ -114,7 +114,7 @@ static inline void unscaleFont( QPainter *painter )
   beside QPaintEngine::Pdf and QPaintEngine::SVG.
 
   \param  painter Painter
-  \return true, when the paint engine is aligning
+  \return true, when the painter is aligning
 
   \sa setRoundingAlignment()
 */
@@ -138,8 +138,8 @@ bool QwtPainter::isAligning( QPainter *painter )
 /*!
   Enable whether coordinates should be rounded, before they are painted
   to a paint engine that floors to integer values. For other paint engines
-  this ( Pdf, SVG ), this flag has no effect.
-  QwtPainter stores this flag only, the rounding itsself is done in 
+  this ( PDF, SVG ), this flag has no effect.
+  QwtPainter stores this flag only, the rounding itself is done in 
   the painting code ( f.e the plot items ).
 
   The default setting is true. 
@@ -154,8 +154,8 @@ void QwtPainter::setRoundingAlignment( bool enable )
 /*!
   \brief En/Disable line splitting for the raster paint engine
 
-  The raster paint engine paints polylines of many points
-  much faster when they are splitted in smaller chunks.
+  In some Qt versions the raster paint engine paints polylines of many points
+  much faster when they are split in smaller chunks.
 
   \sa polylineSplitting()
 */
@@ -216,8 +216,8 @@ void QwtPainter::fillRect( QPainter *painter,
     const bool deviceClipping = isClippingNeeded( painter, clipRect );
 
     /*
-      Performance of Qt4 is horrible for non trivial brushs. Without
-      clipping expect minutes or hours for repainting large rects
+      Performance of Qt4 is horrible for a non trivial brush. Without
+      clipping expect minutes or hours for repainting large rectangles
       (might result from zooming)
     */
 

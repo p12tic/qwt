@@ -78,7 +78,7 @@ QwtPlotPicker::QwtPlotPicker( int xAxis, int yAxis, QwtPlotCanvas *canvas ):
 
   \param xAxis X axis of the picker
   \param yAxis Y axis of the picker
-  \param rubberBand Rubberband style
+  \param rubberBand Rubber band style
   \param trackerMode Tracker mode
   \param canvas Plot canvas to observe, also the parent object
 
@@ -101,19 +101,19 @@ QwtPlotPicker::~QwtPlotPicker()
 {
 }
 
-//! Return observed plot canvas
+//! \return Observed plot canvas
 QwtPlotCanvas *QwtPlotPicker::canvas()
 {
     return qobject_cast<QwtPlotCanvas *>( parentWidget() );
 }
 
-//! Return Observed plot canvas
+//! \return Observed plot canvas
 const QwtPlotCanvas *QwtPlotPicker::canvas() const
 {
     return qobject_cast<const QwtPlotCanvas *>( parentWidget() );
 }
 
-//! Return plot widget, containing the observed plot canvas
+//! \return Plot widget, containing the observed plot canvas
 QwtPlot *QwtPlotPicker::plot()
 {
     QwtPlotCanvas *w = canvas();
@@ -123,7 +123,7 @@ QwtPlot *QwtPlotPicker::plot()
     return NULL;
 }
 
-//! Return plot widget, containing the observed plot canvas
+//! \return Plot widget, containing the observed plot canvas
 const QwtPlot *QwtPlotPicker::plot() const
 {
     const QwtPlotCanvas *w = canvas();
@@ -231,7 +231,7 @@ QwtText QwtPlotPicker::trackerTextF( const QPointF &pos ) const
 }
 
 /*!
-  Append a point to the selection and update rubberband and tracker.
+  Append a point to the selection and update rubber band and tracker.
 
   \param pos Additional point
   \sa isActive, begin(), end(), move(), appended()

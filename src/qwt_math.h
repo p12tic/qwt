@@ -44,7 +44,7 @@
 #endif
 
 #ifndef LOG_MIN
-//! Mininum value for logarithmic scales
+//! Minimum value for logarithmic scales
 #define LOG_MIN 1.0e-100
 #endif
 
