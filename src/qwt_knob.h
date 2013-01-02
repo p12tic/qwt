@@ -19,7 +19,7 @@ class QwtRoundScaleDraw;
 /*!
   \brief The Knob Widget
 
-  The QwtKnob widget imitates look and behaviour of a volume knob on a radio.
+  The QwtKnob widget imitates look and behavior of a volume knob on a radio.
   It contains a scale around the knob which is set up automatically or can
   be configured manually (see QwtAbstractScale).
   Automatic scrolling is enabled when the user presses a mouse

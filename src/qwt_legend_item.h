@@ -17,7 +17,7 @@
 #include <qpixmap.h>
 
 /*!
-  \brief A widget representing something on a QwtLegend().
+  \brief A widget representing something on a QwtLegend.
 */
 class QWT_EXPORT QwtLegendItem: public QwtTextLabel
 {
@@ -54,7 +54,7 @@ Q_SIGNALS:
     //! Signal, when the legend item has been pressed
     void pressed();
 
-    //! Signal, when the legend item has been relased
+    //! Signal, when the legend item has been released
     void released();
 
     //! Signal, when the legend item has been toggled

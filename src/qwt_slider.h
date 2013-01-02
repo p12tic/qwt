@@ -48,7 +48,7 @@ public:
       Scale position. QwtSlider tries to enforce valid combinations of its
       orientation and scale position:
 
-      - Qt::Horizonal combines with NoScale, TopScale and BottomScale
+      - Qt::Horizontal combines with NoScale, TopScale and BottomScale
       - Qt::Vertical combines with NoScale, LeftScale and RightScale
 
       \sa QwtSlider()

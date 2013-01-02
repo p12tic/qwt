@@ -78,7 +78,7 @@ public:
     bool isReadOnly() const;
 
     /*
-        Wrappers for QwtDblRange::isValid/QwtDblRange::setValid made
+        Wrappers for QwtDblRange::isValid()/QwtDblRange::setValid() made
         to be available as Q_PROPERTY in the designer.
     */
 
@@ -149,11 +149,12 @@ protected:
     virtual void wheelEvent( QWheelEvent *e );
 
     /*!
-      \brief Determine the value corresponding to a specified poind
+      \brief Determine the value corresponding to a specified point
 
       This is an abstract virtual function which is called when
       the user presses or releases a mouse button or moves the
       mouse. It has to be implemented by the derived class.
+
       \param p point
     */
     virtual double getValue( const QPoint & p ) = 0;

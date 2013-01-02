@@ -18,9 +18,9 @@
   This class is useful as a base class or a member for sliders.
   It represents an interval of type double within which a value can
   be moved. The value can be either an arbitrary point inside
-  the interval (see QwtDoubleRange::setValue), or it can be fitted
-  into a step raster (see QwtDoubleRange::fitValue and
-  QwtDoubleRange::incValue).
+  the interval ( see QwtDoubleRange::setValue() ), or it can be fitted
+  into a step raster (see QwtDoubleRange::fitValue() and
+  QwtDoubleRange::incValue() ).
 
   As a special case, a QwtDoubleRange can be periodic, which means that
   a value outside the interval will be mapped to a value inside the

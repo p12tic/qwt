@@ -44,7 +44,7 @@ public:
     /*!
       Allocate the widget that represents the item on the legend
       \return Allocated widget
-      \sa updateLegend() QwtLegend()
+      \sa updateLegend() QwtLegend
      */
 
     virtual QWidget *legendItem() const = 0;

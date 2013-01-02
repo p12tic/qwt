@@ -250,7 +250,7 @@ Q_SIGNALS:
 
       \param plotItem Corresponding plot item of the
                  selected legend item
-      \param on True when the legen item is checked
+      \param on True when the legend item is checked
 
       \note clicks are disabled as default
       \sa QwtLegend::setItemMode(), QwtLegend::itemMode()
