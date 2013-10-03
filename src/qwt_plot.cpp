@@ -130,7 +130,7 @@ QwtPlot::~QwtPlot()
     detachItems( QwtPlotItem::Rtti_PlotItem, autoDelete() );
 
     delete d_data->layout;
-    deleteAxesData();
+    deleteScaleData();
     delete d_data;
 }
 
@@ -165,8 +165,8 @@ void QwtPlot::initPlot( const QwtText &title )
     // legend
     d_data->legend = NULL;
 
-    // axis
-    initAxesData();
+    // scales
+    initScaleData();
 
     // canvas
     d_data->canvas = new QwtPlotCanvas( this );

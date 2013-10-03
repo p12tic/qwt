@@ -296,14 +296,14 @@ private:
     friend class QwtPlotItem;
     void attachItem( QwtPlotItem *, bool );
 
-    void initAxesData();
-    void deleteAxesData();
+    void initScaleData();
+    void deleteScaleData();
     void updateScaleDiv();
 
     void initPlot( const QwtText &title );
 
-    class AxisData;
-    AxisData *d_axisData[NumAxisPositions];
+    class ScaleData;
+    ScaleData *d_scaleData;
 
     class PrivateData;
     PrivateData *d_data;

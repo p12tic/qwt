@@ -13,47 +13,49 @@
 #include "qwt_scale_div.h"
 #include "qwt_scale_engine.h"
 
-class QwtPlot::AxisData
+class QwtPlot::ScaleData
 {
 public:
-    bool isEnabled;
-    bool doAutoScale;
+	struct AxisData
+	{
+    	bool isVisible;
+    	bool doAutoScale;
 
-    double minValue;
-    double maxValue;
-    double stepSize;
+    	double minValue;
+    	double maxValue;
+    	double stepSize;
 
-    int maxMajor;
-    int maxMinor;
+    	int maxMajor;
+    	int maxMinor;
 
-    bool isValid;
+    	bool isValid;
 
-    QwtScaleDiv scaleDiv;
-    QwtScaleEngine *scaleEngine;
-    QwtScaleWidget *scaleWidget;
+    	QwtScaleDiv scaleDiv;
+    	QwtScaleEngine *scaleEngine;
+    	QwtScaleWidget *scaleWidget;
+	};
+
+	AxisData axisData[ QwtPlot::NumAxisPositions];
 };
 
 //! Initialize axes
-void QwtPlot::initAxesData()
+void QwtPlot::initScaleData()
 {
-    int axisId;
+	d_scaleData = new ScaleData();
 
-    for ( axisId = 0; axisId < NumAxisPositions; axisId++ )
-        d_axisData[axisId] = new AxisData;
-
-    d_axisData[yLeft]->scaleWidget =
+    d_scaleData->axisData[yLeft].scaleWidget =
         new QwtScaleWidget( QwtScaleDraw::LeftScale, this );
-    d_axisData[yRight]->scaleWidget =
+    d_scaleData->axisData[yRight].scaleWidget =
         new QwtScaleWidget( QwtScaleDraw::RightScale, this );
-    d_axisData[xTop]->scaleWidget =
+    d_scaleData->axisData[xTop].scaleWidget =
         new QwtScaleWidget( QwtScaleDraw::TopScale, this );
-    d_axisData[xBottom]->scaleWidget =
+    d_scaleData->axisData[xBottom].scaleWidget =
         new QwtScaleWidget( QwtScaleDraw::BottomScale, this );
 
-    d_axisData[yLeft]->scaleWidget->setObjectName( "QwtPlotAxisYLeft" );
-    d_axisData[yRight]->scaleWidget->setObjectName( "QwtPlotAxisYRight" );
-    d_axisData[xTop]->scaleWidget->setObjectName( "QwtPlotAxisXTop" );
-    d_axisData[xBottom]->scaleWidget->setObjectName( "QwtPlotAxisXBottom" );
+    d_scaleData->axisData[yLeft].scaleWidget->setObjectName( "QwtPlotAxisYLeft" );
+    d_scaleData->axisData[yRight].scaleWidget->setObjectName( "QwtPlotAxisYRight" );
+    d_scaleData->axisData[xTop].scaleWidget->setObjectName( "QwtPlotAxisXTop" );
+    d_scaleData->axisData[xBottom].scaleWidget->setObjectName( "QwtPlotAxisXBottom" );
 
 #if 1
     // better find the font sizes from the application font
@@ -61,9 +63,9 @@ void QwtPlot::initAxesData()
     QFont fttl( fontInfo().family(), 12, QFont::Bold );
 #endif
 
-    for ( axisId = 0; axisId < NumAxisPositions; axisId++ )
+    for ( int axisId = 0; axisId < NumAxisPositions; axisId++ )
     {
-        AxisData &d = *d_axisData[axisId];
+        ScaleData::AxisData &d = d_scaleData->axisData[axisId];
 
         d.scaleEngine = new QwtLinearScaleEngine;
 
@@ -90,20 +92,19 @@ void QwtPlot::initAxesData()
         d.isValid = false;
     }
 
-    d_axisData[yLeft]->isEnabled = true;
-    d_axisData[yRight]->isEnabled = false;
-    d_axisData[xBottom]->isEnabled = true;
-    d_axisData[xTop]->isEnabled = false;
+    d_scaleData->axisData[yLeft].isVisible = true;
+    d_scaleData->axisData[yRight].isVisible = false;
+    d_scaleData->axisData[xBottom].isVisible = true;
+    d_scaleData->axisData[xTop].isVisible = false;
 }
 
-void QwtPlot::deleteAxesData()
+void QwtPlot::deleteScaleData()
 {
     for ( int axisId = 0; axisId < NumAxisPositions; axisId++ )
-    {
-        delete d_axisData[axisId]->scaleEngine;
-        delete d_axisData[axisId];
-        d_axisData[axisId] = NULL;
-    }
+        delete d_scaleData->axisData[axisId].scaleEngine;
+
+	delete d_scaleData;
+	d_scaleData = NULL;
 }
 
 /*!
@@ -113,7 +114,7 @@ void QwtPlot::deleteAxesData()
 const QwtScaleWidget *QwtPlot::axisWidget( int axisId ) const
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->scaleWidget;
+        return d_scaleData->axisData[axisId].scaleWidget;
 
     return NULL;
 }
@@ -125,7 +126,7 @@ const QwtScaleWidget *QwtPlot::axisWidget( int axisId ) const
 QwtScaleWidget *QwtPlot::axisWidget( int axisId )
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->scaleWidget;
+        return d_scaleData->axisData[axisId].scaleWidget;
 
     return NULL;
 }
@@ -142,12 +143,12 @@ void QwtPlot::setAxisScaleEngine( int axisId, QwtScaleEngine *scaleEngine )
 {
     if ( axisValid( axisId ) && scaleEngine != NULL )
     {
-        AxisData &d = *d_axisData[axisId];
+        ScaleData::AxisData &d = d_scaleData->axisData[axisId];
 
         delete d.scaleEngine;
         d.scaleEngine = scaleEngine;
 
-        d_axisData[axisId]->scaleWidget->setTransformation( 
+        d_scaleData->axisData[axisId].scaleWidget->setTransformation( 
             scaleEngine->transformation() );
 
         d.isValid = false;
@@ -163,7 +164,7 @@ void QwtPlot::setAxisScaleEngine( int axisId, QwtScaleEngine *scaleEngine )
 QwtScaleEngine *QwtPlot::axisScaleEngine( int axisId )
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->scaleEngine;
+        return d_scaleData->axisData[axisId].scaleEngine;
     else
         return NULL;
 }
@@ -175,7 +176,7 @@ QwtScaleEngine *QwtPlot::axisScaleEngine( int axisId )
 const QwtScaleEngine *QwtPlot::axisScaleEngine( int axisId ) const
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->scaleEngine;
+        return d_scaleData->axisData[axisId].scaleEngine;
     else
         return NULL;
 }
@@ -186,7 +187,7 @@ const QwtScaleEngine *QwtPlot::axisScaleEngine( int axisId ) const
 bool QwtPlot::axisAutoScale( int axisId ) const
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->doAutoScale;
+        return d_scaleData->axisData[axisId].doAutoScale;
     else
         return false;
 
@@ -199,7 +200,7 @@ bool QwtPlot::axisAutoScale( int axisId ) const
 bool QwtPlot::isAxisVisible( int axisId ) const
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->isEnabled;
+        return d_scaleData->axisData[axisId].isVisible;
     else
         return false;
 }
@@ -225,7 +226,7 @@ QFont QwtPlot::axisFont( int axisId ) const
 int QwtPlot::axisMaxMajor( int axisId ) const
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->maxMajor;
+        return d_scaleData->axisData[axisId].maxMajor;
     else
         return 0;
 }
@@ -238,7 +239,7 @@ int QwtPlot::axisMaxMajor( int axisId ) const
 int QwtPlot::axisMaxMinor( int axisId ) const
 {
     if ( axisValid( axisId ) )
-        return d_axisData[axisId]->maxMinor;
+        return d_scaleData->axisData[axisId].maxMinor;
     else
         return 0;
 }
@@ -256,7 +257,7 @@ int QwtPlot::axisMaxMinor( int axisId ) const
 */
 const QwtScaleDiv &QwtPlot::axisScaleDiv( int axisId ) const
 {
-    return d_axisData[axisId]->scaleDiv;
+    return d_scaleData->axisData[axisId].scaleDiv;
 }
 
 /*!
@@ -302,7 +303,7 @@ double QwtPlot::axisStepSize( int axisId ) const
     if ( !axisValid( axisId ) )
         return 0;
 
-    return d_axisData[axisId]->stepSize;
+    return d_scaleData->axisData[axisId].stepSize;
 }
 
 /*!
@@ -320,7 +321,7 @@ QwtInterval QwtPlot::axisInterval( int axisId ) const
     if ( !axisValid( axisId ) )
         return QwtInterval();
 
-    return d_axisData[axisId]->scaleDiv.interval();
+    return d_scaleData->axisData[axisId].scaleDiv.interval();
 }
 
 /*!
@@ -348,9 +349,9 @@ QwtText QwtPlot::axisTitle( int axisId ) const
 */
 void QwtPlot::setAxisVisible( int axisId, bool tf )
 {
-    if ( axisValid( axisId ) && tf != d_axisData[axisId]->isEnabled )
+    if ( axisValid( axisId ) && tf != d_scaleData->axisData[axisId].isVisible )
     {
-        d_axisData[axisId]->isEnabled = tf;
+        d_scaleData->axisData[axisId].isVisible = tf;
         updateLayout();
     }
 }
@@ -421,9 +422,9 @@ void QwtPlot::setAxisFont( int axisId, const QFont &font )
 */
 void QwtPlot::setAxisAutoScale( int axisId, bool on )
 {
-    if ( axisValid( axisId ) && ( d_axisData[axisId]->doAutoScale != on ) )
+    if ( axisValid( axisId ) && ( d_scaleData->axisData[axisId].doAutoScale != on ) )
     {
-        d_axisData[axisId]->doAutoScale = on;
+        d_scaleData->axisData[axisId].doAutoScale = on;
         autoRefresh();
     }
 }
@@ -447,7 +448,7 @@ void QwtPlot::setAxisScale( int axisId, double min, double max, double stepSize 
 {
     if ( axisValid( axisId ) )
     {
-        AxisData &d = *d_axisData[axisId];
+        ScaleData::AxisData &d = d_scaleData->axisData[axisId];
 
         d.doAutoScale = false;
         d.isValid = false;
@@ -476,7 +477,7 @@ void QwtPlot::setAxisScaleDiv( int axisId, const QwtScaleDiv &scaleDiv )
 {
     if ( axisValid( axisId ) )
     {
-        AxisData &d = *d_axisData[axisId];
+        ScaleData::AxisData &d = d_scaleData->axisData[axisId];
 
         d.doAutoScale = false;
         d.scaleDiv = scaleDiv;
@@ -554,7 +555,7 @@ void QwtPlot::setAxisMaxMinor( int axisId, int maxMinor )
     {
         maxMinor = qBound( 0, maxMinor, 100 );
 
-        AxisData &d = *d_axisData[axisId];
+        ScaleData::AxisData &d = d_scaleData->axisData[axisId];
         if ( maxMinor != d.maxMinor )
         {
             d.maxMinor = maxMinor;
@@ -578,7 +579,7 @@ void QwtPlot::setAxisMaxMajor( int axisId, int maxMajor )
     {
         maxMajor = qBound( 1, maxMajor, 10000 );
 
-        AxisData &d = *d_axisData[axisId];
+        ScaleData::AxisData &d = d_scaleData->axisData[axisId];
         if ( maxMajor != d.maxMajor )
         {
             d.maxMajor = maxMajor;
@@ -672,7 +673,7 @@ void QwtPlot::updateAxes()
 
     for ( int axisId = 0; axisId < NumAxisPositions; axisId++ )
     {
-        AxisData &d = *d_axisData[axisId];
+        ScaleData::AxisData &d = d_scaleData->axisData[axisId];
 
         double minValue = d.minValue;
         double maxValue = d.maxValue;
