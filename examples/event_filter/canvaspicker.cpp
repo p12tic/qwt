@@ -238,9 +238,9 @@ void CanvasPicker::moveBy( int dx, int dy )
         d_selectedCurve->sample( d_selectedPoint );
 
     const double x = plot()->transform(
-        d_selectedCurve->xAxis(), sample.x() );
+        d_selectedCurve->xAxisPos(), sample.x() );
     const double y = plot()->transform(
-        d_selectedCurve->yAxis(), sample.y() );
+        d_selectedCurve->yAxisPos(), sample.y() );
 
     move( QPoint( qRound( x + dx ), qRound( y + dy ) ) );
 }
@@ -260,9 +260,9 @@ void CanvasPicker::move( const QPoint &pos )
         if ( i == d_selectedPoint )
         {
             xData[i] = plot()->invTransform(
-                d_selectedCurve->xAxis(), pos.x() );
+                d_selectedCurve->xAxisPos(), pos.x() );
             yData[i] = plot()->invTransform(
-                d_selectedCurve->yAxis(), pos.y() );
+                d_selectedCurve->yAxisPos(), pos.y() );
         }
         else
         {

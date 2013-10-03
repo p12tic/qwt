@@ -40,15 +40,15 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
     int xAxis = QwtPlot::xBottom;
 
     const QwtPlot *plot = QwtPlotPicker::plot();
-    if ( !plot->isAxisVisible( QwtPlot::xBottom ) &&
-        plot->isAxisVisible( QwtPlot::xTop ) )
+    if ( !plot->isAxisVisible( QwtPlot::xBottom, QWT_DUMMY_ID ) &&
+        plot->isAxisVisible( QwtPlot::xTop, QWT_DUMMY_ID ) )
     {
         xAxis = QwtPlot::xTop;
     }
 
     int yAxis = QwtPlot::yLeft;
-    if ( !plot->isAxisVisible( QwtPlot::yLeft ) &&
-        plot->isAxisVisible( QwtPlot::yRight ) )
+    if ( !plot->isAxisVisible( QwtPlot::yLeft, QWT_DUMMY_ID ) &&
+        plot->isAxisVisible( QwtPlot::yRight, QWT_DUMMY_ID ) )
     {
         yAxis = QwtPlot::yRight;
     }
@@ -142,8 +142,8 @@ QRectF QwtPlotPicker::scaleRect() const
 
     if ( plot() )
     {
-        const QwtScaleDiv &xs = plot()->axisScaleDiv( xAxis() );
-        const QwtScaleDiv &ys = plot()->axisScaleDiv( yAxis() );
+        const QwtScaleDiv &xs = plot()->axisScaleDiv( xAxis(), QWT_DUMMY_ID );
+        const QwtScaleDiv &ys = plot()->axisScaleDiv( yAxis(), QWT_DUMMY_ID );
 
         rect = QRectF( xs.lowerBound(), ys.lowerBound(),
             xs.range(), ys.range() );

@@ -215,8 +215,8 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
 
         const QwtScaleMap map = plot->canvasMap( axis );
 
-        const double p1 = map.transform( plot->axisScaleDiv( axis ).lowerBound() );
-        const double p2 = map.transform( plot->axisScaleDiv( axis ).upperBound() );
+        const double p1 = map.transform( plot->axisScaleDiv( axis, QWT_DUMMY_ID ).lowerBound() );
+        const double p2 = map.transform( plot->axisScaleDiv( axis, QWT_DUMMY_ID ).upperBound() );
 
         double d1, d2;
         if ( axis == QwtPlot::xBottom || axis == QwtPlot::xTop )
@@ -230,7 +230,7 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
             d2 = map.invTransform( p2 - dy );
         }
 
-        plot->setAxisScale( axis, d1, d2 );
+        plot->setAxisScaleDiv( axis, QWT_DUMMY_ID, d1, d2 );
     }
 
     plot->setAutoReplot( doAutoReplot );

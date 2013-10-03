@@ -243,13 +243,15 @@ public:
     virtual void setVisible( bool );
     bool isVisible () const;
 
-    void setAxes( int xAxis, int yAxis );
+    void setAxes( int xAxisPos, int yAxisPos );
 
-    void setXAxis( int axis );
-    int xAxis() const;
+    void setXAxis( int axisPod, int id = 0 );
+    int xAxisPos() const;
+    int xAxisId() const;
 
-    void setYAxis( int axis );
-    int yAxis() const;
+    void setYAxis( int axis, int id = 0 );
+    int yAxisPos() const;
+    int yAxisId() const;
 
     virtual void itemChanged();
     virtual void legendChanged();

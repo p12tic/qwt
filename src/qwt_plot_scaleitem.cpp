@@ -135,8 +135,8 @@ void QwtPlotScaleItem::setScaleDivFromAxis( bool on )
             const QwtPlot *plt = plot();
             if ( plt )
             {
-                updateScaleDiv( plt->axisScaleDiv( xAxis() ),
-                    plt->axisScaleDiv( yAxis() ) );
+                updateScaleDiv( plt->axisScaleDiv( xAxisPos(), xAxisId() ),
+                    plt->axisScaleDiv( yAxisPos(), yAxisId() ) );
                 itemChanged();
             }
         }
@@ -223,8 +223,8 @@ void QwtPlotScaleItem::setScaleDraw( QwtScaleDraw *scaleDraw )
     const QwtPlot *plt = plot();
     if ( plt )
     {
-        updateScaleDiv( plt->axisScaleDiv( xAxis() ),
-            plt->axisScaleDiv( yAxis() ) );
+        updateScaleDiv( plt->axisScaleDiv( xAxisPos(), xAxisId() ),
+            plt->axisScaleDiv( yAxisPos(), yAxisId() ) );
     }
 
     itemChanged();
@@ -451,7 +451,7 @@ void QwtPlotScaleItem::updateScaleDiv( const QwtScaleDiv& xScaleDiv,
         if ( plt != NULL )
         {
             d_data->updateBorders( plt->canvas()->contentsRect(),
-                plt->canvasMap( xAxis() ), plt->canvasMap( yAxis() ) );
+                plt->canvasMap( xAxisPos(), xAxisId() ), plt->canvasMap( yAxisPos(), yAxisId() ) );
             d_data->canvasRectCache = QRect();
         }
     }

@@ -126,14 +126,14 @@ void QwtPlotMagnifier::rescale( double factor )
 
     for ( int axisId = 0; axisId < QwtPlot::NumAxisPositions; axisId++ )
     {
-        const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisId );
+        const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisId, QWT_DUMMY_ID );
         if ( isAxisEnabled( axisId ) )
         {
             const double center =
                 scaleDiv.lowerBound() + scaleDiv.range() / 2;
             const double width_2 = scaleDiv.range() / 2 * factor;
 
-            plt->setAxisScale( axisId, center - width_2, center + width_2 );
+            plt->setAxisScaleDiv( axisId, QWT_DUMMY_ID, center - width_2, center + width_2 );
             doReplot = true;
         }
     }

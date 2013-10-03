@@ -211,8 +211,8 @@ bool Editor::moved( const QPoint& pos )
     if ( plot() == NULL )
         return false;
 
-    const QwtScaleMap xMap = plot()->canvasMap( d_editedItem->xAxis() );
-    const QwtScaleMap yMap = plot()->canvasMap( d_editedItem->yAxis() );
+    const QwtScaleMap xMap = plot()->canvasMap( d_editedItem->xAxisPos() );
+    const QwtScaleMap yMap = plot()->canvasMap( d_editedItem->yAxisPos() );
 
     const QPointF p1 = QwtScaleMap::invTransform( xMap, yMap, d_currentPos );
     const QPointF p2 = QwtScaleMap::invTransform( xMap, yMap, pos );
@@ -273,7 +273,7 @@ QwtPlotShapeItem* Editor::itemAt( const QPoint& pos ) const
             item->rtti() == QwtPlotItem::Rtti_PlotShape )
         {
             QwtPlotShapeItem *shapeItem = static_cast<QwtPlotShapeItem *>( item );
-            const QPointF p( coords[ item->xAxis() ], coords[ item->yAxis() ] );
+            const QPointF p( coords[ item->xAxisPos() ], coords[ item->yAxisPos() ] );
 
             if ( shapeItem->boundingRect().contains( p )
                 && shapeItem->shape().contains( p ) )
@@ -297,8 +297,8 @@ QRegion Editor::maskHint( QwtPlotShapeItem *shapeItem ) const
     if ( plot == NULL || shapeItem == NULL )
         return QRegion();
 
-    const QwtScaleMap xMap = plot->canvasMap( shapeItem->xAxis() );
-    const QwtScaleMap yMap = plot->canvasMap( shapeItem->yAxis() );
+    const QwtScaleMap xMap = plot->canvasMap( shapeItem->xAxisPos() );
+    const QwtScaleMap yMap = plot->canvasMap( shapeItem->yAxisPos() );
 
     QRect rect = QwtScaleMap::transform( xMap, yMap,
         shapeItem->shape().boundingRect() ).toRect();
@@ -313,8 +313,8 @@ void Editor::drawOverlay( QPainter* painter ) const
     if ( plot == NULL || d_editedItem == NULL )
         return;
 
-    const QwtScaleMap xMap = plot->canvasMap( d_editedItem->xAxis() );
-    const QwtScaleMap yMap = plot->canvasMap( d_editedItem->yAxis() );
+    const QwtScaleMap xMap = plot->canvasMap( d_editedItem->xAxisPos() );
+    const QwtScaleMap yMap = plot->canvasMap( d_editedItem->yAxisPos() );
 
     painter->setRenderHint( QPainter::Antialiasing,
         d_editedItem->testRenderHint( QwtPlotItem::RenderAntialiased ) );

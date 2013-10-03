@@ -26,8 +26,10 @@ public:
         renderHints( 0 ),
         renderThreadCount( 1 ),
         z( 0.0 ),
-        xAxis( QwtPlot::xBottom ),
-        yAxis( QwtPlot::yLeft ),
+        xAxisPos( QwtPlot::xBottom ),
+        xAxisId( 0 ),
+        yAxisPos( QwtPlot::yLeft ),
+        yAxisId( 0 ),
         legendIconSize( 8, 8 )
     {
     }
@@ -44,8 +46,11 @@ public:
 
     double z;
 
-    int xAxis;
-    int yAxis;
+    int xAxisPos;
+    int xAxisId;
+
+    int yAxisPos;
+    int yAxisId;
 
     QwtText title;
     QSize legendIconSize;
@@ -473,13 +478,19 @@ void QwtPlotItem::legendChanged()
 
    \sa setXAxis(), setYAxis(), xAxis(), yAxis(), QwtPlot::Axis
 */
-void QwtPlotItem::setAxes( int xAxis, int yAxis )
+void QwtPlotItem::setAxes( int xAxisPos, int yAxisPos )
 {
-    if ( xAxis == QwtPlot::xBottom || xAxis == QwtPlot::xTop )
-        d_data->xAxis = xAxis;
+    if ( xAxisPos == QwtPlot::xBottom || xAxisPos == QwtPlot::xTop )
+    {
+        d_data->xAxisPos = xAxisPos;
+        d_data->xAxisId = 0;
+    }
 
-    if ( yAxis == QwtPlot::yLeft || yAxis == QwtPlot::yRight )
-        d_data->yAxis = yAxis;
+    if ( yAxisPos == QwtPlot::yLeft || yAxisPos == QwtPlot::yRight )
+    {
+        d_data->yAxisPos = yAxisPos;
+        d_data->yAxisId = 0;
+    }
 
     itemChanged();
 }
@@ -492,11 +503,12 @@ void QwtPlotItem::setAxes( int xAxis, int yAxis )
    \param axis X Axis ( QwtPlot::xBottom or QwtPlot::xTop )
    \sa setAxes(), setYAxis(), xAxis(), QwtPlot::Axis
 */
-void QwtPlotItem::setXAxis( int axis )
+void QwtPlotItem::setXAxis( int axisPos, int id )
 {
-    if ( axis == QwtPlot::xBottom || axis == QwtPlot::xTop )
+    if ( axisPos == QwtPlot::xBottom || axisPos == QwtPlot::xTop )
     {
-        d_data->xAxis = axis;
+        d_data->xAxisPos = axisPos;
+        d_data->xAxisId = id;
         itemChanged();
     }
 }
@@ -509,25 +521,36 @@ void QwtPlotItem::setXAxis( int axis )
    \param axis Y Axis ( QwtPlot::yLeft or QwtPlot::yRight )
    \sa setAxes(), setXAxis(), yAxis(), QwtPlot::Axis
 */
-void QwtPlotItem::setYAxis( int axis )
+void QwtPlotItem::setYAxis( int axisPos, int id )
 {
-    if ( axis == QwtPlot::yLeft || axis == QwtPlot::yRight )
+    if ( axisPos == QwtPlot::yLeft || axisPos == QwtPlot::yRight )
     {
-        d_data->yAxis = axis;
+        d_data->yAxisPos = axisPos;
+        d_data->yAxisId = id;
         itemChanged();
     }
 }
 
 //! Return xAxis
-int QwtPlotItem::xAxis() const
+int QwtPlotItem::xAxisPos() const
 {
-    return d_data->xAxis;
+    return d_data->xAxisPos;
+}
+
+int QwtPlotItem::xAxisId() const
+{
+    return d_data->xAxisId;
 }
 
 //! Return yAxis
-int QwtPlotItem::yAxis() const
+int QwtPlotItem::yAxisPos() const
 {
-    return d_data->yAxis;
+    return d_data->yAxisPos;
+}
+
+int QwtPlotItem::yAxisId() const
+{
+    return d_data->yAxisId;
 }
 
 /*!

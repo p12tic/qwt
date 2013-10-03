@@ -496,7 +496,7 @@ QwtInterval QwtPlotRescaler::interval( int axis ) const
     if ( axis < 0 || axis >= QwtPlot::NumAxisPositions )
         return QwtInterval();
 
-    return plot()->axisScaleDiv( axis ).interval().normalized();
+    return plot()->axisScaleDiv( axis, QWT_DUMMY_ID ).interval().normalized();
 }
 
 /*!
@@ -588,11 +588,11 @@ void QwtPlotRescaler::updateScales(
             double v1 = intervals[axis].minValue();
             double v2 = intervals[axis].maxValue();
 
-            if ( !plt->axisScaleDiv( axis ).isIncreasing() )
+            if ( !plt->axisScaleDiv( axis, QWT_DUMMY_ID ).isIncreasing() )
                 qSwap( v1, v2 );
 
             if ( d_data->inReplot >= 1 )
-                d_data->axisData[axis].scaleDiv = plt->axisScaleDiv( axis );
+                d_data->axisData[axis].scaleDiv = plt->axisScaleDiv( axis, QWT_DUMMY_ID );
 
             if ( d_data->inReplot >= 2 )
             {
@@ -600,11 +600,11 @@ void QwtPlotRescaler::updateScales(
                 for ( int i = 0; i < QwtScaleDiv::NTickTypes; i++ )
                     ticks[i] = d_data->axisData[axis].scaleDiv.ticks( i );
 
-                plt->setAxisScaleDiv( axis, QwtScaleDiv( v1, v2, ticks ) );
+                plt->setAxisScaleDiv( axis, QWT_DUMMY_ID, QwtScaleDiv( v1, v2, ticks ) );
             }
             else
             {
-                plt->setAxisScale( axis, v1, v2 );
+                plt->setAxisScaleDiv( axis, QWT_DUMMY_ID, v1, v2 );
             }
         }
     }

@@ -27,6 +27,9 @@ class QwtScaleDiv;
 class QwtScaleDraw;
 class QwtTextLabel;
 
+#define QWT_COMPAT 1 // flag to disable compatibilities - will be removed later
+#define QWT_DUMMY_ID 0 // dummy id to help for migrating the code - will be removed later
+
 /*!
   \brief A 2-D plotting widget
 
@@ -136,7 +139,7 @@ public:
     void applyProperties( const QString & );
     QString grabProperties() const;
 
-    void setAutoReplot( bool = true );
+    void setAutoReplot( bool on = true );
     bool autoReplot() const;
 
     // Layout
@@ -174,53 +177,141 @@ public:
     void setCanvasBackground( const QBrush & );
     QBrush canvasBackground() const;
 
-    virtual QwtScaleMap canvasMap( int axisId ) const;
+    virtual QwtScaleMap canvasMap( int axisPos, int id = 0 ) const;
 
-    double invTransform( int axisId, int pos ) const;
-    double transform( int axisId, double value ) const;
+    double invTransform( int axisPos, int pos ) const;
+    double invTransform( int axisPos, int id, int pos ) const;
+
+    double transform( int axisPos, double value ) const;
+    double transform( int axisPos, int id, double value ) const;
 
     // Axes
 
-    QwtScaleEngine *axisScaleEngine( int axisId );
-    const QwtScaleEngine *axisScaleEngine( int axisId ) const;
-    void setAxisScaleEngine( int axisId, QwtScaleEngine * );
+    int axisCount( int axisPos ) const;
+    bool isAxisValid( int axisPos, int id ) const;
 
-    void setAxisAutoScale( int axisId, bool on = true );
-    bool axisAutoScale( int axisId ) const;
+#if QWT_COMPAT
+    QwtScaleEngine *axisScaleEngine( int axisPos, int id = 0 );
+    const QwtScaleEngine *axisScaleEngine( int axisPos, int id = 0 ) const;
+#else
+    QwtScaleEngine *axisScaleEngine( int axisPos, int id );
+    const QwtScaleEngine *axisScaleEngine( int axisPos, int id ) const;
+#endif
 
-    void setAxisVisible( int axisId, bool tf = true );
-    bool isAxisVisible( int axisId ) const;
+#if QWT_COMPAT
+    void setAxisScaleEngine( int axisPos, QwtScaleEngine * );
+#endif
+    void setAxisScaleEngine( int axisPos, int id, QwtScaleEngine * );
 
-    void setAxisFont( int axisId, const QFont &f );
-    QFont axisFont( int axisId ) const;
+#if QWT_COMPAT
+    void setAxisAutoScale( int axisPos, bool on = true );
+#endif
+    void setAxisAutoScale( int axisPos, int id, bool on = true );
+#if QWT_COMPAT
+    bool axisAutoScale( int axisPos, int id = 0 ) const;
+#else
+    bool axisAutoScale( int axisPos, int id ) const;
+#endif
 
-    void setAxisScale( int axisId, double min, double max, double step = 0 );
-    void setAxisScaleDiv( int axisId, const QwtScaleDiv & );
-    void setAxisScaleDraw( int axisId, QwtScaleDraw * );
+#if QWT_COMPAT
+    void setAxisVisible( int axisPos, bool on = true );
+#endif
+    void setAxisVisible( int axisPos, int id, bool on = true );
+#if QWT_COMPAT
+    bool isAxisVisible( int axisPos, int id = 0 ) const;
+#else
+    bool isAxisVisible( int axisPos, int id ) const;
+#endif
 
-    double axisStepSize( int axisId ) const;
-    QwtInterval axisInterval( int axisId ) const;
+#if QWT_COMPAT
+    void setAxisFont( int axisPos, const QFont & );
+#endif
+    void setAxisFont( int axisPos, int id, const QFont & );
+#if QWT_COMPAT
+    QFont axisFont( int axisPos, int id = 0 ) const;
+#else
+    QFont axisFont( int axisPos, int id = 0 ) const;
+#endif
 
-    const QwtScaleDiv &axisScaleDiv( int axisId ) const;
+#if QWT_COMPAT
+    void setAxisScale( int axisPos, double min, double max, double step = 0 );
+#endif
+    void setAxisScaleDiv( int axisPos, int pos, double min, double max, double step = 0 );
+    void setAxisScaleDiv( int axisPos, int pos, const QwtScaleDiv & );
+#if QWT_COMPAT
+    void setAxisScaleDiv( int axisPos, const QwtScaleDiv & );
+#endif
+    void setAxisScaleDraw( int axisPos, int pos, QwtScaleDraw * );
+#if QWT_COMPAT
+    void setAxisScaleDraw( int axisPos, QwtScaleDraw * );
+#endif
 
-    const QwtScaleDraw *axisScaleDraw( int axisId ) const;
-    QwtScaleDraw *axisScaleDraw( int axisId );
+#if QWT_COMPAT
+    double axisStepSize( int axisPos, int id = 0 ) const;
+    QwtInterval axisInterval( int axisPos, int id = 0 ) const;
+#else
+    double axisStepSize( int axisPos, int id ) const;
+    QwtInterval axisInterval( int axisPos, int id ) const;
+#endif
 
-    const QwtScaleWidget *axisWidget( int axisId ) const;
-    QwtScaleWidget *axisWidget( int axisId );
+#if QWT_COMPAT
+    const QwtScaleDiv &axisScaleDiv( int axisPos, int id = 0 ) const;
 
-    void setAxisLabelAlignment( int axisId, Qt::Alignment );
-    void setAxisLabelRotation( int axisId, double rotation );
+    const QwtScaleDraw *axisScaleDraw( int axisPos, int id = 0 ) const;
+    QwtScaleDraw *axisScaleDraw( int axisPos, int id = 0 );
 
-    void setAxisTitle( int axisId, const QString & );
-    void setAxisTitle( int axisId, const QwtText & );
-    QwtText axisTitle( int axisId ) const;
+    const QwtScaleWidget *axisWidget( int axisPos, int id = 0 ) const;
+    QwtScaleWidget *axisWidget( int axisPos, int id = 0 );
+#else
+    const QwtScaleDiv &axisScaleDiv( int axisPos, int id ) const;
 
-    void setAxisMaxMinor( int axisId, int maxMinor );
-    int axisMaxMinor( int axisId ) const;
+    const QwtScaleDraw *axisScaleDraw( int axisPos, int id ) const;
+    QwtScaleDraw *axisScaleDraw( int axisPos, int id );
 
-    void setAxisMaxMajor( int axisId, int maxMajor );
-    int axisMaxMajor( int axisId ) const;
+    const QwtScaleWidget *axisWidget( int axisPos, int id ) const;
+    QwtScaleWidget *axisWidget( int axisPos, int id );
+#endif
+
+#if QWT_COMPAT
+    void setAxisLabelAlignment( int axisPos, Qt::Alignment );
+#endif
+    void setAxisLabelAlignment( int axisPos, int pos, Qt::Alignment );
+    void setAxisLabelRotation( int axisPos, int pos, double rotation );
+#if QWT_COMPAT
+    void setAxisLabelRotation( int axisPos, double rotation );
+#endif
+
+#if QWT_COMPAT
+    void setAxisTitle( int axisPos, const QString & );
+    void setAxisTitle( int axisPos, const QwtText & );
+#endif
+    void setAxisTitle( int axisPos, int pos, const QString & );
+    void setAxisTitle( int axisPos, int pos, const QwtText & );
+#if QWT_COMPAT
+    QwtText axisTitle( int axisPos, int id = 0 ) const;
+#else
+    QwtText axisTitle( int axisPos, int id ) const;
+#endif
+
+#if QWT_COMPAT
+    void setAxisMaxMinor( int axisPos, int maxMinor );
+#endif
+    void setAxisMaxMinor( int axisPos, int id, int maxMinor );
+#if QWT_COMPAT
+    int axisMaxMinor( int axisPos, int id = 0 ) const;
+#else
+    int axisMaxMinor( int axisPos, int id ) const;
+#endif
+
+#if QWT_COMPAT
+    void setAxisMaxMajor( int axisPos, int maxMajor );
+#endif
+    void setAxisMaxMajor( int axisPos, int id, int maxMajor );
+#if QWT_COMPAT
+    int axisMaxMajor( int axisPos, int id = 0 ) const;
+#else
+    int axisMaxMajor( int axisPos, int id ) const;
+#endif
 
     // Legend
 
@@ -284,7 +375,6 @@ public Q_SLOTS:
     void autoRefresh();
 
 protected:
-    static bool axisValid( int axisId );
 
     virtual void resizeEvent( QResizeEvent *e );
 
@@ -308,5 +398,84 @@ private:
     class PrivateData;
     PrivateData *d_data;
 };
+
+#if QWT_COMPAT
+
+inline void QwtPlot::setAxisScaleEngine( int axisPos, QwtScaleEngine *engine )
+{
+    setAxisScaleEngine( axisPos, 0, engine );
+}
+
+inline void QwtPlot::setAxisAutoScale( int axisPos, bool on )
+{
+    setAxisAutoScale( axisPos, 0, on );
+}
+
+inline void QwtPlot::setAxisVisible( int axisPos, bool on )
+{
+    setAxisVisible( axisPos, 0, on );
+}
+
+inline void QwtPlot::setAxisFont( int axisPos, const QFont &font )
+{
+    setAxisFont( axisPos, 0, font );
+}
+
+inline void QwtPlot::setAxisScale( int axisPos, double min, double max, double step )
+{
+    setAxisScaleDiv( axisPos, 0, min, max, step );
+}
+
+inline void QwtPlot::setAxisScaleDiv( int axisPos, const QwtScaleDiv &scaleDiv )
+{
+    setAxisScaleDiv( axisPos, 0, scaleDiv );
+}
+
+inline void QwtPlot::setAxisScaleDraw( int axisPos, QwtScaleDraw *scaleDraw )
+{
+    setAxisScaleDraw( axisPos, 0, scaleDraw );
+}
+
+inline void QwtPlot::setAxisLabelAlignment( int axisPos, Qt::Alignment alignment )
+{
+    setAxisLabelAlignment( axisPos, 0, alignment );
+}
+
+inline void QwtPlot::setAxisLabelRotation( int axisPos, double rotation )
+{
+    setAxisLabelRotation( axisPos, 0, rotation );
+}
+
+inline void QwtPlot::setAxisTitle( int axisPos, const QString &title )
+{
+    setAxisTitle( axisPos, 0, title );
+}
+
+inline void QwtPlot::setAxisTitle( int axisPos, const QwtText &title )
+{
+    setAxisTitle( axisPos, 0, title );
+}
+
+inline void QwtPlot::setAxisMaxMinor( int axisPos, int maxMinor )
+{
+    setAxisMaxMinor( axisPos, 0, maxMinor );
+}
+
+inline void QwtPlot::setAxisMaxMajor( int axisPos, int maxMinor )
+{
+    setAxisMaxMajor( axisPos, 0, maxMinor );
+}
+
+inline double QwtPlot::invTransform( int axisPos, int pos ) const
+{
+    return invTransform( axisPos, 0, pos );
+}
+
+inline double QwtPlot::transform( int axisPos, double value ) const
+{
+    return transform( axisPos, 0, value );
+}
+
+#endif
 
 #endif

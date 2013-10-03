@@ -77,8 +77,8 @@ void IncrementalPlot::appendPoint( const QPointF &point )
            part of the backing store that has to be copied out - maybe
            to an unaccelerated frame buffer device.
          */
-        const QwtScaleMap xMap = canvasMap( d_curve->xAxis() );
-        const QwtScaleMap yMap = canvasMap( d_curve->yAxis() );
+        const QwtScaleMap xMap = canvasMap( d_curve->xAxisPos() );
+        const QwtScaleMap yMap = canvasMap( d_curve->yAxisPos() );
 
         QRegion clipRegion;
 
