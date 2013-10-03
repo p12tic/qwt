@@ -92,11 +92,11 @@ class QwtPlotPanner::PrivateData
 public:
     PrivateData()
     {
-        for ( int axis = 0; axis < QwtPlot::axisCnt; axis++ )
+        for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
             isAxisEnabled[axis] = true;
     }
 
-    bool isAxisEnabled[QwtPlot::axisCnt];
+    bool isAxisEnabled[QwtPlot::NumAxisPositions];
 };
 
 /*!
@@ -136,7 +136,7 @@ QwtPlotPanner::~QwtPlotPanner()
 */
 void QwtPlotPanner::setAxisEnabled( int axis, bool on )
 {
-    if ( axis >= 0 && axis < QwtPlot::axisCnt )
+    if ( axis >= 0 && axis < QwtPlot::NumAxisPositions )
         d_data->isAxisEnabled[axis] = on;
 }
 
@@ -150,7 +150,7 @@ void QwtPlotPanner::setAxisEnabled( int axis, bool on )
 */
 bool QwtPlotPanner::isAxisEnabled( int axis ) const
 {
-    if ( axis >= 0 && axis < QwtPlot::axisCnt )
+    if ( axis >= 0 && axis < QwtPlot::NumAxisPositions )
         return d_data->isAxisEnabled[axis];
 
     return true;
@@ -208,7 +208,7 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
     const bool doAutoReplot = plot->autoReplot();
     plot->setAutoReplot( false );
 
-    for ( int axis = 0; axis < QwtPlot::axisCnt; axis++ )
+    for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
     {
         if ( !d_data->isAxisEnabled[axis] )
             continue;

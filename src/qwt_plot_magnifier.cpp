@@ -17,11 +17,11 @@ class QwtPlotMagnifier::PrivateData
 public:
     PrivateData()
     {
-        for ( int axis = 0; axis < QwtPlot::axisCnt; axis++ )
+        for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
             isAxisEnabled[axis] = true;
     }
 
-    bool isAxisEnabled[QwtPlot::axisCnt];
+    bool isAxisEnabled[QwtPlot::NumAxisPositions];
 };
 
 /*!
@@ -53,7 +53,7 @@ QwtPlotMagnifier::~QwtPlotMagnifier()
 */
 void QwtPlotMagnifier::setAxisEnabled( int axis, bool on )
 {
-    if ( axis >= 0 && axis < QwtPlot::axisCnt )
+    if ( axis >= 0 && axis < QwtPlot::NumAxisPositions )
         d_data->isAxisEnabled[axis] = on;
 }
 
@@ -67,7 +67,7 @@ void QwtPlotMagnifier::setAxisEnabled( int axis, bool on )
 */
 bool QwtPlotMagnifier::isAxisEnabled( int axis ) const
 {
-    if ( axis >= 0 && axis < QwtPlot::axisCnt )
+    if ( axis >= 0 && axis < QwtPlot::NumAxisPositions )
         return d_data->isAxisEnabled[axis];
 
     return true;
@@ -124,7 +124,7 @@ void QwtPlotMagnifier::rescale( double factor )
     const bool autoReplot = plt->autoReplot();
     plt->setAutoReplot( false );
 
-    for ( int axisId = 0; axisId < QwtPlot::axisCnt; axisId++ )
+    for ( int axisId = 0; axisId < QwtPlot::NumAxisPositions; axisId++ )
     {
         const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisId );
         if ( isAxisEnabled( axisId ) )

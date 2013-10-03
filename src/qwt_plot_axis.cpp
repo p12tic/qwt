@@ -38,7 +38,7 @@ void QwtPlot::initAxesData()
 {
     int axisId;
 
-    for ( axisId = 0; axisId < axisCnt; axisId++ )
+    for ( axisId = 0; axisId < NumAxisPositions; axisId++ )
         d_axisData[axisId] = new AxisData;
 
     d_axisData[yLeft]->scaleWidget =
@@ -61,7 +61,7 @@ void QwtPlot::initAxesData()
     QFont fttl( fontInfo().family(), 12, QFont::Bold );
 #endif
 
-    for ( axisId = 0; axisId < axisCnt; axisId++ )
+    for ( axisId = 0; axisId < NumAxisPositions; axisId++ )
     {
         AxisData &d = *d_axisData[axisId];
 
@@ -98,7 +98,7 @@ void QwtPlot::initAxesData()
 
 void QwtPlot::deleteAxesData()
 {
-    for ( int axisId = 0; axisId < axisCnt; axisId++ )
+    for ( int axisId = 0; axisId < NumAxisPositions; axisId++ )
     {
         delete d_axisData[axisId]->scaleEngine;
         delete d_axisData[axisId];
@@ -193,10 +193,10 @@ bool QwtPlot::axisAutoScale( int axisId ) const
 }
 
 /*!
-  \return \c True, if a specified axis is enabled
+  \return \c True, if a specified axis is visible
   \param axisId Axis index
 */
-bool QwtPlot::axisEnabled( int axisId ) const
+bool QwtPlot::isAxisVisible( int axisId ) const
 {
     if ( axisValid( axisId ) )
         return d_axisData[axisId]->isEnabled;
@@ -338,17 +338,15 @@ QwtText QwtPlot::axisTitle( int axisId ) const
 /*!
   \brief Enable or disable a specified axis
 
-  When an axis is disabled, this only means that it is not
-  visible on the screen. Curves, markers and can be attached
-  to disabled axes, and transformation of screen coordinates
-  into values works as normal.
+  Even when an axis is not visible curves, markers and can be attached
+  to it, and transformation of screen coordinates into values works as normal.
 
-  Only xBottom and yLeft are enabled by default.
+  Only xBottom and yLeft are visible by default.
 
   \param axisId Axis index
   \param tf \c true (enabled) or \c false (disabled)
 */
-void QwtPlot::enableAxis( int axisId, bool tf )
+void QwtPlot::setAxisVisible( int axisId, bool tf )
 {
     if ( axisValid( axisId ) && tf != d_axisData[axisId]->isEnabled )
     {
@@ -643,7 +641,7 @@ void QwtPlot::updateAxes()
     // Find bounding interval of the item data
     // for all axes, where autoscaling is enabled
 
-    QwtInterval intv[axisCnt];
+    QwtInterval intv[NumAxisPositions];
 
     const QwtPlotItemList& itmList = itemList();
 
@@ -672,7 +670,7 @@ void QwtPlot::updateAxes()
 
     // Adjust scales
 
-    for ( int axisId = 0; axisId < axisCnt; axisId++ )
+    for ( int axisId = 0; axisId < NumAxisPositions; axisId++ )
     {
         AxisData &d = *d_axisData[axisId];
 

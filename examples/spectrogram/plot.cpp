@@ -88,7 +88,7 @@ Plot::Plot( QWidget *parent ):
     rightAxis->setColorMap( zInterval, new ColorMap() );
 
     setAxisScale( QwtPlot::yRight, zInterval.minValue(), zInterval.maxValue() );
-    enableAxis( QwtPlot::yRight );
+    setAxisVisible( QwtPlot::yRight );
 
     plotLayout()->setAlignCanvasToScales( true );
     replot();

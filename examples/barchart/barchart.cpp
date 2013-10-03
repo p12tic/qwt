@@ -88,7 +88,7 @@ void BarChart::setMode( int mode )
 
 void BarChart::setOrientation( int orientation )
 {
-    QwtPlot::Axis axis1, axis2;
+    QwtPlot::AxisPosition axis1, axis2;
 
     if ( orientation == 0 )
     {

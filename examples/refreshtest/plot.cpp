@@ -106,7 +106,7 @@ void Plot::alignScales()
     // the canvas frame, but is also a good example demonstrating
     // why the spreaded API needs polishing.
 
-    for ( int i = 0; i < QwtPlot::axisCnt; i++ )
+    for ( int i = 0; i < QwtPlot::NumAxisPositions; i++ )
     {
         QwtScaleWidget *scaleWidget = axisWidget( i );
         if ( scaleWidget )

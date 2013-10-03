@@ -124,7 +124,7 @@ protected:
         const QSize &size ) const;
 
     virtual void updateScales(
-        QwtInterval intervals[QwtPlot::axisCnt] ) const;
+        QwtInterval intervals[QwtPlot::NumAxisPositions] ) const;
 
     Qt::Orientation orientation( int axis ) const;
     QwtInterval interval( int axis ) const;

@@ -89,8 +89,8 @@ class QWT_EXPORT QwtPlot: public QFrame, public QwtPlotDict
 #endif
 
 public:
-    //! \brief Axis index
-    enum Axis
+    //! \brief Axis position
+    enum AxisPosition
     {
         //! Y axis left of the canvas
         yLeft,
@@ -105,7 +105,7 @@ public:
         xTop,
 
         //! Number of axes
-        axisCnt
+        NumAxisPositions
     };
 
     /*!
@@ -188,8 +188,8 @@ public:
     void setAxisAutoScale( int axisId, bool on = true );
     bool axisAutoScale( int axisId ) const;
 
-    void enableAxis( int axisId, bool tf = true );
-    bool axisEnabled( int axisId ) const;
+    void setAxisVisible( int axisId, bool tf = true );
+    bool isAxisVisible( int axisId ) const;
 
     void setAxisFont( int axisId, const QFont &f );
     QFont axisFont( int axisId ) const;
@@ -252,7 +252,7 @@ public:
     virtual bool eventFilter( QObject *, QEvent * );
 
     virtual void drawItems( QPainter *, const QRectF &,
-        const QwtScaleMap maps[axisCnt] ) const;
+        const QwtScaleMap maps[NumAxisPositions] ) const;
 
     virtual QVariant itemToInfo( QwtPlotItem * ) const;
     virtual QwtPlotItem *infoToItem( const QVariant & ) const;
@@ -303,7 +303,7 @@ private:
     void initPlot( const QwtText &title );
 
     class AxisData;
-    AxisData *d_axisData[axisCnt];
+    AxisData *d_axisData[NumAxisPositions];
 
     class PrivateData;
     PrivateData *d_data;

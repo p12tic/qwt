@@ -24,12 +24,12 @@ Plot::Plot( QWidget *parent ):
     QwtPlotPanner *panner = new QwtPlotPanner( canvas() );
     QwtPlotMagnifier *magnifier = new QwtPlotMagnifier( canvas() );
 
-    for ( int axis = 0; axis < QwtPlot::axisCnt; axis++ )
+    for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
     {
         const bool on = axis == QwtPlot::yLeft ||
             axis == QwtPlot::yRight;
 
-        enableAxis( axis, on );
+        setAxisVisible( axis, on );
         panner->setAxisEnabled( axis, on );
         magnifier->setAxisEnabled( axis, on );
     }

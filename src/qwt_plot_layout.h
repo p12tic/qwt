@@ -106,10 +106,10 @@ protected:
         const QRectF &legendRect ) const;
 
     void expandLineBreaks( Options options, const QRectF &rect,
-        int &dimTitle, int &dimFooter, int dimAxes[QwtPlot::axisCnt] ) const;
+        int &dimTitle, int &dimFooter, int dimAxes[QwtPlot::NumAxisPositions] ) const;
 
     void alignScales( Options options, QRectF &canvasRect,
-        QRectF scaleRect[QwtPlot::axisCnt] ) const;
+        QRectF scaleRect[QwtPlot::NumAxisPositions] ) const;
 
 private:
     class PrivateData;

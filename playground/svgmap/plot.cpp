@@ -19,8 +19,8 @@ Plot::Plot( QWidget *parent ):
        hide the axes.
      */
     plotLayout()->setCanvasMargin( 0 );
-    for ( int axis = 0; axis < QwtPlot::axisCnt; axis++ )
-        enableAxis( axis, false );
+    for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
+        setAxisVisible( axis, false );
 #else
     QwtPlotGrid *grid = new QwtPlotGrid();
     grid->attach( this );

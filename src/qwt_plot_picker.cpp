@@ -40,15 +40,15 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
     int xAxis = QwtPlot::xBottom;
 
     const QwtPlot *plot = QwtPlotPicker::plot();
-    if ( !plot->axisEnabled( QwtPlot::xBottom ) &&
-        plot->axisEnabled( QwtPlot::xTop ) )
+    if ( !plot->isAxisVisible( QwtPlot::xBottom ) &&
+        plot->isAxisVisible( QwtPlot::xTop ) )
     {
         xAxis = QwtPlot::xTop;
     }
 
     int yAxis = QwtPlot::yLeft;
-    if ( !plot->axisEnabled( QwtPlot::yLeft ) &&
-        plot->axisEnabled( QwtPlot::yRight ) )
+    if ( !plot->isAxisVisible( QwtPlot::yLeft ) &&
+        plot->isAxisVisible( QwtPlot::yRight ) )
     {
         yAxis = QwtPlot::yRight;
     }

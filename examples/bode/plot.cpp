@@ -59,7 +59,7 @@ Plot::Plot( QWidget *parent ):
     grid->attach( this );
 
     // axes
-    enableAxis( QwtPlot::yRight );
+    setAxisVisible( QwtPlot::yRight );
     setAxisTitle( QwtPlot::xBottom, "Normalized Frequency" );
     setAxisTitle( QwtPlot::yLeft, "Amplitude [dB]" );
     setAxisTitle( QwtPlot::yRight, "Phase [deg]" );

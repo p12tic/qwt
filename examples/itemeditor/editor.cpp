@@ -255,7 +255,7 @@ QwtPlotShapeItem* Editor::itemAt( const QPoint& pos ) const
         return NULL;
 
     // translate pos into the plot coordinates
-    double coords[ QwtPlot::axisCnt ];
+    double coords[ QwtPlot::NumAxisPositions ];
     coords[ QwtPlot::xBottom ] =
         plot->canvasMap( QwtPlot::xBottom ).invTransform( pos.x() );
     coords[ QwtPlot::xTop ] =
