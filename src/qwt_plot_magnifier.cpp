@@ -10,18 +10,12 @@
 #include "qwt_plot.h"
 #include "qwt_scale_div.h"
 #include "qwt_plot_magnifier.h"
-#include <qevent.h>
+#include "qwt_axes_mask.h"
 
 class QwtPlotMagnifier::PrivateData
 {
 public:
-    PrivateData()
-    {
-        for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
-            isAxisEnabled[axis] = true;
-    }
-
-    bool isAxisEnabled[QwtPlot::NumAxisPositions];
+    QwtAxesMask disabledAxes;
 };
 
 /*!
@@ -51,26 +45,22 @@ QwtPlotMagnifier::~QwtPlotMagnifier()
 
    \sa isAxisEnabled()
 */
-void QwtPlotMagnifier::setAxisEnabled( int axis, bool on )
+void QwtPlotMagnifier::setAxisEnabled( int axisPos, int id, bool on )
 {
-    if ( axis >= 0 && axis < QwtPlot::NumAxisPositions )
-        d_data->isAxisEnabled[axis] = on;
+    d_data->disabledAxes.setEnabled( axisPos, id, !on );
 }
 
 /*!
    Test if an axis is enabled
 
-   \param axis Axis, see QwtPlot::Axis
+   \param axisPos Axis position, see QwtPlot::Axis
    \return True, if the axis is enabled
 
    \sa setAxisEnabled()
 */
-bool QwtPlotMagnifier::isAxisEnabled( int axis ) const
+bool QwtPlotMagnifier::isAxisEnabled( int axisPos, int id ) const
 {
-    if ( axis >= 0 && axis < QwtPlot::NumAxisPositions )
-        return d_data->isAxisEnabled[axis];
-
-    return true;
+    return !d_data->disabledAxes.isEnabled( axisPos, id );
 }
 
 //! Return observed plot canvas
@@ -124,17 +114,21 @@ void QwtPlotMagnifier::rescale( double factor )
     const bool autoReplot = plt->autoReplot();
     plt->setAutoReplot( false );
 
-    for ( int axisId = 0; axisId < QwtPlot::NumAxisPositions; axisId++ )
+    for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
-        const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisId, QWT_DUMMY_ID );
-        if ( isAxisEnabled( axisId ) )
-        {
-            const double center =
-                scaleDiv.lowerBound() + scaleDiv.range() / 2;
-            const double width_2 = scaleDiv.range() / 2 * factor;
+        const int axesCount = plt->axesCount( axisPos );
 
-            plt->setAxisScaleDiv( axisId, QWT_DUMMY_ID, center - width_2, center + width_2 );
-            doReplot = true;
+        for ( int i = 0; i < axesCount; i++ )
+        {
+            const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisPos, i );
+            if ( isAxisEnabled( axisPos ) )
+            {
+                const double center = scaleDiv.lowerBound() + scaleDiv.range() / 2;
+                const double width_2 = scaleDiv.range() / 2 * factor;
+
+                plt->setAxisScaleDiv( axisPos, i, center - width_2, center + width_2 );
+                doReplot = true;
+            }
         }
     }
 

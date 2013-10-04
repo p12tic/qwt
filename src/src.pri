@@ -90,6 +90,7 @@ SOURCES += \
 contains(QWT_CONFIG, QwtPlot) {
 
     HEADERS += \
+        qwt_axes_mask.h \
         qwt_curve_fitter.h \
         qwt_event_pattern.h \
         qwt_abstract_legend.h \
@@ -137,6 +138,7 @@ contains(QWT_CONFIG, QwtPlot) {
         qwt_scale_widget.h 
 
     SOURCES += \
+        qwt_axes_mask.cpp \
         qwt_curve_fitter.cpp \
         qwt_abstract_legend.cpp \
         qwt_legend.cpp \

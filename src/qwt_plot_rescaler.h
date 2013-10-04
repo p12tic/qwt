@@ -92,8 +92,9 @@ public:
     void setExpandingDirection( int axis, ExpandingDirection );
     ExpandingDirection expandingDirection( int axis ) const;
 
-    void setReferenceAxis( int axis );
-    int referenceAxis() const;
+    void setReferenceAxis( int axisPos, int id = 0 );
+    int referenceAxisPos() const;
+    int referenceAxisId() const;
 
     void setAspectRatio( double ratio );
     void setAspectRatio( int axis, double ratio );
@@ -116,23 +117,22 @@ protected:
     virtual void canvasResizeEvent( QResizeEvent * );
 
     virtual void rescale( const QSize &oldSize, const QSize &newSize ) const;
-    virtual QwtInterval expandScale( 
-        int axis, const QSize &oldSize, const QSize &newSize ) const;
+    virtual QwtInterval expandScale( int axisPos, int id, 
+        const QSize &oldSize, const QSize &newSize ) const;
 
-    virtual QwtInterval syncScale(
-        int axis, const QwtInterval& reference,
-        const QSize &size ) const;
+    virtual QwtInterval syncScale( int axisPos, int id, 
+        const QwtInterval& reference, const QSize &size ) const;
 
     virtual void updateScales(
         QwtInterval intervals[QwtPlot::NumAxisPositions] ) const;
 
-    Qt::Orientation orientation( int axis ) const;
-    QwtInterval interval( int axis ) const;
+    Qt::Orientation orientation( int axisPos ) const;
+    QwtInterval interval( int axisPos, int id ) const;
     QwtInterval expandInterval( const QwtInterval &,
         double width, ExpandingDirection ) const;
 
 private:
-    double pixelDist( int axis, const QSize & ) const;
+    double pixelDist( int axisPos, int id, const QSize & ) const;
 
     class AxisData;
     class PrivateData;

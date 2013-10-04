@@ -358,17 +358,17 @@ void QwtPlotZoomer::rescale()
 
         double x1 = rect.left();
         double x2 = rect.right();
-        if ( !plt->axisScaleDiv( xAxis(), QWT_DUMMY_ID ).isIncreasing() )
+        if ( !plt->axisScaleDiv( xAxisPos(), xAxisId() ).isIncreasing() )
             qSwap( x1, x2 );
 
-        plt->setAxisScaleDiv( xAxis(), QWT_DUMMY_ID, x1, x2 );
+        plt->setAxisScaleDiv( xAxisPos(), xAxisId(), x1, x2 );
 
         double y1 = rect.top();
         double y2 = rect.bottom();
-        if ( !plt->axisScaleDiv( yAxis(), QWT_DUMMY_ID ).isIncreasing() )
+        if ( !plt->axisScaleDiv( yAxisPos(), yAxisId() ).isIncreasing() )
             qSwap( y1, y2 );
 
-        plt->setAxisScaleDiv( yAxis(), QWT_DUMMY_ID, y1, y2 );
+        plt->setAxisScaleDiv( yAxisPos(), yAxisId(), y1, y2 );
 
         plt->setAutoReplot( doReplot );
 
@@ -383,13 +383,10 @@ void QwtPlotZoomer::rescale()
   \param yAxis Y axis
 */
 
-void QwtPlotZoomer::setAxis( int xAxis, int yAxis )
+void QwtPlotZoomer::axesChanged()
 {
-    if ( xAxis != QwtPlotPicker::xAxis() || yAxis != QwtPlotPicker::yAxis() )
-    {
-        QwtPlotPicker::setAxis( xAxis, yAxis );
-        setZoomBase( scaleRect() );
-    }
+    QwtPlotPicker::axesChanged();
+    setZoomBase( scaleRect() );
 }
 
 /*!

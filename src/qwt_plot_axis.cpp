@@ -88,7 +88,7 @@ public:
         }
     }
 
-    inline int axisCount( int pos ) const
+    inline int axesCount( int pos ) const
     {
         if ( pos < 0 || pos >= QwtPlot::NumAxisPositions )
             return -1;
@@ -133,9 +133,9 @@ void QwtPlot::deleteScaleData()
     d_scaleData = NULL;
 }
 
-int QwtPlot::axisCount( int axisPos ) const
+int QwtPlot::axesCount( int axisPos ) const
 {
-    return d_scaleData->axisCount( axisPos );
+    return d_scaleData->axesCount( axisPos );
 }
 
 /*!
@@ -144,7 +144,22 @@ int QwtPlot::axisCount( int axisPos ) const
  */
 bool QwtPlot::isAxisValid( int axisPos, int id ) const
 {
-    return d_scaleData->axisCount( axisPos ) > id;
+    return d_scaleData->axesCount( axisPos ) > id;
+}
+
+bool QwtPlot::hasVisibleAxes( int axisPos ) const
+{
+    if ( axisPos < 0 || axisPos >= QwtPlot::NumAxisPositions )
+        return false;
+
+    const int axesCount = d_scaleData->axesCount( axisPos );
+    for ( int i = 0; i < axesCount; i++ )
+    {
+        if ( d_scaleData->axisData( axisPos, i ).isVisible )
+            return true;
+    }
+
+    return false;
 }
 
 /*!

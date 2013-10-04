@@ -177,7 +177,11 @@ public:
     void setCanvasBackground( const QBrush & );
     QBrush canvasBackground() const;
 
+#if QWT_COMPAT
     virtual QwtScaleMap canvasMap( int axisPos, int id = 0 ) const;
+#else
+    virtual QwtScaleMap canvasMap( int axisPos, int id ) const;
+#endif
 
     double invTransform( int axisPos, int pos ) const;
     double invTransform( int axisPos, int id, int pos ) const;
@@ -187,8 +191,9 @@ public:
 
     // Axes
 
-    int axisCount( int axisPos ) const;
+    int axesCount( int axisPos ) const;
     bool isAxisValid( int axisPos, int id ) const;
+    bool hasVisibleAxes( int axisPos ) const;
 
 #if QWT_COMPAT
     QwtScaleEngine *axisScaleEngine( int axisPos, int id = 0 );

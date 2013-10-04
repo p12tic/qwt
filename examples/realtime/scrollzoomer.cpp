@@ -52,8 +52,8 @@ ScrollZoomer::~ScrollZoomer()
 
 void ScrollZoomer::rescale()
 {
-    QwtScaleWidget *xScale = plot()->axisWidget( xAxis() );
-    QwtScaleWidget *yScale = plot()->axisWidget( yAxis() );
+    QwtScaleWidget *xScale = plot()->axisWidget( xAxisPos(), xAxisId() );
+    QwtScaleWidget *yScale = plot()->axisWidget( yAxisPos(), yAxisId() );
 
     if ( zoomRectIndex() <= 0 )
     {
@@ -294,8 +294,8 @@ void ScrollZoomer::updateScrollBars()
     if ( !canvas() )
         return;
 
-    const int xAxis = QwtPlotZoomer::xAxis();
-    const int yAxis = QwtPlotZoomer::yAxis();
+    const int xAxis = QwtPlotZoomer::xAxisPos();
+    const int yAxis = QwtPlotZoomer::yAxisPos();
 
     int xScrollBarAxis = xAxis;
     if ( hScrollBarPosition() == OppositeToScale )
@@ -382,11 +382,11 @@ void ScrollZoomer::updateScrollBars()
 
 void ScrollZoomer::layoutScrollBars( const QRect &rect )
 {
-    int hPos = xAxis();
+    int hPos = xAxisPos();
     if ( hScrollBarPosition() == OppositeToScale )
         hPos = oppositeAxis( hPos );
 
-    int vPos = yAxis();
+    int vPos = yAxisPos();
     if ( vScrollBarPosition() == OppositeToScale )
         vPos = oppositeAxis( vPos );
 
@@ -414,7 +414,7 @@ void ScrollZoomer::layoutScrollBars( const QRect &rect )
     }
     if ( vScrollBar && vScrollBar->isVisible() )
     {
-        int pos = yAxis();
+        int pos = yAxisPos();
         if ( vScrollBarPosition() == OppositeToScale )
             pos = oppositeAxis( pos );
 

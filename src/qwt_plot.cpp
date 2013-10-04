@@ -181,18 +181,18 @@ void QwtPlot::initPlot( const QwtText &title )
     QList<QWidget *> focusChain;
     focusChain << this << d_data->titleLabel;
 
-    for ( int i = 0; i < axisCount( xTop ); i++ )
+    for ( int i = 0; i < axesCount( xTop ); i++ )
         focusChain << axisWidget( xTop, i );
 
-    for ( int i = 0; i < axisCount( yLeft ); i++ )
+    for ( int i = 0; i < axesCount( yLeft ); i++ )
         focusChain << axisWidget( yLeft, i );
 
     focusChain << d_data->canvas;
 
-    for ( int i = 0; i < axisCount( yRight ); i++ )
+    for ( int i = 0; i < axesCount( yRight ); i++ )
         focusChain << axisWidget( yRight, i );
 
-    for ( int i = 0; i < axisCount( xBottom ); i++ )
+    for ( int i = 0; i < axesCount( xBottom ); i++ )
         focusChain << axisWidget( xBottom, i );
 
     focusChain << d_data->footerLabel;
@@ -702,7 +702,7 @@ void QwtPlot::updateCanvasMargins()
 {
     QwtScaleMap maps[NumAxisPositions];
     for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
-        maps[axisPos] = canvasMap( axisPos );
+        maps[axisPos] = canvasMap( axisPos, QWT_DUMMY_ID );
 
     double margins[NumAxisPositions];
     getCanvasMarginsHint( maps, canvas()->contentsRect(),
@@ -736,7 +736,7 @@ void QwtPlot::drawCanvas( QPainter *painter )
 {
     QwtScaleMap maps[NumAxisPositions];
     for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
-        maps[axisPos] = canvasMap( axisPos );
+        maps[axisPos] = canvasMap( axisPos, QWT_DUMMY_ID );
 
     drawItems( painter, d_data->canvas->contentsRect(), maps );
 }

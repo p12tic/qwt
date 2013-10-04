@@ -42,8 +42,9 @@ public:
     QwtPlot *plot();
     const QwtPlot *plot() const;
 
-    void setAxisEnabled( int axis, bool on );
-    bool isAxisEnabled( int axis ) const;
+    void setAxisEnabled( int axisPos, bool on );
+    void setAxisEnabled( int axisPos, int id, bool on );
+    bool isAxisEnabled( int axisPos, int id = 0 ) const;
 
 protected Q_SLOTS:
     virtual void moveCanvas( int dx, int dy );
@@ -56,5 +57,10 @@ private:
     class PrivateData;
     PrivateData *d_data;
 };
+
+inline void QwtPlotPanner::setAxisEnabled( int axisPos, bool on )
+{
+    setAxisEnabled( axisPos, 0, on );
+}
 
 #endif

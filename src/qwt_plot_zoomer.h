@@ -90,8 +90,6 @@ public:
     QRectF zoomBase() const;
     QRectF zoomRect() const;
 
-    virtual void setAxis( int xAxis, int yAxis );
-
     void setMaxStackDepth( int );
     int maxStackDepth() const;
 
@@ -129,6 +127,8 @@ protected:
     virtual void begin();
     virtual bool end( bool ok = true );
     virtual bool accept( QPolygon & ) const;
+
+    virtual void axesChanged();
 
 private:
     void init( bool doReplot );

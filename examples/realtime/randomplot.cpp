@@ -34,7 +34,7 @@ public:
 
     virtual void rescale()
     {
-        QwtScaleWidget *scaleWidget = plot()->axisWidget( yAxis() );
+        QwtScaleWidget *scaleWidget = plot()->axisWidget( yAxisPos(), yAxisId() );
         QwtScaleDraw *sd = scaleWidget->scaleDraw();
 
         double minExtent = 0.0;

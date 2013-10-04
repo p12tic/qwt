@@ -37,10 +37,15 @@ public:
     explicit QwtPlotPicker( int xAxis, int yAxis,
         RubberBand rubberBand, DisplayMode trackerMode, QWidget * );
 
-    virtual void setAxis( int xAxis, int yAxis );
+    void setAxes( int xAxis, int yAxis );
+    void setXAxis( int axisPos, int id = 0 );
+    void setYAxis( int axisPos, int id = 0 );
 
-    int xAxis() const;
-    int yAxis() const;
+    int xAxisPos() const;
+    int xAxisId() const;
+
+    int yAxisPos() const;
+    int yAxisId() const;
 
     QwtPlot *plot();
     const QwtPlot *plot() const;
@@ -103,9 +108,11 @@ protected:
     virtual void append( const QPoint & );
     virtual bool end( bool ok = true );
 
+    virtual void axesChanged();
+
 private:
-    int d_xAxis;
-    int d_yAxis;
+    class PrivateData;
+    PrivateData *d_data;
 };
 
 #endif
