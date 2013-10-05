@@ -512,28 +512,32 @@ QSize QwtPlot::sizeHint() const
 {
     int dw = 0;
     int dh = 0;
+
     for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
     {
-        if ( isAxisVisible( QwtAxisId( axisPos, QWT_DUMMY_ID ) ) )
+        for ( int i = 0; i < axesCount( axisPos ); i++ )
         {
-            const int niceDist = 40;
-            const QwtScaleWidget *scaleWidget = axisWidget( QwtAxisId( axisPos, QWT_DUMMY_ID ) );
-            const QwtScaleDiv &scaleDiv = scaleWidget->scaleDraw()->scaleDiv();
-            const int majCnt = scaleDiv.ticks( QwtScaleDiv::MajorTick ).count();
+            const QwtAxisId axisId( axisPos, i );
 
-            if ( axisPos == yLeft || axisPos == yRight )
+            if ( isAxisVisible( axisId ) )
             {
-                int hDiff = ( majCnt - 1 ) * niceDist
-                    - scaleWidget->minimumSizeHint().height();
-                if ( hDiff > dh )
-                    dh = hDiff;
-            }
-            else
-            {
-                int wDiff = ( majCnt - 1 ) * niceDist
-                    - scaleWidget->minimumSizeHint().width();
-                if ( wDiff > dw )
-                    dw = wDiff;
+                const int niceDist = 40;
+                const QwtScaleWidget *scaleWidget = axisWidget( axisId );
+                const QwtScaleDiv &scaleDiv = scaleWidget->scaleDraw()->scaleDiv();
+                const int majCnt = scaleDiv.ticks( QwtScaleDiv::MajorTick ).count();
+
+                const QSize hint = scaleWidget->minimumSizeHint();
+
+                if ( axisPos == yLeft || axisPos == yRight )
+                {
+                    const int hDiff = ( majCnt - 1 ) * niceDist - hint.height();
+                    dh = qMax( dh, hDiff );
+                }
+                else
+                {
+                    const int wDiff = ( majCnt - 1 ) * niceDist - hint.width();
+                    dw = qMax( dw, wDiff );
+                }
             }
         }
     }
@@ -607,13 +611,10 @@ void QwtPlot::updateLayout()
 {
     d_data->layout->activate( this, contentsRect() );
 
-    QRect titleRect = d_data->layout->titleRect().toRect();
-    QRect footerRect = d_data->layout->footerRect().toRect();
-    QRect scaleRect[QwtPlot::NumAxisPositions];
-    for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
-        scaleRect[axisPos] = d_data->layout->scaleRect( axisPos ).toRect();
-    QRect legendRect = d_data->layout->legendRect().toRect();
-    QRect canvasRect = d_data->layout->canvasRect().toRect();
+    const QRect titleRect = d_data->layout->titleRect().toRect();
+    const QRect footerRect = d_data->layout->footerRect().toRect();
+    const QRect legendRect = d_data->layout->legendRect().toRect();
+    const QRect canvasRect = d_data->layout->canvasRect().toRect();
 
     // resize and show the visible widgets
 
@@ -637,19 +638,23 @@ void QwtPlot::updateLayout()
 
     for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
     {
-		const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
-
-		QwtScaleWidget *scaleWidget = axisWidget( axisId );
-        if ( isAxisVisible( axisId ) )
+        for ( int i = 0; i < axesCount( axisPos ); i++ )
         {
-            scaleWidget->setGeometry( scaleRect[axisPos] );
+            const QwtAxisId axisId( axisPos, i );
 
-            if ( !scaleWidget->isVisibleTo( this ) )
-                scaleWidget->show();
-        }
-        else
-        {
-            scaleWidget->hide();
+            QwtScaleWidget *scaleWidget = axisWidget( axisId );
+            if ( isAxisVisible( axisId ) )
+            {
+                const QRect scaleRect = d_data->layout->scaleRect( axisId.pos ).toRect();
+                scaleWidget->setGeometry( scaleRect );
+
+                if ( !scaleWidget->isVisibleTo( this ) )
+                    scaleWidget->show();
+            }
+            else
+            {
+                scaleWidget->hide();
+            }
         }
     }
 
@@ -780,8 +785,8 @@ void QwtPlot::drawItems( QPainter *painter,
         QwtPlotItem *item = *it;
         if ( item && item->isVisible() )
         {
-			if ( mapTable.isValid( item->xAxis() ) && 
-				mapTable.isValid( item->yAxis() ) )
+            if ( mapTable.isValid( item->xAxis() ) && 
+                mapTable.isValid( item->yAxis() ) )
             {
                 painter->save();
 
@@ -791,7 +796,7 @@ void QwtPlot::drawItems( QPainter *painter,
                     item->testRenderHint( QwtPlotItem::RenderAntialiased ) );
 
                 item->draw( painter, mapTable.map( item->xAxis() ),
-					mapTable.map( item->yAxis() ), canvasRect );
+                    mapTable.map( item->yAxis() ), canvasRect );
 
                 painter->restore();
             }

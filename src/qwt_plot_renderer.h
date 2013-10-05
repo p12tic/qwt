@@ -139,7 +139,7 @@ public:
         QPainter *, const QRectF & ) const;
 
     virtual void renderScale( const QwtPlot *, QPainter *,
-        int axisId, int startDist, int endDist,
+        QwtAxisId axisId, int startDist, int endDist,
         int baseDist, const QRectF & ) const;
 
     virtual void renderCanvas( const QwtPlot *,
