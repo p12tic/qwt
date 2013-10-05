@@ -48,17 +48,17 @@ void QwtAxesMask::setEnabled( QwtAxisId axisId, bool on )
     
     QList<int>::iterator it = qLowerBound( axes.begin(), axes.end(), axisId.id );
 
-    const bool isDisabled = ( it != axes.end() ) && ( *it != axisId.id );
+    const bool isEnabled = ( it != axes.end() ) && ( *it != axisId.id );
 
     if ( on )
     {
-        if ( isDisabled )
-            axes.erase( it );
+        if ( !isEnabled )
+            axes.insert( it, axisId.id );
     }
     else
     {
-        if ( !isDisabled )
-            axes.insert( it, axisId.id );
+        if ( isEnabled )
+            axes.erase( it );
     }
 }
 
