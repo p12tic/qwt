@@ -123,7 +123,7 @@ void QwtPlotMagnifier::rescale( double factor )
 			const QwtAxisId axisId( axisPos, i );
 
             const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisId );
-            if ( isAxisEnabled( axisPos ) )
+            if ( isAxisEnabled( axisId ) )
             {
                 const double center = scaleDiv.lowerBound() + scaleDiv.range() / 2;
                 const double width_2 = scaleDiv.range() / 2 * factor;

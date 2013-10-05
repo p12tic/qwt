@@ -90,18 +90,18 @@ public:
     RescalePolicy rescalePolicy() const;
 
     void setExpandingDirection( ExpandingDirection );
-    void setExpandingDirection( int axis, ExpandingDirection );
-    ExpandingDirection expandingDirection( int axis ) const;
+    void setExpandingDirection( QwtAxisId axisId, ExpandingDirection );
+    ExpandingDirection expandingDirection( QwtAxisId axisId ) const;
 
     void setReferenceAxis( QwtAxisId axisId );
     QwtAxisId referenceAxis() const;
 
     void setAspectRatio( double ratio );
-    void setAspectRatio( int axis, double ratio );
-    double aspectRatio( int axis ) const;
+    void setAspectRatio( QwtAxisId axisId, double ratio );
+    double aspectRatio( QwtAxisId axisId ) const;
 
-    void setIntervalHint( int axis, const QwtInterval& );
-    QwtInterval intervalHint( int axis ) const;
+    void setIntervalHint( QwtAxisId axisId, const QwtInterval& );
+    QwtInterval intervalHint( QwtAxisId axisId ) const;
 
     QWidget *canvas();
     const QWidget *canvas() const;
