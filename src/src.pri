@@ -39,6 +39,7 @@ HEADERS += \
     qwt_scale_draw.h \
     qwt_scale_engine.h \
     qwt_scale_map.h \
+    qwt_scale_map_table.h \
     qwt_spline.h \
     qwt_symbol.h \
     qwt_system_clock.h \
@@ -76,6 +77,7 @@ SOURCES += \
     qwt_scale_div.cpp \
     qwt_scale_draw.cpp \
     qwt_scale_map.cpp \
+    qwt_scale_map_table.h \
     qwt_spline.cpp \
     qwt_scale_engine.cpp \
     qwt_symbol.cpp \

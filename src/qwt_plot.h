@@ -26,6 +26,7 @@ class QwtScaleEngine;
 class QwtScaleDiv;
 class QwtScaleDraw;
 class QwtTextLabel;
+class QwtScaleMapTable;
 
 #define QWT_COMPAT 1 // flag to disable compatibilities - will be removed later
 #define QWT_DUMMY_ID 0 // dummy id to help for migrating the code - will be removed later
@@ -341,14 +342,14 @@ public:
     void updateCanvasMargins();
 
     virtual void getCanvasMarginsHint( 
-        const QwtScaleMap maps[], const QRectF &canvasRect,
+        const QwtScaleMapTable &, const QRectF &canvasRect,
         double &left, double &top, double &right, double &bottom) const;
 
     virtual bool event( QEvent * );
     virtual bool eventFilter( QObject *, QEvent * );
 
     virtual void drawItems( QPainter *, const QRectF &,
-        const QwtScaleMap maps[NumAxisPositions] ) const;
+        const QwtScaleMapTable & ) const;
 
     virtual QVariant itemToInfo( QwtPlotItem * ) const;
     virtual QwtPlotItem *infoToItem( const QVariant & ) const;

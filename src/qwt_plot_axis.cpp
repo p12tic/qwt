@@ -96,12 +96,12 @@ public:
         return d[pos].axisData.count();
     }
 
-    inline QwtPlotAxisData &axisData( int pos, int id = 0 )
+    inline QwtPlotAxisData &axisData( int pos, int id )
     {
         return d[pos].axisData[id];
     }
 
-    inline const QwtPlotAxisData &axisData( int pos, int id = 0 ) const
+    inline const QwtPlotAxisData &axisData( int pos, int id ) const
     {
         return d[pos].axisData[id];
     }
@@ -727,36 +727,39 @@ void QwtPlot::updateAxes()
 
     for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
     {
-        QwtPlotAxisData &d = d_scaleData->axisData(axisPos);
-
-        double minValue = d.minValue;
-        double maxValue = d.maxValue;
-        double stepSize = d.stepSize;
-
-        if ( d.doAutoScale && intv[axisPos].isValid() )
+        for ( int i = 0; i < d_scaleData->axesCount( axisPos ); i++ )
         {
-            d.isValid = false;
+            QwtPlotAxisData &d = d_scaleData->axisData( axisPos, i );
 
-            minValue = intv[axisPos].minValue();
-            maxValue = intv[axisPos].maxValue();
+            double minValue = d.minValue;
+            double maxValue = d.maxValue;
+            double stepSize = d.stepSize;
 
-            d.scaleEngine->autoScale( d.maxMajor,
-                minValue, maxValue, stepSize );
+            if ( d.doAutoScale && intv[axisPos].isValid() )
+            {
+                d.isValid = false;
+
+                minValue = intv[axisPos].minValue();
+                maxValue = intv[axisPos].maxValue();
+
+                d.scaleEngine->autoScale( d.maxMajor,
+                    minValue, maxValue, stepSize );
+            }
+            if ( !d.isValid )
+            {
+                d.scaleDiv = d.scaleEngine->divideScale(
+                    minValue, maxValue,
+                    d.maxMajor, d.maxMinor, stepSize );
+                d.isValid = true;
+            }
+
+            QwtScaleWidget *scaleWidget = axisWidget( axisPos, i );
+            scaleWidget->setScaleDiv( d.scaleDiv );
+
+            int startDist, endDist;
+            scaleWidget->getBorderDistHint( startDist, endDist );
+            scaleWidget->setBorderDist( startDist, endDist );
         }
-        if ( !d.isValid )
-        {
-            d.scaleDiv = d.scaleEngine->divideScale(
-                minValue, maxValue,
-                d.maxMajor, d.maxMinor, stepSize );
-            d.isValid = true;
-        }
-
-        QwtScaleWidget *scaleWidget = axisWidget( axisPos, QWT_DUMMY_ID );
-        scaleWidget->setScaleDiv( d.scaleDiv );
-
-        int startDist, endDist;
-        scaleWidget->getBorderDistHint( startDist, endDist );
-        scaleWidget->setBorderDist( startDist, endDist );
     }
 
     for ( it = itmList.begin(); it != itmList.end(); ++it )

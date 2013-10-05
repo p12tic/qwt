@@ -16,6 +16,7 @@
 #include "qwt_legend.h"
 #include "qwt_legend_data.h"
 #include "qwt_plot_canvas.h"
+#include "qwt_scale_map_table.h"
 #include <qmath.h>
 #include <qpainter.h>
 #include <qpointer.h>
@@ -89,6 +90,19 @@ static void qwtSetTabOrder(
         to->setFocusPolicy( policy2 );
         to->setFocusProxy( proxy2 );
     }
+}
+
+QwtScaleMapTable qwtScaleMapTable( const QwtPlot *plot ) 
+{
+    QwtScaleMapTable table;
+          
+    for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
+    {   
+        for ( int i = 0; i < plot->axesCount( axisPos ); i++ )
+            table.maps[axisPos] += plot->canvasMap( axisPos, i );
+    }
+
+    return table;
 }
 
 class QwtPlot::PrivateData
@@ -523,6 +537,7 @@ QSize QwtPlot::sizeHint() const
             }
         }
     }
+
     return minimumSizeHint() + QSize( dw, dh );
 }
 
@@ -630,7 +645,9 @@ void QwtPlot::updateLayout()
                 axisWidget( axisPos, QWT_DUMMY_ID )->show();
         }
         else
+        {
             axisWidget( axisPos, QWT_DUMMY_ID )->hide();
+        }
     }
 
     if ( d_data->legend )
@@ -665,7 +682,7 @@ void QwtPlot::updateLayout()
   updateCanvasMargins(), QwtPlotItem::getCanvasMarginHint()
  */
 void QwtPlot::getCanvasMarginsHint(
-    const QwtScaleMap maps[], const QRectF &canvasRect,
+    const QwtScaleMapTable& mapsTable, const QRectF &canvasRect,
     double &left, double &top, double &right, double &bottom) const
 {
     left = top = right = bottom = -1.0;
@@ -675,11 +692,14 @@ void QwtPlot::getCanvasMarginsHint(
         it != itmList.end(); ++it )
     {
         const QwtPlotItem *item = *it;
-        if ( item->testItemAttribute( QwtPlotItem::Margins ) )
+        if ( item->testItemAttribute( QwtPlotItem::Margins ) &&
+            mapsTable.isValid( item->xAxisPos(), item->xAxisId() ) &&
+            mapsTable.isValid( item->yAxisPos(), item->yAxisId() ) )
         {
             double m[ QwtPlot::NumAxisPositions ];
             item->getCanvasMarginHint(
-                maps[ item->xAxisPos() ], maps[ item->yAxisPos() ],
+                mapsTable.map( item->xAxisPos(), item->xAxisId() ), 
+                mapsTable.map( item->yAxisPos(), item->yAxisId() ),
                 canvasRect, m[yLeft], m[xTop], m[yRight], m[xBottom] );
 
             left = qMax( left, m[yLeft] );
@@ -700,12 +720,8 @@ void QwtPlot::getCanvasMarginsHint(
  */
 void QwtPlot::updateCanvasMargins()
 {
-    QwtScaleMap maps[NumAxisPositions];
-    for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
-        maps[axisPos] = canvasMap( axisPos, QWT_DUMMY_ID );
-
     double margins[NumAxisPositions];
-    getCanvasMarginsHint( maps, canvas()->contentsRect(),
+    getCanvasMarginsHint( qwtScaleMapTable( this ), canvas()->contentsRect(),
         margins[yLeft], margins[xTop], margins[yRight], margins[xBottom] );
     
     bool doUpdate = false;
@@ -734,11 +750,8 @@ void QwtPlot::updateCanvasMargins()
 */
 void QwtPlot::drawCanvas( QPainter *painter )
 {
-    QwtScaleMap maps[NumAxisPositions];
-    for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
-        maps[axisPos] = canvasMap( axisPos, QWT_DUMMY_ID );
-
-    drawItems( painter, d_data->canvas->contentsRect(), maps );
+    const QwtScaleMapTable table = qwtScaleMapTable( this );
+    drawItems( painter, d_data->canvas->contentsRect(), table );
 }
 
 /*!
@@ -754,8 +767,8 @@ void QwtPlot::drawCanvas( QPainter *painter )
         fix the margins manually using QWidget::setContentsMargins()
 */
 
-void QwtPlot::drawItems( QPainter *painter, const QRectF &canvasRect,
-        const QwtScaleMap maps[NumAxisPositions] ) const
+void QwtPlot::drawItems( QPainter *painter, 
+    const QRectF &canvasRect, const QwtScaleMapTable &mapTable ) const
 {
     const QwtPlotItemList& itmList = itemList();
     for ( QwtPlotItemIterator it = itmList.begin();
@@ -764,18 +777,26 @@ void QwtPlot::drawItems( QPainter *painter, const QRectF &canvasRect,
         QwtPlotItem *item = *it;
         if ( item && item->isVisible() )
         {
-            painter->save();
+            if ( item->xAxisId() < mapTable.maps[item->xAxisPos()].size() &&
+                item->yAxisId() < mapTable.maps[item->yAxisPos()].size() )
+            {
+                painter->save();
 
-            painter->setRenderHint( QPainter::Antialiasing,
-                item->testRenderHint( QwtPlotItem::RenderAntialiased ) );
-            painter->setRenderHint( QPainter::HighQualityAntialiasing,
-                item->testRenderHint( QwtPlotItem::RenderAntialiased ) );
+                painter->setRenderHint( QPainter::Antialiasing,
+                    item->testRenderHint( QwtPlotItem::RenderAntialiased ) );
+                painter->setRenderHint( QPainter::HighQualityAntialiasing,
+                    item->testRenderHint( QwtPlotItem::RenderAntialiased ) );
 
-            item->draw( painter,
-                maps[item->xAxisPos()], maps[item->yAxisPos()],
-                canvasRect );
+                const QwtScaleMap &xMap = 
+                    mapTable.maps[ item->xAxisPos() ].at( item->xAxisId() );
 
-            painter->restore();
+                const QwtScaleMap &yMap = 
+                    mapTable.maps[ item->yAxisPos() ].at( item->yAxisId() );
+
+                item->draw( painter, xMap, yMap, canvasRect );
+
+                painter->restore();
+            }
         }
     }
 }
@@ -956,7 +977,8 @@ void QwtPlot::insertLegend( QwtAbstractLegend *legend,
             {
                 case LeftLegend:
                 {
-                    previousInChain = axisWidget( QwtPlot::xTop, QWT_DUMMY_ID );
+                    previousInChain = axisWidget( 
+                        QwtPlot::xTop, axesCount( QwtPlot::xTop ) - 1 );
                     break;
                 }
                 case TopLegend:
@@ -966,7 +988,8 @@ void QwtPlot::insertLegend( QwtAbstractLegend *legend,
                 }
                 case RightLegend:
                 {
-                    previousInChain = axisWidget( QwtPlot::yRight, QWT_DUMMY_ID );
+                    previousInChain = axisWidget( 
+                        QwtPlot::yRight, axesCount( QwtPlot::yRight ) - 1 );
                     break;
                 }
                 case BottomLegend:

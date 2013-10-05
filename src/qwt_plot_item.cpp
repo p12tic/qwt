@@ -507,9 +507,12 @@ void QwtPlotItem::setXAxis( int axisPos, int id )
 {
     if ( axisPos == QwtPlot::xBottom || axisPos == QwtPlot::xTop )
     {
-        d_data->xAxisPos = axisPos;
-        d_data->xAxisId = id;
-        itemChanged();
+        if ( id >= 0 )
+        {
+            d_data->xAxisPos = axisPos;
+            d_data->xAxisId = id;
+            itemChanged();
+        }
     }
 }
 
@@ -525,9 +528,12 @@ void QwtPlotItem::setYAxis( int axisPos, int id )
 {
     if ( axisPos == QwtPlot::yLeft || axisPos == QwtPlot::yRight )
     {
-        d_data->yAxisPos = axisPos;
-        d_data->yAxisId = id;
-        itemChanged();
+        if ( id >= 0 )
+        {
+            d_data->yAxisPos = axisPos;
+            d_data->yAxisId = id;
+            itemChanged();
+        }
     }
 }
 
