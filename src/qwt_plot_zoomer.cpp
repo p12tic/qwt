@@ -65,7 +65,7 @@ QwtPlotZoomer::QwtPlotZoomer( QWidget *canvas, bool doReplot ):
   \sa QwtPlot::autoReplot(), QwtPlot::replot(), setZoomBase()
 */
 
-QwtPlotZoomer::QwtPlotZoomer( int xAxis, int yAxis,
+QwtPlotZoomer::QwtPlotZoomer( QwtAxisId xAxis, QwtAxisId yAxis,
         QWidget *canvas, bool doReplot ):
     QwtPlotPicker( xAxis, yAxis, canvas )
 {
