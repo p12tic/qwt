@@ -109,7 +109,7 @@ protected:
         int &dimTitle, int &dimFooter, int dimAxes[QwtPlot::NumAxisPositions] ) const;
 
     void alignScales( Options options, QRectF &canvasRect,
-        QRectF scaleRect[QwtPlot::NumAxisPositions] ) const;
+        QVector<QRectF> scaleRect[QwtPlot::NumAxisPositions] ) const;
 
 private:
     class PrivateData;
