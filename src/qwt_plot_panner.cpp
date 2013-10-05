@@ -129,9 +129,9 @@ QwtPlotPanner::~QwtPlotPanner()
 
    \sa isAxisEnabled(), moveCanvas()
 */
-void QwtPlotPanner::setAxisEnabled( int axisPos, int id, bool on )
+void QwtPlotPanner::setAxisEnabled( QwtAxisId axisId, bool on )
 {
-    d_data->disabledAxes.setEnabled( axisPos, id, !on );
+    d_data->disabledAxes.setEnabled( axisId, !on );
 }
 
 /*!
@@ -142,9 +142,9 @@ void QwtPlotPanner::setAxisEnabled( int axisPos, int id, bool on )
 
    \sa setAxisEnabled(), moveCanvas()
 */
-bool QwtPlotPanner::isAxisEnabled( int axisPos, int id ) const
+bool QwtPlotPanner::isAxisEnabled( QwtAxisId axisId ) const
 {
-    return !d_data->disabledAxes.isEnabled( axisPos, id );
+    return !d_data->disabledAxes.isEnabled( axisId );
 }
 
 //! Return observed plot canvas
@@ -204,13 +204,15 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
         const int axesCount = plot->axesCount( axisPos );
         for ( int i = 0; i < axesCount; i++ )
         {
-            if ( !isAxisEnabled( axisPos, i ) )
+			const QwtAxisId axisId( axisPos, i );
+
+            if ( !isAxisEnabled( axisId ) )
                 continue;
 
-            const QwtScaleMap map = plot->canvasMap( axisPos, i );
+            const QwtScaleMap map = plot->canvasMap( axisId );
 
-            const double p1 = map.transform( plot->axisScaleDiv( axisPos, i ).lowerBound() );
-            const double p2 = map.transform( plot->axisScaleDiv( axisPos, i ).upperBound() );
+            const double p1 = map.transform( plot->axisScaleDiv( axisId ).lowerBound() );
+            const double p2 = map.transform( plot->axisScaleDiv( axisId ).upperBound() );
 
             double d1, d2;
             if ( axisPos == QwtPlot::xBottom || axisPos == QwtPlot::xTop )
@@ -224,7 +226,7 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
                 d2 = map.invTransform( p2 - dy );
             }
 
-            plot->setAxisScaleDiv( axisPos, i, d1, d2 );
+            plot->setAxisScale( axisId, d1, d2 );
         }
     }
 

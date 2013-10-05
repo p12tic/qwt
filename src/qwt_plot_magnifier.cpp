@@ -45,9 +45,9 @@ QwtPlotMagnifier::~QwtPlotMagnifier()
 
    \sa isAxisEnabled()
 */
-void QwtPlotMagnifier::setAxisEnabled( int axisPos, int id, bool on )
+void QwtPlotMagnifier::setAxisEnabled( QwtAxisId axisId, bool on )
 {
-    d_data->disabledAxes.setEnabled( axisPos, id, !on );
+    d_data->disabledAxes.setEnabled( axisId, !on );
 }
 
 /*!
@@ -58,9 +58,9 @@ void QwtPlotMagnifier::setAxisEnabled( int axisPos, int id, bool on )
 
    \sa setAxisEnabled()
 */
-bool QwtPlotMagnifier::isAxisEnabled( int axisPos, int id ) const
+bool QwtPlotMagnifier::isAxisEnabled( QwtAxisId axisId ) const
 {
-    return !d_data->disabledAxes.isEnabled( axisPos, id );
+    return !d_data->disabledAxes.isEnabled( axisId );
 }
 
 //! Return observed plot canvas
@@ -120,13 +120,15 @@ void QwtPlotMagnifier::rescale( double factor )
 
         for ( int i = 0; i < axesCount; i++ )
         {
-            const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisPos, i );
+			const QwtAxisId axisId( axisPos, i );
+
+            const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisId );
             if ( isAxisEnabled( axisPos ) )
             {
                 const double center = scaleDiv.lowerBound() + scaleDiv.range() / 2;
                 const double width_2 = scaleDiv.range() / 2 * factor;
 
-                plt->setAxisScaleDiv( axisPos, i, center - width_2, center + width_2 );
+                plt->setAxisScale( axisId, center - width_2, center + width_2 );
                 doReplot = true;
             }
         }

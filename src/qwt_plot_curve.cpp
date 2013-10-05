@@ -1004,8 +1004,8 @@ int QwtPlotCurve::closestPoint( const QPoint &pos, double *dist ) const
 
     const QwtSeriesData<QPointF> *series = data();
 
-    const QwtScaleMap xMap = plot()->canvasMap( xAxisPos(), xAxisId() );
-    const QwtScaleMap yMap = plot()->canvasMap( yAxisPos(), yAxisId() );
+    const QwtScaleMap xMap = plot()->canvasMap( xAxis() );
+    const QwtScaleMap yMap = plot()->canvasMap( yAxis() );
 
     int index = -1;
     double dmin = 1.0e10;

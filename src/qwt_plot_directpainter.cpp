@@ -25,8 +25,8 @@ static inline void qwtRenderItem(
     // with caching the maps. TODO ...
 
     QwtPlot *plot = seriesItem->plot();
-    const QwtScaleMap xMap = plot->canvasMap( seriesItem->xAxisPos(), seriesItem->xAxisId() );
-    const QwtScaleMap yMap = plot->canvasMap( seriesItem->yAxisPos(), seriesItem->yAxisId() );
+    const QwtScaleMap xMap = plot->canvasMap( seriesItem->xAxis() );
+    const QwtScaleMap yMap = plot->canvasMap( seriesItem->yAxis() );
 
     painter->setRenderHint( QPainter::Antialiasing,
         seriesItem->testRenderHint( QwtPlotItem::RenderAntialiased ) );

@@ -451,14 +451,14 @@ void QwtPlotRenderer::render( QwtPlot *plot,
 
         if ( d_data->layoutFlags & FrameWithScales )
         {
-            QwtScaleWidget *scaleWidget = plot->axisWidget( axisId, QWT_DUMMY_ID );
+            QwtScaleWidget *scaleWidget = plot->axisWidget( QwtAxisId( axisId, QWT_DUMMY_ID ) );
             if ( scaleWidget )
             {
                 baseLineDists[axisId] = scaleWidget->margin();
                 scaleWidget->setMargin( 0 );
             }
 
-            if ( !plot->isAxisVisible( axisId, QWT_DUMMY_ID ) )
+            if ( !plot->isAxisVisible( QwtAxisId( axisId, QWT_DUMMY_ID ) ) )
             {
                 int left = 0;
                 int right = 0;
@@ -552,7 +552,7 @@ void QwtPlotRenderer::render( QwtPlot *plot,
 
     for ( int axisId = 0; axisId < QwtPlot::NumAxisPositions; axisId++ )
     {
-        QwtScaleWidget *scaleWidget = plot->axisWidget( axisId, QWT_DUMMY_ID );
+        QwtScaleWidget *scaleWidget = plot->axisWidget( QwtAxisId( axisId, QWT_DUMMY_ID ) );
         if ( scaleWidget )
         {
             int baseDist = scaleWidget->margin();
@@ -572,7 +572,7 @@ void QwtPlotRenderer::render( QwtPlot *plot,
     {
         if ( d_data->layoutFlags & FrameWithScales )
         {
-            QwtScaleWidget *scaleWidget = plot->axisWidget( axisId, QWT_DUMMY_ID );
+            QwtScaleWidget *scaleWidget = plot->axisWidget( QwtAxisId( axisId, QWT_DUMMY_ID ) );
             if ( scaleWidget  )
                 scaleWidget->setMargin( baseLineDists[axisId] );
         }
@@ -657,10 +657,10 @@ void QwtPlotRenderer::renderScale( const QwtPlot *plot,
     int axisId, int startDist, int endDist, int baseDist,
     const QRectF &rect ) const
 {
-    if ( !plot->isAxisVisible( axisId, QWT_DUMMY_ID ) )
+    if ( !plot->isAxisVisible( QwtAxisId( axisId, QWT_DUMMY_ID ) ) )
         return;
 
-    const QwtScaleWidget *scaleWidget = plot->axisWidget( axisId, QWT_DUMMY_ID );
+    const QwtScaleWidget *scaleWidget = plot->axisWidget( QwtAxisId( axisId, QWT_DUMMY_ID ) );
     if ( scaleWidget->isColorBarEnabled()
         && scaleWidget->colorBarWidth() > 0 )
     {
@@ -884,20 +884,21 @@ QwtScaleMapTable QwtPlotRenderer::buildCanvasMaps(
     {
         for ( int i = 0; i < plot->axesCount( axisPos ); i++ )
         {
+			const QwtAxisId axisId( axisPos, i );
+
             QwtScaleMap scaleMap;
 
-            scaleMap.setTransformation(
-                plot->axisScaleEngine( axisPos, i )->transformation() );
+            scaleMap.setTransformation( plot->axisScaleEngine( axisId )->transformation() );
 
-            const QwtScaleDiv &scaleDiv = plot->axisScaleDiv( axisPos, i );
+            const QwtScaleDiv &scaleDiv = plot->axisScaleDiv( axisId );
             scaleMap.setScaleInterval(
                 scaleDiv.lowerBound(), scaleDiv.upperBound() );
 
             double from, to;
-            if ( plot->isAxisVisible( axisPos, i ) )
+            if ( plot->isAxisVisible( axisId ) )
             {
-                const int sDist = plot->axisWidget( axisPos, i )->startBorderDist();
-                const int eDist = plot->axisWidget( axisPos, i )->endBorderDist();
+                const int sDist = plot->axisWidget( axisId )->startBorderDist();
+                const int eDist = plot->axisWidget( axisId )->endBorderDist();
                 const QRectF scaleRect = plot->plotLayout()->scaleRect( axisPos );
 
                 if ( axisPos == QwtPlot::xTop || axisPos == QwtPlot::xBottom )

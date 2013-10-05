@@ -18,18 +18,13 @@ class QwtPlotPicker::PrivateData
 {       
 public:
     PrivateData():
-        xAxisPos( -1 ),
-        xAxisId( 0 ),
-        yAxisPos( -1 ),
-        yAxisId( 0 )
+        xAxis( -1 ),
+        yAxis( -1 )
     {
     }
 
-    int xAxisPos;
-    int xAxisId;
-
-    int yAxisPos;
-    int yAxisId;
+    QwtAxisId xAxis;
+    QwtAxisId yAxis;
 };
 
 /*!
@@ -62,9 +57,9 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
 
     for ( int i = 0; i < plot->axesCount( xAxis ); i++ )
     {
-        if ( plot->isAxisVisible( xAxis, i ) )
+        if ( plot->isAxisVisible( QwtAxisId( xAxis, i ) ) )
         {
-            setXAxis( xAxis, i );
+            setXAxis( QwtAxisId( xAxis, i ) );
             break;
         }
     }
@@ -75,9 +70,9 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
 
     for ( int i = 0; i < plot->axesCount( yAxis ); i++ )
     {
-        if ( plot->isAxisVisible( yAxis, i ) )
+        if ( plot->isAxisVisible( QwtAxisId( yAxis, i ) ) )
         {
-            setYAxis( yAxis, i );
+            setYAxis( QwtAxisId( yAxis, i ) );
             break;
         }
     }
@@ -92,12 +87,12 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
 
   \sa QwtPlot::autoReplot(), QwtPlot::replot(), scaleRect()
 */
-QwtPlotPicker::QwtPlotPicker( int xAxis, int yAxis, QWidget *canvas ):
+QwtPlotPicker::QwtPlotPicker( QwtAxisId xAxis, QwtAxisId yAxis, QWidget *canvas ):
     QwtPicker( canvas )
 {
     d_data = new PrivateData;
-    d_data->xAxisPos = xAxis;
-    d_data->yAxisPos = yAxis;
+    d_data->xAxis = xAxis;
+    d_data->yAxis = yAxis;
 }
 
 /*!
@@ -114,14 +109,14 @@ QwtPlotPicker::QwtPlotPicker( int xAxis, int yAxis, QWidget *canvas ):
 
   \sa QwtPlot::autoReplot(), QwtPlot::replot(), scaleRect()
 */
-QwtPlotPicker::QwtPlotPicker( int xAxis, int yAxis,
+QwtPlotPicker::QwtPlotPicker( QwtAxisId xAxis, QwtAxisId yAxis,
         RubberBand rubberBand, DisplayMode trackerMode,
         QWidget *canvas ):
     QwtPicker( rubberBand, trackerMode, canvas )
 {
     d_data = new PrivateData;
-    d_data->xAxisPos = xAxis;
-    d_data->yAxisPos = yAxis;
+    d_data->xAxis = xAxis;
+    d_data->yAxis = yAxis;
 }
 
 //! Destructor
@@ -172,8 +167,8 @@ QRectF QwtPlotPicker::scaleRect() const
 
     if ( plot() )
     {
-        const QwtScaleDiv &xs = plot()->axisScaleDiv( xAxisPos(), xAxisId() );
-        const QwtScaleDiv &ys = plot()->axisScaleDiv( yAxisPos(), yAxisId() );
+        const QwtScaleDiv &xs = plot()->axisScaleDiv( xAxis() );
+        const QwtScaleDiv &ys = plot()->axisScaleDiv( yAxis() );
 
         rect = QRectF( xs.lowerBound(), ys.lowerBound(),
             xs.range(), ys.range() );
@@ -189,54 +184,40 @@ QRectF QwtPlotPicker::scaleRect() const
   \param xAxis X axis
   \param yAxis Y axis
 */
-void QwtPlotPicker::setAxes( int xAxis, int yAxis )
+void QwtPlotPicker::setAxes( QwtAxisId xAxis, QwtAxisId yAxis )
 {
-    setXAxis( xAxis, 0 );
-    setYAxis( yAxis, 0 );
+    setXAxis( xAxis );
+    setYAxis( yAxis );
 }
 
-void QwtPlotPicker::setXAxis( int axisPos, int id )
+void QwtPlotPicker::setXAxis( QwtAxisId axisId )
 {
-    if ( axisPos != d_data->xAxisPos || d_data->xAxisId != id )
+    if ( axisId != d_data->xAxis )
     {
-        d_data->xAxisPos = axisPos;
-        d_data->xAxisId = id;
-
+        d_data->xAxis = axisId;
         axesChanged();
     }
 }
 
-void QwtPlotPicker::setYAxis( int axisPos, int id )
+void QwtPlotPicker::setYAxis( QwtAxisId axisId )
 {
-    if ( axisPos != d_data->yAxisPos || d_data->yAxisId != id )
+    if ( axisId != d_data->yAxis )
     {
-        d_data->yAxisPos = axisPos;
-        d_data->yAxisId = id;
-    
+        d_data->yAxis = axisId;
         axesChanged();
     }
 }
 
 //! Return x axis
-int QwtPlotPicker::xAxisPos() const
+QwtAxisId QwtPlotPicker::xAxis() const
 {
-    return d_data->xAxisPos;
-}
-
-int QwtPlotPicker::xAxisId() const
-{
-    return d_data->xAxisId;
+    return d_data->xAxis;
 }
 
 //! Return y axis
-int QwtPlotPicker::yAxisPos() const
+QwtAxisId QwtPlotPicker::yAxis() const
 {
-    return d_data->yAxisPos;
-}
-
-int QwtPlotPicker::yAxisId() const
-{
-    return d_data->yAxisId;
+    return d_data->yAxis;
 }
 
 /*!
@@ -381,8 +362,8 @@ bool QwtPlotPicker::end( bool ok )
 */
 QRectF QwtPlotPicker::invTransform( const QRect &rect ) const
 {
-    const QwtScaleMap xMap = plot()->canvasMap( xAxisPos(), xAxisId() );
-    const QwtScaleMap yMap = plot()->canvasMap( yAxisPos(), yAxisId() );
+    const QwtScaleMap xMap = plot()->canvasMap( xAxis() );
+    const QwtScaleMap yMap = plot()->canvasMap( yAxis() );
 
     return QwtScaleMap::invTransform( xMap, yMap, rect );
 }
@@ -394,8 +375,8 @@ QRectF QwtPlotPicker::invTransform( const QRect &rect ) const
 */
 QRect QwtPlotPicker::transform( const QRectF &rect ) const
 {
-    const QwtScaleMap xMap = plot()->canvasMap( xAxisPos(), xAxisId() );
-    const QwtScaleMap yMap = plot()->canvasMap( yAxisPos(), yAxisId() );
+    const QwtScaleMap xMap = plot()->canvasMap( xAxis() );
+    const QwtScaleMap yMap = plot()->canvasMap( yAxis() );
 
     return QwtScaleMap::transform( xMap, yMap, rect ).toRect();
 }
@@ -407,8 +388,8 @@ QRect QwtPlotPicker::transform( const QRectF &rect ) const
 */
 QPointF QwtPlotPicker::invTransform( const QPoint &pos ) const
 {
-    QwtScaleMap xMap = plot()->canvasMap( xAxisPos(), xAxisId() );
-    QwtScaleMap yMap = plot()->canvasMap( yAxisPos(), yAxisId() );
+    const QwtScaleMap xMap = plot()->canvasMap( xAxis() );
+    const QwtScaleMap yMap = plot()->canvasMap( yAxis() );
 
     return QPointF(
         xMap.invTransform( pos.x() ),
@@ -423,8 +404,8 @@ QPointF QwtPlotPicker::invTransform( const QPoint &pos ) const
 */
 QPoint QwtPlotPicker::transform( const QPointF &pos ) const
 {
-    QwtScaleMap xMap = plot()->canvasMap( xAxisPos(), xAxisId() );
-    QwtScaleMap yMap = plot()->canvasMap( yAxisPos(), yAxisId() );
+    const QwtScaleMap xMap = plot()->canvasMap( xAxis() );
+    const QwtScaleMap yMap = plot()->canvasMap( yAxis() );
 
     const QPointF p( xMap.transform( pos.x() ), yMap.transform( pos.y() ) );
 

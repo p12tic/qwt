@@ -105,7 +105,7 @@ void BarChart::setOrientation( int orientation )
         d_barChartItem->setOrientation( Qt::Horizontal );
     }
 
-    setAxisScale( axis1, 0, d_barChartItem->dataSize() - 1, 1.0 );
+    setAxisScale( axis1, d_barChartItem->dataSize() - 1, 1.0 );
     setAxisAutoScale( axis2 );
 
     QwtScaleDraw *scaleDraw1 = axisScaleDraw( axis1 );

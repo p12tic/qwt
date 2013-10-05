@@ -121,9 +121,11 @@ void QwtPlotLayout::LayoutData::init( const QwtPlot *plot, const QRectF &rect )
 
     for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
     {
-        if ( plot->isAxisVisible( axis, QWT_DUMMY_ID ) )
+		const QwtAxisId axisId( axis, QWT_DUMMY_ID );
+
+        if ( plot->isAxisVisible( axisId ) )
         {
-            const QwtScaleWidget *scaleWidget = plot->axisWidget( axis, QWT_DUMMY_ID );
+            const QwtScaleWidget *scaleWidget = plot->axisWidget( axisId );
 
             scale[axis].isEnabled = true;
 
@@ -581,9 +583,9 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
     int axis;
     for ( axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
     {
-        if ( plot->isAxisVisible( axis, QWT_DUMMY_ID ) )
+        if ( plot->isAxisVisible( QwtAxisId( axis, QWT_DUMMY_ID ) ) )
         {
-            const QwtScaleWidget *scl = plot->axisWidget( axis, QWT_DUMMY_ID );
+            const QwtScaleWidget *scl = plot->axisWidget( QwtAxisId( axis, QWT_DUMMY_ID ) );
             ScaleData &sd = scaleData[axis];
 
             const QSize hint = scl->minimumSizeHint();
@@ -675,8 +677,8 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
         {
             // If only QwtPlot::yLeft or QwtPlot::yRight is showing,
             // we center on the plot canvas.
-            const bool centerOnCanvas = !( plot->isAxisVisible( QwtPlot::yLeft, QWT_DUMMY_ID )
-                && plot->isAxisVisible( QwtPlot::yRight, QWT_DUMMY_ID ) );
+            const bool centerOnCanvas = !( plot->isAxisVisible( QwtAxisId( QwtPlot::yLeft, QWT_DUMMY_ID ) )
+                && plot->isAxisVisible( QwtAxisId( QwtPlot::yRight, QWT_DUMMY_ID ) ) );
 
             int labelW = w;
             if ( centerOnCanvas )

@@ -39,16 +39,16 @@ QwtAxesMask::~QwtAxesMask()
 
    \sa isAxisEnabled()
 */
-void QwtAxesMask::setEnabled( int axisPos, int id, bool on )
+void QwtAxesMask::setEnabled( QwtAxisId axisId, bool on )
 {
-    if ( axisPos < 0 || axisPos >= QwtPlot::NumAxisPositions )
+    if ( axisId.pos < 0 || axisId.pos >= QwtPlot::NumAxisPositions )
         return;
 
-    QList<int> &axes = d_data->disabledAxes[ axisPos ];
+    QList<int> &axes = d_data->disabledAxes[ axisId.pos ];
     
-    QList<int>::iterator it = qLowerBound( axes.begin(), axes.end(), id );
+    QList<int>::iterator it = qLowerBound( axes.begin(), axes.end(), axisId.id );
 
-    const bool isDisabled = ( it != axes.end() ) && ( *it != id );
+    const bool isDisabled = ( it != axes.end() ) && ( *it != axisId.id );
 
     if ( on )
     {
@@ -58,7 +58,7 @@ void QwtAxesMask::setEnabled( int axisPos, int id, bool on )
     else
     {
         if ( !isDisabled )
-            axes.insert( it, id );
+            axes.insert( it, axisId.id );
     }
 }
 
@@ -70,12 +70,12 @@ void QwtAxesMask::setEnabled( int axisPos, int id, bool on )
 
    \sa setAxisEnabled()
 */
-bool QwtAxesMask::isEnabled( int axisPos, int id ) const
+bool QwtAxesMask::isEnabled( QwtAxisId axisId ) const
 {
-    if ( axisPos >= 0 && axisPos < QwtPlot::NumAxisPositions )
+    if ( axisId.pos >= 0 && axisId.pos < QwtPlot::NumAxisPositions )
     {
-        const QList<int> &axes = d_data->disabledAxes[ axisPos ];
-        return qFind( axes, id ) != axes.end();
+        const QList<int> &axes = d_data->disabledAxes[ axisId.pos ];
+        return qFind( axes, axisId.id ) != axes.end();
     }
 
     return true;

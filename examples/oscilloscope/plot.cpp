@@ -167,8 +167,8 @@ void Plot::updateCurve()
                 to an unaccelerated frame buffer device.
             */
 
-            const QwtScaleMap xMap = canvasMap( d_curve->xAxisPos() );
-            const QwtScaleMap yMap = canvasMap( d_curve->yAxisPos() );
+            const QwtScaleMap xMap = canvasMap( d_curve->xAxis() );
+            const QwtScaleMap yMap = canvasMap( d_curve->yAxis() );
 
             QRectF br = qwtBoundingRect( *data,
                 d_paintedPoints - 1, numPoints - 1 );

@@ -12,6 +12,7 @@
 
 #include "qwt_global.h"
 #include "qwt_interval.h"
+#include "qwt_axis_id.h"
 #include "qwt_plot.h"
 #include <qobject.h>
 
@@ -77,7 +78,7 @@ public:
     };
 
     explicit QwtPlotRescaler( QWidget *canvas,
-        int referenceAxis = QwtPlot::xBottom,
+        QwtAxisId referenceAxis = QwtPlot::xBottom,
         RescalePolicy = Expanding );
 
     virtual ~QwtPlotRescaler();
@@ -92,9 +93,8 @@ public:
     void setExpandingDirection( int axis, ExpandingDirection );
     ExpandingDirection expandingDirection( int axis ) const;
 
-    void setReferenceAxis( int axisPos, int id = 0 );
-    int referenceAxisPos() const;
-    int referenceAxisId() const;
+    void setReferenceAxis( QwtAxisId axisId );
+    QwtAxisId referenceAxis() const;
 
     void setAspectRatio( double ratio );
     void setAspectRatio( int axis, double ratio );
@@ -117,22 +117,22 @@ protected:
     virtual void canvasResizeEvent( QResizeEvent * );
 
     virtual void rescale( const QSize &oldSize, const QSize &newSize ) const;
-    virtual QwtInterval expandScale( int axisPos, int id, 
+    virtual QwtInterval expandScale( QwtAxisId axisId,
         const QSize &oldSize, const QSize &newSize ) const;
 
-    virtual QwtInterval syncScale( int axisPos, int id, 
+    virtual QwtInterval syncScale( QwtAxisId axisId,
         const QwtInterval& reference, const QSize &size ) const;
 
     virtual void updateScales(
         QwtInterval intervals[QwtPlot::NumAxisPositions] ) const;
 
-    Qt::Orientation orientation( int axisPos ) const;
-    QwtInterval interval( int axisPos, int id ) const;
+    Qt::Orientation orientation( QwtAxisId ) const;
+    QwtInterval interval( QwtAxisId axisId ) const;
     QwtInterval expandInterval( const QwtInterval &,
         double width, ExpandingDirection ) const;
 
 private:
-    double pixelDist( int axisPos, int id, const QSize & ) const;
+    double pixelDist( QwtAxisId, const QSize & ) const;
 
     class AxisData;
     class PrivateData;

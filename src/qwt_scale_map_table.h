@@ -13,28 +13,29 @@
 #include "qwt_global.h"
 #include "qwt_scale_map.h"
 #include "qwt_plot.h"
+#include "qwt_axis_id.h"
 #include <qlist.h>
 
 class QWT_EXPORT QwtScaleMapTable
 {
 public:
-    bool isValid( int axisPos, int id ) const;
-    const QwtScaleMap &map( int axisPos, int id ) const;
+    bool isValid( QwtAxisId ) const;
+    const QwtScaleMap &map( QwtAxisId ) const;
 
     QList< QwtScaleMap > maps[ QwtPlot::NumAxisPositions ];
 };
 
-inline bool QwtScaleMapTable::isValid( int axisPos, int id ) const
+inline bool QwtScaleMapTable::isValid( QwtAxisId axisId ) const
 {
-    if ( axisPos >= 0 && axisPos < QwtPlot::NumAxisPositions && id >= 0 )
-        return maps[ axisPos ].size() > id;
+    if ( axisId.pos >= 0 && axisId.pos < QwtPlot::NumAxisPositions && axisId.id >= 0 )
+        return maps[ axisId.pos ].size() > axisId.id;
 
     return false;
 }
 
-inline const QwtScaleMap &QwtScaleMapTable::map( int axisPos, int id ) const
+inline const QwtScaleMap &QwtScaleMapTable::map( QwtAxisId axisId ) const
 {
-    return maps[axisPos].at( id );
+    return maps[ axisId.pos ].at( axisId.id );
 }
 
 #endif

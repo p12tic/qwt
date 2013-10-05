@@ -14,6 +14,7 @@
 #include "qwt_text.h"
 #include "qwt_legend_data.h"
 #include "qwt_graphic.h"
+#include "qwt_axis_id.h"
 #include <qrect.h>
 #include <qlist.h>
 #include <qmetatype.h>
@@ -243,15 +244,13 @@ public:
     virtual void setVisible( bool );
     bool isVisible () const;
 
-    void setAxes( int xAxisPos, int yAxisPos );
+    void setAxes( QwtAxisId xAxis, QwtAxisId yAxis );
 
-    void setXAxis( int axisPod, int id = 0 );
-    int xAxisPos() const;
-    int xAxisId() const;
+    void setXAxis( QwtAxisId );
+	QwtAxisId xAxis() const;
 
-    void setYAxis( int axis, int id = 0 );
-    int yAxisPos() const;
-    int yAxisId() const;
+    void setYAxis( QwtAxisId );
+    QwtAxisId yAxis() const;
 
     virtual void itemChanged();
     virtual void legendChanged();

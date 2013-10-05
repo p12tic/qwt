@@ -358,17 +358,17 @@ void QwtPlotZoomer::rescale()
 
         double x1 = rect.left();
         double x2 = rect.right();
-        if ( !plt->axisScaleDiv( xAxisPos(), xAxisId() ).isIncreasing() )
+        if ( !plt->axisScaleDiv( xAxis() ).isIncreasing() )
             qSwap( x1, x2 );
 
-        plt->setAxisScaleDiv( xAxisPos(), xAxisId(), x1, x2 );
+        plt->setAxisScale( xAxis(), x1, x2 );
 
         double y1 = rect.top();
         double y2 = rect.bottom();
-        if ( !plt->axisScaleDiv( yAxisPos(), yAxisId() ).isIncreasing() )
+        if ( !plt->axisScaleDiv( yAxis() ).isIncreasing() )
             qSwap( y1, y2 );
 
-        plt->setAxisScaleDiv( yAxisPos(), yAxisId(), y1, y2 );
+        plt->setAxisScale( yAxis(), y1, y2 );
 
         plt->setAutoReplot( doReplot );
 

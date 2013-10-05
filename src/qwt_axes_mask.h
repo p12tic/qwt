@@ -11,6 +11,7 @@
 #define QWT_AXES_MASK_H 1
 
 #include "qwt_global.h"
+#include "qwt_axis_id.h"
 
 class QWT_EXPORT QwtAxesMask
 {
@@ -18,8 +19,8 @@ public:
     QwtAxesMask();
     ~QwtAxesMask();
 
-    void setEnabled( int axisPos, int id, bool );
-    bool isEnabled( int axisPos, int id ) const;
+    void setEnabled( QwtAxisId, bool );
+    bool isEnabled( QwtAxisId ) const;
 
 private:
     class PrivateData;

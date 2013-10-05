@@ -34,16 +34,14 @@ class QwtPlotRescaler::PrivateData
 {
 public:
     PrivateData():
-        referenceAxisPos( QwtPlot::xBottom ),
-        referenceAxisId( 0 ),
+        referenceAxis( QwtPlot::xBottom ),
         rescalePolicy( QwtPlotRescaler::Expanding ),
         isEnabled( false ),
         inReplot( 0 )
     {
     }
 
-    int referenceAxisPos;
-    int referenceAxisId;
+    QwtAxisId referenceAxis;
     RescalePolicy rescalePolicy;
     QwtPlotRescaler::AxisData axisData[QwtPlot::NumAxisPositions];
     bool isEnabled;
@@ -61,11 +59,11 @@ public:
    \sa setRescalePolicy(), setReferenceAxis()
 */
 QwtPlotRescaler::QwtPlotRescaler( QWidget *canvas,
-        int referenceAxis, RescalePolicy policy ):
+        QwtAxisId referenceAxis, RescalePolicy policy ):
     QObject( canvas )
 {
     d_data = new PrivateData;
-    d_data->referenceAxisPos = referenceAxis;
+    d_data->referenceAxis = referenceAxis;
     d_data->rescalePolicy = policy;
 
     setEnabled( true );
@@ -138,24 +136,18 @@ QwtPlotRescaler::RescalePolicy QwtPlotRescaler::rescalePolicy() const
   \param axis Axis index ( QwtPlot::Axis )
   \sa referenceAxis()
 */
-void QwtPlotRescaler::setReferenceAxis( int axisPos, int id )
+void QwtPlotRescaler::setReferenceAxis( QwtAxisId axisId )
 {
-    d_data->referenceAxisPos = axisPos;
-    d_data->referenceAxisId = id;
+    d_data->referenceAxis = axisId;
 }
 
 /*!
   \return Reference axis ( see RescalePolicy )
   \sa setReferenceAxis()
 */
-int QwtPlotRescaler::referenceAxisPos() const
+QwtAxisId QwtPlotRescaler::referenceAxis() const
 {
-    return d_data->referenceAxisPos;
-}
-
-int QwtPlotRescaler::referenceAxisId() const
-{
-    return d_data->referenceAxisId;
+    return d_data->referenceAxis;
 }
 
 /*!
@@ -370,15 +362,18 @@ void QwtPlotRescaler::rescale(
 
     QwtInterval intervals[QwtPlot::NumAxisPositions];
     for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
-        intervals[axis] = interval( axis, QWT_DUMMY_ID );
+        intervals[axis] = interval( QwtAxisId( axis, QWT_DUMMY_ID ) );
 
-    const int refPos = referenceAxisPos();
-    intervals[refPos] = expandScale( refPos, QWT_DUMMY_ID, oldSize, newSize );
+    const QwtAxisId refAxis = referenceAxis();
+    intervals[refAxis.pos] = expandScale( refAxis, oldSize, newSize );
 
     for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
-        if ( aspectRatio( axisPos ) > 0.0 && axisPos != refPos )
-            intervals[axisPos] = syncScale( axisPos, QWT_DUMMY_ID, intervals[refPos], newSize );
+        if ( aspectRatio( axisPos ) > 0.0 && axisPos != refAxis.pos )
+		{
+            intervals[axisPos] = syncScale( QwtAxisId( axisPos, QWT_DUMMY_ID ), 
+				intervals[ refAxis.pos ], newSize );
+		}
     }
 
     updateScales( intervals );
@@ -393,10 +388,10 @@ void QwtPlotRescaler::rescale(
 
   \return Calculated new interval for the axis
 */
-QwtInterval QwtPlotRescaler::expandScale( int axis, int id,
-        const QSize &oldSize, const QSize &newSize ) const
+QwtInterval QwtPlotRescaler::expandScale( QwtAxisId axisId,
+    const QSize &oldSize, const QSize &newSize ) const
 {
-    const QwtInterval oldInterval = interval( axis, id );
+    const QwtInterval oldInterval = interval( axisId );
 
     QwtInterval expanded = oldInterval;
     switch ( rescalePolicy() )
@@ -410,13 +405,13 @@ QwtInterval QwtPlotRescaler::expandScale( int axis, int id,
             if ( !oldSize.isEmpty() )
             {
                 double width = oldInterval.width();
-                if ( orientation( axis ) == Qt::Horizontal )
+                if ( orientation( axisId ) == Qt::Horizontal )
                     width *= double( newSize.width() ) / oldSize.width();
                 else
                     width *= double( newSize.height() ) / oldSize.height();
 
                 expanded = expandInterval( oldInterval,
-                    width, expandingDirection( axis ) );
+                    width, expandingDirection( axisId.pos ) );
             }
             break;
         }
@@ -425,20 +420,20 @@ QwtInterval QwtPlotRescaler::expandScale( int axis, int id,
             double dist = 0.0;
             for ( int ax = 0; ax < QwtPlot::NumAxisPositions; ax++ )
             {
-                const double d = pixelDist( ax, QWT_DUMMY_ID, newSize );
+                const double d = pixelDist( QwtAxisId( ax, QWT_DUMMY_ID ), newSize );
                 if ( d > dist )
                     dist = d;
             }
             if ( dist > 0.0 )
             {
                 double width;
-                if ( orientation( axis ) == Qt::Horizontal )
+                if ( orientation( axisId ) == Qt::Horizontal )
                     width = newSize.width() * dist;
                 else
                     width = newSize.height() * dist;
 
-                expanded = expandInterval( intervalHint( axis ),
-                    width, expandingDirection( axis ) );
+                expanded = expandInterval( intervalHint( axisId.pos ),
+                    width, expandingDirection( axisId.pos ) );
             }
             break;
         }
@@ -456,29 +451,29 @@ QwtInterval QwtPlotRescaler::expandScale( int axis, int id,
 
   \return New interval for axis
 */
-QwtInterval QwtPlotRescaler::syncScale( int axisPos, int id,
+QwtInterval QwtPlotRescaler::syncScale( QwtAxisId axisId,
     const QwtInterval& reference, const QSize &size ) const
 {
     double dist;
-    if ( orientation( referenceAxisPos() ) == Qt::Horizontal )
+    if ( orientation( referenceAxis() ) == Qt::Horizontal )
         dist = reference.width() / size.width();
     else
         dist = reference.width() / size.height();
 
-    if ( orientation( axisPos ) == Qt::Horizontal )
+    if ( orientation( axisId ) == Qt::Horizontal )
         dist *= size.width();
     else
         dist *= size.height();
 
-    dist /= aspectRatio( axisPos );
+    dist /= aspectRatio( axisId.pos );
 
     QwtInterval intv;
     if ( rescalePolicy() == Fitting )
-        intv = intervalHint( axisPos );
+        intv = intervalHint( axisId.pos );
     else
-        intv = interval( axisPos, id );
+        intv = interval( axisId );
 
-    intv = expandInterval( intv, dist, expandingDirection( axisPos ) );
+    intv = expandInterval( intv, dist, expandingDirection( axisId.pos ) );
 
     return intv;
 }
@@ -487,9 +482,9 @@ QwtInterval QwtPlotRescaler::syncScale( int axisPos, int id,
   \return Orientation of an axis
   \param axisPos Axis position ( see QwtPlot::AxisId )
 */
-Qt::Orientation QwtPlotRescaler::orientation( int axisPos ) const
+Qt::Orientation QwtPlotRescaler::orientation( QwtAxisId axisId ) const
 {
-    if ( axisPos == QwtPlot::yLeft || axisPos == QwtPlot::yRight )
+    if ( axisId.pos == QwtPlot::yLeft || axisId.pos == QwtPlot::yRight )
         return Qt::Vertical;
 
     return Qt::Horizontal;
@@ -499,12 +494,12 @@ Qt::Orientation QwtPlotRescaler::orientation( int axisPos ) const
   \param axis Axis index ( see QwtPlot::AxisId )
   \return Normalized interval of an axis
 */
-QwtInterval QwtPlotRescaler::interval( int axisPos, int id ) const
+QwtInterval QwtPlotRescaler::interval( QwtAxisId axisId ) const
 {
-    if ( !plot()->isAxisValid( axisPos, id ) )
+    if ( !plot()->isAxisValid( axisId ) )
         return QwtInterval();
 
-    return plot()->axisScaleDiv( axisPos, id ).interval().normalized();
+    return plot()->axisScaleDiv( axisId ).interval().normalized();
 }
 
 /*!
@@ -543,20 +538,20 @@ QwtInterval QwtPlotRescaler::expandInterval(
     return expanded;
 }
 
-double QwtPlotRescaler::pixelDist( int axisPos, int id, const QSize &size ) const
+double QwtPlotRescaler::pixelDist( QwtAxisId axisId, const QSize &size ) const
 {
-    const QwtInterval intv = intervalHint( axisPos );
+    const QwtInterval intv = intervalHint( axisId.pos );
 
     double dist = 0.0;
     if ( !intv.isNull() )
     {
-        if ( axisPos == referenceAxisPos() && id == referenceAxisId() )
+        if ( axisId == referenceAxis() )
         {
             dist = intv.width();
         }
         else
         {
-            const double r = aspectRatio( axisPos );
+            const double r = aspectRatio( axisId.pos );
             if ( r > 0.0 )
                 dist = intv.width() * r;
         }
@@ -564,7 +559,7 @@ double QwtPlotRescaler::pixelDist( int axisPos, int id, const QSize &size ) cons
 
     if ( dist > 0.0 )
     {
-        if ( orientation( axisPos ) == Qt::Horizontal )
+        if ( orientation( axisId.pos ) == Qt::Horizontal )
             dist /= size.width();
         else
             dist /= size.height();
@@ -593,16 +588,16 @@ void QwtPlotRescaler::updateScales(
 
     for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
     {
-        if ( axis == referenceAxisPos() || aspectRatio( axis ) > 0.0 )
+        if ( axis == referenceAxis().pos || aspectRatio( axis ) > 0.0 )
         {
             double v1 = intervals[axis].minValue();
             double v2 = intervals[axis].maxValue();
 
-            if ( !plt->axisScaleDiv( axis, QWT_DUMMY_ID ).isIncreasing() )
+            if ( !plt->axisScaleDiv( QwtAxisId( axis, QWT_DUMMY_ID ) ).isIncreasing() )
                 qSwap( v1, v2 );
 
             if ( d_data->inReplot >= 1 )
-                d_data->axisData[axis].scaleDiv = plt->axisScaleDiv( axis, QWT_DUMMY_ID );
+                d_data->axisData[axis].scaleDiv = plt->axisScaleDiv( QwtAxisId( axis, QWT_DUMMY_ID ) );
 
             if ( d_data->inReplot >= 2 )
             {
@@ -610,11 +605,12 @@ void QwtPlotRescaler::updateScales(
                 for ( int i = 0; i < QwtScaleDiv::NTickTypes; i++ )
                     ticks[i] = d_data->axisData[axis].scaleDiv.ticks( i );
 
-                plt->setAxisScaleDiv( axis, QWT_DUMMY_ID, QwtScaleDiv( v1, v2, ticks ) );
+                plt->setAxisScaleDiv( QwtAxisId( axis, QWT_DUMMY_ID ), 
+					QwtScaleDiv( v1, v2, ticks ) );
             }
             else
             {
-                plt->setAxisScaleDiv( axis, QWT_DUMMY_ID, v1, v2 );
+                plt->setAxisScale( QwtAxisId( axis, QWT_DUMMY_ID ), v1, v2 );
             }
         }
     }
