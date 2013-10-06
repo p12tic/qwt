@@ -627,9 +627,11 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
     int axisPos;
     for ( axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
-        if ( plot->isAxisVisible( QwtAxisId( axisPos, QWT_DUMMY_ID ) ) )
+        const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
+
+        if ( plot->isAxisVisible( axisId ) )
         {
-            const QwtScaleWidget *scl = plot->axisWidget( QwtAxisId( axisPos, QWT_DUMMY_ID ) );
+            const QwtScaleWidget *scl = plot->axisWidget( axisId );
             ScaleData &sd = scaleData[ axisPos ];
 
             const QSize hint = scl->minimumSizeHint();
@@ -1084,13 +1086,14 @@ void QwtPlotLayout::alignScales( Options options,
 
     for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
-        if ( !scaleRect[ axisPos ][ QWT_DUMMY_ID ].isValid() )
+        QRectF &axisRect = scaleRect[ axisPos ][ QWT_DUMMY_ID ];
+
+        if ( !axisRect.isValid() )
             continue;
 
         const int startDist = layoutData.scaleData[ axisPos ][QWT_DUMMY_ID].start;
         const int endDist = layoutData.scaleData[ axisPos ][QWT_DUMMY_ID].end;
 
-        QRectF &axisRect = scaleRect[ axisPos ][ QWT_DUMMY_ID ];
 
         if ( axisPos == QwtPlot::xTop || axisPos == QwtPlot::xBottom )
         {
@@ -1252,63 +1255,67 @@ void QwtPlotLayout::alignScales( Options options,
 
     for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
-        QRectF &sRect = scaleRect[ axisPos ][ QWT_DUMMY_ID ];
-
-        if ( !sRect.isValid() )
-            continue;
-
-        if ( axisPos == QwtPlot::xBottom || axisPos == QwtPlot::xTop )
+        for ( int i = 0; i < layoutData.scaleData[ axisPos ].size(); i++ )
         {
-            if ( d_data->alignCanvasToScales[QwtPlot::yLeft] )
-            {
-                double y = canvasRect.left() - layoutData.scaleData[axisPos][QWT_DUMMY_ID].start;
-                if ( !( options & IgnoreFrames ) )
-                    y += layoutData.canvasData.contentsMargins[ QwtPlot::yLeft ];
+            QRectF &sRect = scaleRect[ axisPos ][ i ];
+            const LayoutData::ScaleData &scaleData = layoutData.scaleData[ axisPos ][ i ];
 
-                sRect.setLeft( y );
+            if ( !sRect.isValid() )
+                continue;
+
+            if ( axisPos == QwtPlot::xBottom || axisPos == QwtPlot::xTop )
+            {
+                if ( d_data->alignCanvasToScales[QwtPlot::yLeft] )
+                {
+                    double y = canvasRect.left() - scaleData.start;
+                    if ( !( options & IgnoreFrames ) )
+                        y += layoutData.canvasData.contentsMargins[ QwtPlot::yLeft ];
+
+                    sRect.setLeft( y );
+                }
+                if ( d_data->alignCanvasToScales[QwtPlot::yRight] )
+                {
+                    double y = canvasRect.right() - 1 + scaleData.end;
+                    if ( !( options & IgnoreFrames ) )
+                        y -= layoutData.canvasData.contentsMargins[ QwtPlot::yRight ];
+
+                    sRect.setRight( y );
+                }
+
+                if ( d_data->alignCanvasToScales[ axisPos ] )
+                {
+                    if ( axisPos == QwtPlot::xTop )
+                        sRect.setBottom( canvasRect.top() );
+                    else
+                        sRect.setTop( canvasRect.bottom() );
+                }
             }
-            if ( d_data->alignCanvasToScales[QwtPlot::yRight] )
+            else
             {
-                double y = canvasRect.right() - 1 + layoutData.scaleData[ axisPos ][QWT_DUMMY_ID].end;
-                if ( !( options & IgnoreFrames ) )
-                    y -= layoutData.canvasData.contentsMargins[ QwtPlot::yRight ];
+                if ( d_data->alignCanvasToScales[QwtPlot::xTop] )
+                {
+                    double x = canvasRect.top() - scaleData.start;
+                    if ( !( options & IgnoreFrames ) )
+                        x += layoutData.canvasData.contentsMargins[ QwtPlot::xTop ];
 
-                sRect.setRight( y );
-            }
+                    sRect.setTop( x );
+                }
+                if ( d_data->alignCanvasToScales[QwtPlot::xBottom] )
+                {
+                    double x = canvasRect.bottom() - 1 + scaleData.end;
+                    if ( !( options & IgnoreFrames ) )
+                        x -= layoutData.canvasData.contentsMargins[ QwtPlot::xBottom ];
 
-            if ( d_data->alignCanvasToScales[ axisPos ] )
-            {
-                if ( axisPos == QwtPlot::xTop )
-                    sRect.setBottom( canvasRect.top() );
-                else
-                    sRect.setTop( canvasRect.bottom() );
-            }
-        }
-        else
-        {
-            if ( d_data->alignCanvasToScales[QwtPlot::xTop] )
-            {
-                double x = canvasRect.top() - layoutData.scaleData[ axisPos ][QWT_DUMMY_ID].start;
-                if ( !( options & IgnoreFrames ) )
-                    x += layoutData.canvasData.contentsMargins[ QwtPlot::xTop ];
+                    sRect.setBottom( x );
+                }
 
-                sRect.setTop( x );
-            }
-            if ( d_data->alignCanvasToScales[QwtPlot::xBottom] )
-            {
-                double x = canvasRect.bottom() - 1 + layoutData.scaleData[ axisPos ][QWT_DUMMY_ID].end;
-                if ( !( options & IgnoreFrames ) )
-                    x -= layoutData.canvasData.contentsMargins[ QwtPlot::xBottom ];
-
-                sRect.setBottom( x );
-            }
-
-            if ( d_data->alignCanvasToScales[ axisPos ] )
-            {
-                if ( axisPos == QwtPlot::yLeft )
-                    sRect.setRight( canvasRect.left() );
-                else
-                    sRect.setLeft( canvasRect.right() );
+                if ( d_data->alignCanvasToScales[ axisPos ] )
+                {
+                    if ( axisPos == QwtPlot::yLeft )
+                        sRect.setRight( canvasRect.left() );
+                    else
+                        sRect.setLeft( canvasRect.right() );
+                }
             }
         }
     }

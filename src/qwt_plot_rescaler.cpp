@@ -378,8 +378,10 @@ void QwtPlotRescaler::rescale(
         return;
 
     QwtInterval intervals[QwtPlot::NumAxisPositions];
-    for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
-        intervals[axis] = interval( QwtAxisId( axis, QWT_DUMMY_ID ) );
+    for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
+    {
+        intervals[axisPos] = interval( QwtAxisId( axisPos, QWT_DUMMY_ID ) );
+    }
 
     const QwtAxisId refAxis = referenceAxis();
     intervals[refAxis.pos] = expandScale( refAxis, oldSize, newSize );
@@ -436,9 +438,9 @@ QwtInterval QwtPlotRescaler::expandScale( QwtAxisId axisId,
         case Fitting:
         {
             double dist = 0.0;
-            for ( int ax = 0; ax < QwtPlot::NumAxisPositions; ax++ )
+            for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
             {
-                const double d = pixelDist( QwtAxisId( ax, QWT_DUMMY_ID ), newSize );
+                const double d = pixelDist( QwtAxisId( axisPos, QWT_DUMMY_ID ), newSize );
                 if ( d > dist )
                     dist = d;
             }

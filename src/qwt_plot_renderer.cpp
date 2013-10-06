@@ -574,9 +574,11 @@ void QwtPlotRenderer::render( QwtPlot *plot,
     // restore all setting to their original attributes.
     for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
+        const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
+
         if ( d_data->layoutFlags & FrameWithScales )
         {
-            QwtScaleWidget *scaleWidget = plot->axisWidget( QwtAxisId( axisPos, QWT_DUMMY_ID ) );
+            QwtScaleWidget *scaleWidget = plot->axisWidget( axisId );
             if ( scaleWidget  )
                 scaleWidget->setMargin( baseLineDists[axisPos] );
         }
