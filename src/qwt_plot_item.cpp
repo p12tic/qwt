@@ -476,13 +476,13 @@ void QwtPlotItem::legendChanged()
 void QwtPlotItem::setAxes( QwtAxisId xAxis, QwtAxisId yAxis )
 {
     if ( xAxis.id >= 0 &&
-		( xAxis.pos == QwtPlot::xBottom || xAxis.pos == QwtPlot::xTop ) )
+        ( xAxis.pos == QwtPlot::xBottom || xAxis.pos == QwtPlot::xTop ) )
     {
         d_data->xAxis = xAxis;
     }
 
     if ( yAxis.id >= 0 && 
-		( yAxis.pos == QwtPlot::yLeft || yAxis.pos == QwtPlot::yRight ) )
+        ( yAxis.pos == QwtPlot::yLeft || yAxis.pos == QwtPlot::yRight ) )
     {
         d_data->yAxis = yAxis;
     }
@@ -520,7 +520,7 @@ void QwtPlotItem::setXAxis( QwtAxisId axisId )
 */
 void QwtPlotItem::setYAxis( QwtAxisId axisId )
 {
-   	if ( axisId.pos == QwtPlot::yLeft || axisId.pos == QwtPlot::yRight )
+    if ( axisId.pos == QwtPlot::yLeft || axisId.pos == QwtPlot::yRight )
     {
         if ( axisId.id >= 0 )
         {

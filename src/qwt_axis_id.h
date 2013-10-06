@@ -15,13 +15,13 @@
 class QWT_EXPORT QwtAxisId
 {
 public:
-	QwtAxisId( int position, int index = 0 );
+    QwtAxisId( int position, int index = 0 );
 
     bool operator==( const QwtAxisId & ) const;
     bool operator!=( const QwtAxisId & ) const;
 
-	int pos;
-	int id;
+    int pos;
+    int id;
 };
 
 inline QwtAxisId::QwtAxisId( int position, int index ):

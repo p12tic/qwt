@@ -133,9 +133,24 @@ void QwtPlot::deleteScaleData()
     d_scaleData = NULL;
 }
 
-int QwtPlot::axesCount( int axisPos ) const
+int QwtPlot::axesCount( int axisPos, bool onlyVisible ) const
 {
-    return d_scaleData->axesCount( axisPos );
+    int count = 0;
+
+    if ( onlyVisible )
+    {
+        for ( int i = 0; i < d_scaleData->axesCount( axisPos ); i++ )
+        {
+            if ( d_scaleData->axisData( axisPos ).isVisible )
+                count++;
+        }
+    }
+    else
+    {
+        count = d_scaleData->axesCount( axisPos );
+    }
+
+    return count;
 }
 
 /*!
@@ -145,21 +160,6 @@ int QwtPlot::axesCount( int axisPos ) const
 bool QwtPlot::isAxisValid( QwtAxisId axisId ) const
 {
     return d_scaleData->axesCount( axisId.pos ) > axisId.id;
-}
-
-bool QwtPlot::hasVisibleAxes( int axisPos ) const
-{
-    if ( axisPos < 0 || axisPos >= QwtPlot::NumAxisPositions )
-        return false;
-
-    const int axesCount = d_scaleData->axesCount( axisPos );
-    for ( int i = 0; i < axesCount; i++ )
-    {
-        if ( d_scaleData->axisData( QwtAxisId( axisPos, i ) ).isVisible )
-            return true;
-    }
-
-    return false;
 }
 
 /*!
@@ -728,7 +728,7 @@ void QwtPlot::updateAxes()
     {
         for ( int i = 0; i < d_scaleData->axesCount( axisPos ); i++ )
         {
-			const QwtAxisId axisId( axisPos, i );
+            const QwtAxisId axisId( axisPos, i );
 
             QwtPlotAxisData &d = d_scaleData->axisData( axisId );
 

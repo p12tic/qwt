@@ -120,7 +120,7 @@ void QwtPlotMagnifier::rescale( double factor )
 
         for ( int i = 0; i < axesCount; i++ )
         {
-			const QwtAxisId axisId( axisPos, i );
+            const QwtAxisId axisId( axisPos, i );
 
             const QwtScaleDiv &scaleDiv = plt->axisScaleDiv( axisId );
             if ( isAxisEnabled( axisId ) )

@@ -247,7 +247,7 @@ public:
     void setAxes( QwtAxisId xAxis, QwtAxisId yAxis );
 
     void setXAxis( QwtAxisId );
-	QwtAxisId xAxis() const;
+    QwtAxisId xAxis() const;
 
     void setYAxis( QwtAxisId );
     QwtAxisId yAxis() const;

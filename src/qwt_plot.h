@@ -186,8 +186,7 @@ public:
 
     // Axes
 
-    int axesCount( int axisPos ) const;
-    bool hasVisibleAxes( int axisPos ) const;
+    int axesCount( int axisPos, bool onlyVisible = false ) const;
     bool isAxisValid( QwtAxisId ) const;
 
     QwtScaleEngine *axisScaleEngine( QwtAxisId );

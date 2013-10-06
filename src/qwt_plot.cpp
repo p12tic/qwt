@@ -609,7 +609,7 @@ void QwtPlot::replot()
 */
 void QwtPlot::updateLayout()
 {
-    d_data->layout->activate( this, contentsRect() );
+    d_data->layout->update( this, contentsRect() );
 
     const QRect titleRect = d_data->layout->titleRect().toRect();
     const QRect footerRect = d_data->layout->footerRect().toRect();

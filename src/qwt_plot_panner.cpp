@@ -204,7 +204,7 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
         const int axesCount = plot->axesCount( axisPos );
         for ( int i = 0; i < axesCount; i++ )
         {
-			const QwtAxisId axisId( axisPos, i );
+            const QwtAxisId axisId( axisPos, i );
 
             if ( !isAxisEnabled( axisId ) )
                 continue;

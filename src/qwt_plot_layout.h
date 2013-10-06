@@ -28,7 +28,7 @@ class QWT_EXPORT QwtPlotLayout
 public:
     /*!
       Options to configure the plot layout engine
-      \sa activate(), QwtPlotRenderer
+      \sa update(), QwtPlotRenderer
      */
     enum Option
     {
@@ -80,7 +80,7 @@ public:
 
     virtual QSize minimumSizeHint( const QwtPlot * ) const;
 
-    virtual void activate( const QwtPlot *,
+    void update( const QwtPlot *,
         const QRectF &rect, Options options = 0x00 );
 
     virtual void invalidate();
@@ -91,9 +91,10 @@ public:
     QRectF scaleRect( int axis ) const;
     QRectF canvasRect() const;
 
-    class LayoutData;
 
 protected:
+    virtual void activate( const QwtPlot *,
+        const QRectF &rect, Options options );
 
     void setTitleRect( const QRectF & );
     void setFooterRect( const QRectF & );
@@ -112,6 +113,7 @@ protected:
         QVector<QRectF> scaleRect[QwtPlot::NumAxisPositions] ) const;
 
 private:
+    class LayoutData;
     class PrivateData;
 
     PrivateData *d_data;

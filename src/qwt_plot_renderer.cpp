@@ -513,7 +513,7 @@ void QwtPlotRenderer::render( QwtPlot *plot,
     if ( d_data->discardFlags & DiscardFooter )
         layoutOptions |= QwtPlotLayout::IgnoreFooter;
 
-    layout->activate( plot, layoutRect, layoutOptions );
+    layout->update( plot, layoutRect, layoutOptions );
 
     // canvas
 
@@ -523,7 +523,7 @@ void QwtPlotRenderer::render( QwtPlot *plot,
         // recalculate maps and layout, when the margins
         // have been changed
 
-        layout->activate( plot, layoutRect, layoutOptions );
+        layout->update( plot, layoutRect, layoutOptions );
         mapTable = buildCanvasMaps( plot, layout->canvasRect() );
     }
 
