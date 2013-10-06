@@ -12,6 +12,7 @@
 
 #include "qwt_global.h"
 #include "qwt_plot.h"
+#include "qwt_axis_id.h"
 
 /*!
   \brief Layout engine for QwtPlot.
@@ -88,7 +89,7 @@ public:
     QRectF titleRect() const;
     QRectF footerRect() const;
     QRectF legendRect() const;
-    QRectF scaleRect( int axis ) const;
+    QRectF scaleRect( QwtAxisId axis ) const;
     QRectF canvasRect() const;
 
 
@@ -99,7 +100,7 @@ protected:
     void setTitleRect( const QRectF & );
     void setFooterRect( const QRectF & );
     void setLegendRect( const QRectF & );
-    void setScaleRect( int axis, const QRectF & );
+    void setScaleRect( QwtAxisId axis, const QRectF & );
     void setCanvasRect( const QRectF & );
 
     QRectF layoutLegend( Options options, const QRectF & ) const;

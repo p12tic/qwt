@@ -645,7 +645,7 @@ void QwtPlot::updateLayout()
             QwtScaleWidget *scaleWidget = axisWidget( axisId );
             if ( isAxisVisible( axisId ) )
             {
-                const QRect scaleRect = d_data->layout->scaleRect( axisId.pos ).toRect();
+                const QRect scaleRect = d_data->layout->scaleRect( axisId ).toRect();
                 scaleWidget->setGeometry( scaleRect );
 
                 if ( !scaleWidget->isVisibleTo( this ) )

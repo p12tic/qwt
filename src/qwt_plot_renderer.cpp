@@ -565,7 +565,7 @@ void QwtPlotRenderer::render( QwtPlot *plot,
             scaleWidget->getBorderDistHint( startDist, endDist );
 
             renderScale( plot, painter, axisId, startDist, endDist,
-                baseDist, layout->scaleRect( axisPos ) );
+                baseDist, layout->scaleRect( axisId ) );
         }
     }
 
@@ -903,7 +903,7 @@ QwtScaleMapTable QwtPlotRenderer::buildCanvasMaps(
             {
                 const int sDist = plot->axisWidget( axisId )->startBorderDist();
                 const int eDist = plot->axisWidget( axisId )->endBorderDist();
-                const QRectF scaleRect = plot->plotLayout()->scaleRect( axisPos );
+                const QRectF scaleRect = plot->plotLayout()->scaleRect( axisId );
 
                 if ( axisPos == QwtPlot::xTop || axisPos == QwtPlot::xBottom )
                 {
