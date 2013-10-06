@@ -34,26 +34,103 @@ public:
 
     struct LegendData
     {
+        void init( const QwtAbstractLegend *legend, const QRectF &rect )
+        {
+            if ( legend )
+            {
+                frameWidth = legend->frameWidth();
+                hScrollExtent = legend->scrollExtent( Qt::Horizontal );
+                vScrollExtent = legend->scrollExtent( Qt::Vertical );
+
+                const QSize legendHint = legend->sizeHint();
+
+                int w = qMin( legendHint.width(), qFloor( rect.width() ) );
+
+                int h = legend->heightForWidth( w );
+                if ( h <= 0 )
+                    h = legendHint.height();
+
+                if ( h > rect.height() )
+                    w += hScrollExtent;
+
+                hint = QSize( w, h );
+            }
+
+        }
+
         int frameWidth;
         int hScrollExtent;
         int vScrollExtent;
         QSize hint;
     };
 
-    struct TitleData
+    struct LabelData
     {
-        QwtText text;
-        int frameWidth;
-    };
+        void init( const QwtTextLabel *label )
+        {
+            frameWidth = 0;
+            text = QwtText();
 
-    struct FooterData
-    {
+            if ( label )
+            {
+                text = label->text();
+                if ( !( text.testPaintAttribute( QwtText::PaintUsingTextFont ) ) )
+                    text.setFont( label->font() );
+        
+                frameWidth = label->frameWidth();
+            }
+        }
+
         QwtText text;
         int frameWidth;
     };
 
     struct ScaleData
     {
+        void init( const QwtScaleWidget *axisWidget )
+        {
+            if ( axisWidget )
+            {
+                isVisible = true;
+
+                scaleWidget = axisWidget;
+                scaleFont = axisWidget->font();
+
+                start = axisWidget->startBorderDist();
+                end = axisWidget->endBorderDist();
+
+                baseLineOffset = axisWidget->margin();
+
+                tickOffset = axisWidget->margin();
+
+                const QwtScaleDraw *scaleDraw = axisWidget->scaleDraw();
+                if ( scaleDraw->hasComponent( QwtAbstractScaleDraw::Ticks ) )
+                {
+                    tickOffset += scaleDraw->maxTickLength();
+                }
+
+                dimWithoutTitle = axisWidget->dimForLength(
+                    QWIDGETSIZE_MAX, scaleFont );
+
+                if ( !axisWidget->title().isEmpty() )
+                {
+                    dimWithoutTitle -=
+                        axisWidget->titleHeightForWidth( QWIDGETSIZE_MAX );
+                }
+            }
+            else
+            {
+                isVisible = false;
+                axisWidget = NULL;
+                start = 0;
+                end = 0;
+                baseLineOffset = 0;
+                tickOffset = 0.0;
+                dimWithoutTitle = 0;
+            }
+
+        }
+
         bool isVisible;
         const QwtScaleWidget *scaleWidget;
         QFont scaleFont;
@@ -66,12 +143,29 @@ public:
 
     struct CanvasData
     {
+        void init( const QWidget *canvas )
+        {
+            canvas->getContentsMargins(
+                &contentsMargins[ QwtPlot::yLeft ],
+                &contentsMargins[ QwtPlot::xTop ],
+                &contentsMargins[ QwtPlot::yRight ],
+                &contentsMargins[ QwtPlot::xBottom ] );
+        }
+
         int contentsMargins[ QwtPlot::NumAxisPositions ];
     };
 
+public:
+    enum Label
+    {
+        Title,
+        Footer,
+
+        NumLabels
+    };
+
     LegendData legendData;
-    TitleData titleData;
-    FooterData footerData;
+    LabelData labelData[ NumLabels ];
     QVector<ScaleData> scaleData[ QwtPlot::NumAxisPositions ];
     CanvasData canvasData;
 
@@ -83,60 +177,9 @@ public:
 */
 void QwtPlotLayoutData::init( const QwtPlot *plot, const QRectF &rect )
 {
-    // legend
-
-    if ( plot->legend() )
-    {
-        legendData.frameWidth = plot->legend()->frameWidth();
-        legendData.hScrollExtent =
-            plot->legend()->scrollExtent( Qt::Horizontal );
-        legendData.vScrollExtent =
-            plot->legend()->scrollExtent( Qt::Vertical );
-
-        const QSize hint = plot->legend()->sizeHint();
-
-        int w = qMin( hint.width(), qFloor( rect.width() ) );
-        int h = plot->legend()->heightForWidth( w );
-        if ( h <= 0 )
-            h = hint.height();
-
-        if ( h > rect.height() )
-            w += legendData.hScrollExtent;
-
-        legendData.hint = QSize( w, h );
-    }
-
-    // title
-
-    titleData.frameWidth = 0;
-    titleData.text = QwtText();
-
-    if ( plot->titleLabel() )
-    {
-        const QwtTextLabel *label = plot->titleLabel();
-        titleData.text = label->text();
-        if ( !( titleData.text.testPaintAttribute( QwtText::PaintUsingTextFont ) ) )
-            titleData.text.setFont( label->font() );
-
-        titleData.frameWidth = plot->titleLabel()->frameWidth();
-    }
-
-    // footer
-
-    footerData.frameWidth = 0;
-    footerData.text = QwtText();
-
-    if ( plot->footerLabel() )
-    {
-        const QwtTextLabel *label = plot->footerLabel();
-        footerData.text = label->text();
-        if ( !( footerData.text.testPaintAttribute( QwtText::PaintUsingTextFont ) ) )
-            footerData.text.setFont( label->font() );
-
-        footerData.frameWidth = plot->footerLabel()->frameWidth();
-    }
-
-    // scales
+    legendData.init( plot->legend(), rect );
+    labelData[ Title ].init( plot->titleLabel() );
+    labelData[ Footer ].init( plot->footerLabel() );
 
     for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
@@ -153,54 +196,16 @@ void QwtPlotLayoutData::init( const QwtPlot *plot, const QRectF &rect )
             if ( plot->isAxisVisible( axisId ) )
             {
                 numVisibleScales[ axisPos ]++;
-                const QwtScaleWidget *scaleWidget = plot->axisWidget( axisId );
-
-                sclData.isVisible = true;
-
-                sclData.scaleWidget = scaleWidget;
-
-                sclData.scaleFont = scaleWidget->font();
-
-                sclData.start = scaleWidget->startBorderDist();
-                sclData.end = scaleWidget->endBorderDist();
-
-                sclData.baseLineOffset = scaleWidget->margin();
-                sclData.tickOffset = scaleWidget->margin();
-                if ( scaleWidget->scaleDraw()->hasComponent(
-                    QwtAbstractScaleDraw::Ticks ) )
-                {
-                    sclData.tickOffset +=
-                        scaleWidget->scaleDraw()->maxTickLength();
-                }
-
-                sclData.dimWithoutTitle = scaleWidget->dimForLength(
-                    QWIDGETSIZE_MAX, sclData.scaleFont );
-
-                if ( !scaleWidget->title().isEmpty() )
-                {
-                    sclData.dimWithoutTitle -=
-                        scaleWidget->titleHeightForWidth( QWIDGETSIZE_MAX );
-                }
+                sclData.init( plot->axisWidget( axisId ) );
             }
             else
             {
-                sclData.isVisible = false;
-                sclData.start = 0;
-                sclData.end = 0;
-                sclData.baseLineOffset = 0;
-                sclData.tickOffset = 0.0;
-                sclData.dimWithoutTitle = 0;
+                sclData.init( NULL );
             }
         }
     }
 
-    // canvas
-
-    plot->canvas()->getContentsMargins( 
-        &canvasData.contentsMargins[ QwtPlot::yLeft ], 
-        &canvasData.contentsMargins[ QwtPlot::xTop ],
-        &canvasData.contentsMargins[ QwtPlot::yRight ],
-        &canvasData.contentsMargins[ QwtPlot::xBottom ] );
+    canvasData.init( plot->canvas() );
 }
 
 bool QwtPlotLayoutData::hasSymmetricYAxes() const
@@ -247,6 +252,9 @@ public:
     inline double legendRatio() const { return d_legendRatio; }
 
 private:
+    int heightForWidth( QwtPlotLayoutData::Label, const QwtPlotLayoutData &, 
+        QwtPlotLayout::Options, double width, int axesWidth ) const;
+    
     QwtPlot::LegendPosition d_legendPos;
     double d_legendRatio;
 
@@ -342,6 +350,31 @@ QRectF QwtPlotLayoutEngine::alignLegend(
     return alignedRect;
 }
 
+int QwtPlotLayoutEngine::heightForWidth( 
+    QwtPlotLayoutData::Label labelType, const QwtPlotLayoutData &layoutData, 
+    QwtPlotLayout::Options options,
+    double width, int axesWidth ) const
+{
+    const QwtPlotLayoutData::LabelData &labelData = layoutData.labelData[ labelType ];
+
+    if ( labelData.text.isEmpty() )
+        return 0;
+
+    double w = width;
+
+    if ( !layoutData.hasSymmetricYAxes() )
+    {
+        // center to the canvas
+        w -= axesWidth;
+    }
+
+    int d = qCeil( labelData.text.heightForWidth( w ) );
+    if ( !( options & QwtPlotLayout::IgnoreFrames ) )
+        d += 2 * labelData.frameWidth;
+
+    return d;
+}
+
 void QwtPlotLayoutEngine::expandLineBreaks( 
     QwtPlotLayout::Options options, const QwtPlotLayoutData &layoutData, const QRectF &rect,
     int &dimTitle, int &dimFooter, int dimAxis[QwtPlot::NumAxisPositions] ) const
@@ -374,19 +407,10 @@ void QwtPlotLayoutEngine::expandLineBreaks(
         // axis what might result in a line break of a horizontal
         // axis ... . So we loop as long until no size changes.
 
-        if ( !( ( options & QwtPlotLayout::IgnoreTitle ) || layoutData.titleData.text.isEmpty() ) )
+        if ( !( options & QwtPlotLayout::IgnoreTitle ) )
         {
-            double w = rect.width();
-
-            if ( !layoutData.hasSymmetricYAxes() )
-            {
-                // center to the canvas
-                w -= dimAxis[QwtPlot::yLeft] + dimAxis[QwtPlot::yRight];
-            }
-
-            int d = qCeil( layoutData.titleData.text.heightForWidth( w ) );
-            if ( !( options & QwtPlotLayout::IgnoreFrames ) )
-                d += 2 * layoutData.titleData.frameWidth;
+            const int d = heightForWidth( QwtPlotLayoutData::Title, layoutData, options,
+                rect.width(), dimAxis[QwtPlot::yLeft] + dimAxis[QwtPlot::yRight] );
 
             if ( d > dimTitle )
             {
@@ -395,20 +419,10 @@ void QwtPlotLayoutEngine::expandLineBreaks(
             }
         }
 
-        if ( !( ( options & QwtPlotLayout::IgnoreFooter ) ||
-            layoutData.footerData.text.isEmpty() ) )
+        if ( !( options & QwtPlotLayout::IgnoreFooter ) ) 
         {
-            double w = rect.width();
-
-            if ( !layoutData.hasSymmetricYAxes() )
-            {
-                // center to the canvas
-                w -= dimAxis[QwtPlot::yLeft] + dimAxis[QwtPlot::yRight];
-            }
-
-            int d = qCeil( layoutData.footerData.text.heightForWidth( w ) );
-            if ( !( options & QwtPlotLayout::IgnoreFrames ) )
-                d += 2 * layoutData.footerData.frameWidth;
+            const int d = heightForWidth( QwtPlotLayoutData::Footer, layoutData, options,
+                rect.width(), dimAxis[QwtPlot::yLeft] + dimAxis[QwtPlot::yRight] );
 
             if ( d > dimFooter )
             {
