@@ -554,18 +554,21 @@ void QwtPlotRenderer::render( QwtPlot *plot,
 
     for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
-        const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
-
-        QwtScaleWidget *scaleWidget = plot->axisWidget( axisId );
-        if ( scaleWidget )
+        for ( int i = 0; i < plot->axesCount( i ); i++ )
         {
-            int baseDist = scaleWidget->margin();
+            const QwtAxisId axisId( axisPos, i );
 
-            int startDist, endDist;
-            scaleWidget->getBorderDistHint( startDist, endDist );
+            QwtScaleWidget *scaleWidget = plot->axisWidget( axisId );
+            if ( scaleWidget )
+            {
+                int baseDist = scaleWidget->margin();
 
-            renderScale( plot, painter, axisId, startDist, endDist,
-                baseDist, layout->scaleRect( axisId ) );
+                int startDist, endDist;
+                scaleWidget->getBorderDistHint( startDist, endDist );
+
+                renderScale( plot, painter, axisId, startDist, endDist,
+                    baseDist, layout->scaleRect( axisId ) );
+            }
         }
     }
 
@@ -574,10 +577,10 @@ void QwtPlotRenderer::render( QwtPlot *plot,
     // restore all setting to their original attributes.
     for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
     {
-        const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
-
         if ( d_data->layoutFlags & FrameWithScales )
         {
+            const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
+
             QwtScaleWidget *scaleWidget = plot->axisWidget( axisId );
             if ( scaleWidget  )
                 scaleWidget->setMargin( baseLineDists[axisPos] );
