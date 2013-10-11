@@ -1599,7 +1599,7 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
                     case QwtPlot::yRight:
                     {
                         scaleRect.setX( canvasRect.right() + pos );
-                        scaleRect.setWidth( pos + dim );
+                        scaleRect.setWidth( dim );
                         break;
                     }
                     case QwtPlot::xBottom:
