@@ -292,11 +292,24 @@ public:
 
         inline QRectF innerRect( const QRectF &rect ) const
         {
-            return QRectF( 
+            QRectF r( 
                 rect.x() + dimAxes( QwtPlot::yLeft ),
                 rect.y() + dimAxes( QwtPlot::xTop ), 
                 rect.width() - dimYAxes(),
                 rect.height() - dimXAxes() );
+
+            if ( r.width() < 0 )
+            {
+                r.setX( rect.center().x() );
+                r.setWidth( 0 );
+            }
+            if ( r.height() < 0 )
+            {
+                r.setY( rect.center().x() );
+                r.setHeight( 0 );
+            }
+
+            return r;
         }
 
         int dimTitle;
