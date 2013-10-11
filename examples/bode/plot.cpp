@@ -40,6 +40,7 @@ Plot::Plot( QWidget *parent ):
     setAutoReplot( false );
 
     setTitle( "Frequency Response of a Second-Order System" );
+    setFooter( "Footer Response of a Second-Order System" );
 
     QwtPlotCanvas *canvas = new QwtPlotCanvas();
     canvas->setBorderRadius( 10 );
@@ -59,11 +60,21 @@ Plot::Plot( QWidget *parent ):
     grid->attach( this );
 
     // axes
-    setAxisVisible( QwtPlot::yRight );
-    setAxisTitle( QwtPlot::xBottom, "Normalized Frequency" );
-    setAxisTitle( QwtPlot::yLeft, "Amplitude [dB]" );
-    setAxisTitle( QwtPlot::yRight, "Phase [deg]" );
+    for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
+    {
+        setAxesCount( axisPos, 3 );
+        
+        for ( int i = 0; i < axesCount( axisPos ); i++ )
+        {
+            QwtAxisId axisId( axisPos, i );
 
+            QString title( "Normalized Frequency or any other important stuff" );
+            setAxisTitle( axisId, title + QString().setNum( i ) );
+        }
+    }
+
+    setAxisVisible( QwtPlot::yRight );
+    setAxisVisible( QwtPlot::xTop );
     setAxisMaxMajor( QwtPlot::xBottom, 6 );
     setAxisMaxMinor( QwtPlot::xBottom, 9 );
     setAxisScaleEngine( QwtPlot::xBottom, new QwtLogScaleEngine );

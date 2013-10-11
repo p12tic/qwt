@@ -186,6 +186,8 @@ public:
 
     // Axes
 
+    void setAxesCount( int axisPos, int count );
+
     int axesCount( int axisPos, bool onlyVisible = false ) const;
     bool isAxisValid( QwtAxisId ) const;
 

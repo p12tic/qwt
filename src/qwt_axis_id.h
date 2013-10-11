@@ -12,6 +12,10 @@
 
 #include "qwt_global.h"
 
+#ifndef QT_NO_DEBUG_STREAM
+#include <qdebug.h>
+#endif
+
 class QWT_EXPORT QwtAxisId
 {
 public:
@@ -39,5 +43,9 @@ inline bool QwtAxisId::operator!=( const QwtAxisId &other ) const
 {
     return !operator==( other );
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+QWT_EXPORT QDebug operator<<( QDebug, const QwtAxisId & );
+#endif
 
 #endif

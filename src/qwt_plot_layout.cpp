@@ -633,8 +633,7 @@ void QwtPlotLayoutEngine::alignScales( QwtPlotLayout::Options options,
             if ( qwtIsXAxis( axisPos ) )
             {
                 const QRectF &leftScaleRect = scaleRect[QwtPlot::yLeft][ QWT_DUMMY_ID ];
-                const int leftOffset =
-                    backboneOffset[QwtPlot::yLeft] - startDist;
+                const int leftOffset = backboneOffset[QwtPlot::yLeft] - startDist;
 
                 if ( leftScaleRect.isValid() )
                 {
@@ -1575,11 +1574,11 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
     {
         // set the rects for the axes
 
+        int pos = 0;
         for ( int i = 0; i < d_data->scaleRects[ axisPos ].size(); i++ )
         {
             const QwtAxisId axisId( axisPos, i );
 
-            int pos = 0;
             if ( dimensions.dimAxis( axisId ) )
             {
                 const int dim = dimensions.dimAxis( axisId );

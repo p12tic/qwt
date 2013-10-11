@@ -71,10 +71,10 @@ public:
 class QwtPlot::ScaleData
 {
 public:
-    ScaleData()
+    ScaleData( QwtPlot *plot )
     {
         for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
-            d[axisPos].axisData.resize( 1 );
+            setAxesCount( plot, axisPos, 1 );
     }
 
     ~ScaleData()
@@ -85,6 +85,53 @@ public:
             {
                 delete d[axisPos].axisData[i].scaleEngine;
             }
+        }
+    }
+
+    void setAxesCount( QwtPlot *plot, int axisPos, int count )
+    {
+        QVector< QwtPlotAxisData > &axisData = d[axisPos].axisData;
+
+        for ( int i = count; i < axisData.size(); i++ )
+        {
+            delete axisData[i].scaleEngine;
+            delete axisData[i].scaleWidget;
+        }
+
+        const int numAxis = axisData.size();
+        axisData.resize( count );
+
+        for ( int i = numAxis; i < count; i++ )
+        {
+            QString name;
+            QwtScaleDraw::Alignment align;
+
+            switch( axisPos )
+            {
+                case QwtPlot::yLeft:
+                    align = QwtScaleDraw::LeftScale;
+                    name = "QwtPlotAxisYLeft";
+                    break;
+                case QwtPlot::yRight:
+                    align = QwtScaleDraw::RightScale;
+                    name = "QwtPlotAxisYRight";
+                    break;
+                case QwtPlot::xBottom:
+                    align = QwtScaleDraw::BottomScale;
+                    name = "QwtPlotAxisXBottom";
+                    break;
+                case QwtPlot::xTop:
+                    align = QwtScaleDraw::TopScale;
+                    name = "QwtPlotAxisXTop";
+                    break;
+                default:;
+            }
+
+            if ( i > 0 )
+                name += QString().setNum( i );
+
+
+            axisData[ i ].initWidget( align, name, plot );
         }
     }
 
@@ -116,12 +163,7 @@ public:
 //! Initialize axes
 void QwtPlot::initScaleData()
 {
-    d_scaleData = new ScaleData();
-
-    d_scaleData->axisData( yLeft ).initWidget( QwtScaleDraw::LeftScale, "QwtPlotAxisYLeft", this );
-    d_scaleData->axisData( yRight ).initWidget( QwtScaleDraw::RightScale, "QwtPlotAxisYRight", this );
-    d_scaleData->axisData( xTop ).initWidget( QwtScaleDraw::TopScale, "QwtPlotAxisXTop", this );
-    d_scaleData->axisData( xBottom ).initWidget( QwtScaleDraw::BottomScale, "QwtPlotAxisXBottom", this );
+    d_scaleData = new ScaleData( this );
 
     d_scaleData->axisData( yRight ).isVisible = false;
     d_scaleData->axisData( xTop ).isVisible = false;
@@ -131,6 +173,17 @@ void QwtPlot::deleteScaleData()
 {
     delete d_scaleData;
     d_scaleData = NULL;
+}
+
+void QwtPlot::setAxesCount( int axisPos, int count )
+{
+    count = qMax( count, 1 ); // we need at least one axis
+
+    if ( count != axesCount( axisPos ) )
+    {
+        d_scaleData->setAxesCount( this, axisPos, count );
+        autoRefresh();
+    }
 }
 
 int QwtPlot::axesCount( int axisPos, bool onlyVisible ) const
