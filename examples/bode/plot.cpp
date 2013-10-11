@@ -42,10 +42,6 @@ Plot::Plot( QWidget *parent ):
     setTitle( "Frequency Response of a Second-Order System" );
     setFooter( "Footer Response of a Second-Order System" );
 
-    QwtPlotCanvas *canvas = new QwtPlotCanvas();
-    canvas->setBorderRadius( 10 );
-
-    setCanvas( canvas );
     setCanvasBackground( QColor( "MidnightBlue" ) );
 
     // legend
@@ -57,6 +53,7 @@ Plot::Plot( QWidget *parent ):
     grid->enableXMin( true );
     grid->setMajorPen( Qt::white, 0, Qt::DotLine );
     grid->setMinorPen( Qt::gray, 0 , Qt::DotLine );
+    grid->setAxes( QwtAxisId( xTop, 2 ), QwtAxisId( yRight, 1 ) );
     grid->attach( this );
 
     // axes
@@ -70,6 +67,16 @@ Plot::Plot( QWidget *parent ):
 
             QString title( "Normalized Frequency or any other important stuff" );
             setAxisTitle( axisId, title + QString().setNum( i ) );
+
+            if ( i == 1 )
+            {
+                setAxisScale( axisId, 1000000, 500000 );
+                if ( axisPos == yLeft || axisPos == yRight )
+                    setAxisLabelRotation( axisId, -60 );
+            }
+
+            if ( i == 2 )
+                setAxisScale( axisId, 70.457895, 0.00000555 );
         }
     }
 
