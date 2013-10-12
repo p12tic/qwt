@@ -15,16 +15,6 @@
 #include <qscrollbar.h>
 #include <qmath.h>
 
-static inline bool qwtIsXAxis( int axisPos ) 
-{
-    return ( axisPos == QwtAxis::xTop ) || ( axisPos == QwtAxis::xBottom );
-}
-
-static inline bool qwtIsYAxis( int axisPos ) 
-{
-    return ( axisPos == QwtAxis::yLeft ) || ( axisPos == QwtAxis::yRight );
-}
-
 class QwtPlotLayoutData
 {
 public:
@@ -541,7 +531,7 @@ QwtPlotLayoutEngine::layoutDimensions( QwtPlotLayout::Options options,
                 if ( scaleData.isVisible )
                 {
                     double length;
-                    if ( qwtIsXAxis( axisPos ) )
+                    if ( QwtAxis::isXAxis( axisPos ) )
                     {
                         length = rect.width() - dimensions.dimYAxes();
                         length -= scaleData.start + scaleData.end;
@@ -643,7 +633,7 @@ void QwtPlotLayoutEngine::alignScales( QwtPlotLayout::Options options,
             const int startDist = layoutData.axisData( axisId ).start;
             const int endDist = layoutData.axisData( axisId ).end;
 
-            if ( qwtIsXAxis( axisPos ) )
+            if ( QwtAxis::isXAxis( axisPos ) )
             {
                 const QRectF &leftScaleRect = scaleRect[QwtAxis::yLeft][ QWT_DUMMY_ID ];
                 const int leftOffset = backboneOffset[QwtAxis::yLeft] - startDist;
@@ -813,7 +803,7 @@ void QwtPlotLayoutEngine::alignScales( QwtPlotLayout::Options options,
             if ( !sRect.isValid() )
                 continue;
 
-            if ( qwtIsXAxis( axisId.pos ) )
+            if ( QwtAxis::isXAxis( axisId.pos ) )
             {
                 if ( d_alignCanvas[QwtAxis::yLeft] )
                 {
@@ -911,7 +901,7 @@ QwtPlotLayout::~QwtPlotLayout()
   be set to -1, excluding the borders of the scales.
 
   \param margin New margin
-  \param axis One of QwtPlot::Axis. Specifies where the position of the margin.
+  \param axisPos One of QwtAxis::Position. Specifies where the position of the margin.
               -1 means margin at all borders.
   \sa canvasMargin()
 
@@ -928,23 +918,23 @@ void QwtPlotLayout::setCanvasMargin( int margin, int axisPos )
         for ( axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
             d_data->layoutEngine.setCanvasMargin( axisPos, margin );
     }
-    else if ( axisPos >= 0 && axisPos < QwtAxis::PosCount )
+    else if ( QwtAxis::isValid( axisPos ) )
     {
         d_data->layoutEngine.setCanvasMargin( axisPos, margin );
     }
 }
 
 /*!
-    \param axisId Axis index
+    \param axisPos Axis position
     \return Margin around the scale tick borders
     \sa setCanvasMargin()
 */
-int QwtPlotLayout::canvasMargin( int axisId ) const
+int QwtPlotLayout::canvasMargin( int axisPos ) const
 {
-    if ( axisId < 0 || axisId >= QwtAxis::PosCount )
+    if ( !QwtAxis::isValid( axisPos ) )
         return 0;
 
-    return d_data->layoutEngine.canvasMargin( axisId );
+    return d_data->layoutEngine.canvasMargin( axisPos );
 }
 
 /*!
@@ -966,8 +956,8 @@ void QwtPlotLayout::setAlignCanvasToScales( bool on )
   - align with the axis scale ends to control its size.
 
   The axisId parameter is somehow confusing as it identifies a border
-  of the plot and not the axes, that are aligned. F.e when QwtPlot::yLeft
-  is set, the left end of the the x-axes ( QwtPlot::xTop, QwtPlot::xBottom )
+  of the plot and not the axes, that are aligned. F.e when QwtAxis::yLeft
+  is set, the left end of the the x-axes ( QwtAxis::xTop, QwtAxis::xBottom )
   is aligned.
 
   \param axisId Axis index
@@ -978,7 +968,7 @@ void QwtPlotLayout::setAlignCanvasToScales( bool on )
 */
 void QwtPlotLayout::setAlignCanvasToScale( int axisPos, bool on )
 {
-    if ( axisPos >= 0 && axisPos < QwtAxis::PosCount )
+    if ( QwtAxis::isValid( axisPos ) )
         d_data->layoutEngine.setAlignCanvas( axisPos, on );
 }
 
@@ -993,7 +983,7 @@ void QwtPlotLayout::setAlignCanvasToScale( int axisPos, bool on )
 */
 bool QwtPlotLayout::alignCanvasToScale( int axisPos ) const
 {
-    if ( axisPos < 0 || axisPos >= QwtAxis::PosCount )
+    if ( !QwtAxis::isValid( axisPos ) )
         return false;
 
     return d_data->layoutEngine.alignCanvas( axisPos );
@@ -1192,7 +1182,7 @@ QRectF QwtPlotLayout::legendRect() const
  */
 void QwtPlotLayout::setScaleRect( QwtAxisId axisId, const QRectF &rect )
 {
-    if ( axisId.pos >= 0 && axisId.pos < QwtAxis::PosCount )
+    if ( QwtAxis::isValid( axisId.pos ) )
     {
         QVector<QRectF> &scaleRects = d_data->scaleRects[ axisId.pos ];
 
@@ -1208,7 +1198,7 @@ void QwtPlotLayout::setScaleRect( QwtAxisId axisId, const QRectF &rect )
 */
 QRectF QwtPlotLayout::scaleRect( QwtAxisId axisId ) const
 {
-    if ( axisId.pos >= 0 && axisId.pos < QwtAxis::PosCount )
+    if ( QwtAxis::isValid( axisId.pos ) )
     {
         QVector<QRectF> &scaleRects = d_data->scaleRects[ axisId.pos ];
         if ( axisId.id >= 0 && axisId.id < scaleRects.size() )
@@ -1313,7 +1303,7 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
     for ( axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
         ScaleData &sd = scaleData[ axisPos ];
-        if ( sd.w && qwtIsXAxis( axisPos ) )
+        if ( sd.w && QwtAxis::isXAxis( axisPos ) )
         {
             if ( ( sd.minLeft > canvasBorder[QwtAxis::yLeft] )
                 && scaleData[QwtAxis::yLeft].w )
@@ -1335,7 +1325,7 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
             }
         }
 
-        if ( sd.h && qwtIsYAxis( axisPos ) )
+        if ( sd.h && QwtAxis::isYAxis( axisPos ) )
         {
             if ( ( sd.minLeft > canvasBorder[QwtAxis::xBottom] ) &&
                 scaleData[QwtAxis::xBottom].h )

@@ -133,11 +133,8 @@ bool Plot::eventFilter( QObject *object, QEvent *e )
 
 void Plot::insertCurve( int axis, double base )
 {
-    Qt::Orientation o;
-    if ( axis == QwtAxis::yLeft || axis == QwtAxis::yRight )
-        o = Qt::Horizontal;
-    else
-        o = Qt::Vertical;
+    const Qt::Orientation o = 
+		QwtAxis::isYAxis( axis ) ? Qt::Horizontal : Qt::Vertical;
 
     QRgb rgb = static_cast<QRgb>( rand() );
     insertCurve( o, QColor( rgb ), base );

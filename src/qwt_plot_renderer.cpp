@@ -485,8 +485,6 @@ void QwtPlotRenderer::render( QwtPlot *plot,
                     case QwtAxis::xBottom:
                         layoutRect.adjust( 0, 0, 0, -1 );
                         break;
-                    default:
-                        break;
                 }
                 layoutRect.adjust( left, top, right, bottom );
             }
@@ -910,7 +908,7 @@ QwtScaleMapTable QwtPlotRenderer::buildCanvasMaps(
                 const int eDist = plot->axisWidget( axisId )->endBorderDist();
                 const QRectF scaleRect = plot->plotLayout()->scaleRect( axisId );
 
-                if ( axisPos == QwtAxis::xTop || axisPos == QwtAxis::xBottom )
+                if ( QwtAxis::isXAxis( axisPos ) )
                 {
                     from = scaleRect.left() + sDist;
                     to = scaleRect.right() - eDist;
@@ -927,7 +925,7 @@ QwtScaleMapTable QwtPlotRenderer::buildCanvasMaps(
                 if ( !plot->plotLayout()->alignCanvasToScale( axisPos ) )
                     margin = plot->plotLayout()->canvasMargin( axisPos );
 
-                if ( axisPos == QwtAxis::yLeft || axisPos == QwtAxis::yRight )
+                if ( QwtAxis::isYAxis( axisPos ) )
                 {
                     from = canvasRect.bottom() - margin;
                     to = canvasRect.top() + margin;

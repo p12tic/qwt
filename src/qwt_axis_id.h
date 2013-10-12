@@ -35,8 +35,27 @@ namespace QwtAxis
     };
 
     //! \brief Number of axis positions
-	enum { PosCount = xTop + 1 };
+    enum { PosCount = xTop + 1 };
+
+    bool isValid( int axisPos );
+    bool isYAxis( int axisPos );
+    bool isXAxis( int axisPos );
 };
+
+inline bool QwtAxis::isValid( int axisPos )
+{
+    return ( axisPos >= 0 && axisPos < PosCount );
+}
+
+inline bool QwtAxis::isXAxis( int axisPos )
+{
+    return ( axisPos == xBottom ) || ( axisPos == xTop );
+}
+
+inline bool QwtAxis::isYAxis( int axisPos )
+{
+    return ( axisPos == yLeft ) || ( axisPos == yRight );
+}
 
 class QWT_EXPORT QwtAxisId
 {
@@ -46,6 +65,10 @@ public:
     bool operator==( const QwtAxisId & ) const;
     bool operator!=( const QwtAxisId & ) const;
 
+    bool isXAxis() const;
+    bool isYAxis() const;
+
+public:
     int pos;
     int id;
 };
@@ -64,6 +87,16 @@ inline bool QwtAxisId::operator==( const QwtAxisId &other ) const
 inline bool QwtAxisId::operator!=( const QwtAxisId &other ) const
 {
     return !operator==( other );
+}
+
+inline bool QwtAxisId::isXAxis() const
+{
+    return QwtAxis::isXAxis( pos );
+}
+
+inline bool QwtAxisId::isYAxis() const
+{
+    return QwtAxis::isYAxis( pos );
 }
 
 #ifndef QT_NO_DEBUG_STREAM

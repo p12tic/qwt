@@ -26,8 +26,7 @@ Plot::Plot( QWidget *parent ):
 
     for ( int axis = 0; axis < QwtAxis::PosCount; axis++ )
     {
-        const bool on = axis == QwtAxis::yLeft ||
-            axis == QwtAxis::yRight;
+        const bool on = QwtAxis::isYAxis( axis );
 
         setAxisVisible( axis, on );
         panner->setAxisEnabled( axis, on );

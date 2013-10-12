@@ -38,8 +38,8 @@ Plot::Plot( QWidget *parent ):
     setAxisTitle( QwtAxis::xBottom, "x -->" );
     setAxisTitle( QwtAxis::yLeft, "y -->" );
 #if 0
-    setAxisScaleEngine( xBottom, new QwtLog10ScaleEngine );
-    setAxisScaleEngine( yLeft, new QwtLog10ScaleEngine );
+    setAxisScaleEngine( QwtAxis::xBottom, new QwtLog10ScaleEngine );
+    setAxisScaleEngine( QwtAxis::yLeft, new QwtLog10ScaleEngine );
 #endif
 
     populate();

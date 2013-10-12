@@ -32,8 +32,8 @@ public:
 
   The picker is set to those x- and y-axis of the plot
   that are enabled. If both or no x-axis are enabled, the picker
-  is set to QwtPlot::xBottom. If both or no y-axis are
-  enabled, it is set to QwtPlot::yLeft.
+  is set to QwtAxis::xBottom. If both or no y-axis are
+  enabled, it is set to QwtAxis::yLeft.
 
   \param canvas Plot canvas to observe, also the parent object
 

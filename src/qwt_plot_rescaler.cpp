@@ -44,7 +44,7 @@ public:
 
     QwtPlotRescaler::AxisData *axisData( QwtAxisId axisId )
     {
-        if ( axisId.pos < 0 || axisId.pos >= QwtAxis::PosCount )
+        if ( !QwtAxis::isValid( axisId.pos ) )
             return NULL;
 
         return &( axisDataMap[ axisId.pos ][ axisId.id ] );
@@ -144,7 +144,7 @@ QwtPlotRescaler::RescalePolicy QwtPlotRescaler::rescalePolicy() const
 /*!
   Set the reference axis ( see RescalePolicy )
 
-  \param axis Axis index ( QwtPlot::Axis )
+  \param axisId Axis id 
   \sa referenceAxis()
 */
 void QwtPlotRescaler::setReferenceAxis( QwtAxisId axisId )
@@ -177,7 +177,7 @@ void QwtPlotRescaler::setExpandingDirection(
 /*!
   Set the direction in which an axis should be expanded
 
-  \param axis Axis index ( see QwtPlot::AxisId )
+  \param axisId Axis id
   \param direction Direction
   \sa expandingDirection()
 */
@@ -192,7 +192,7 @@ void QwtPlotRescaler::setExpandingDirection(
 /*!
   \return Direction in which an axis should be expanded
 
-  \param axis Axis index ( see QwtPlot::AxisId )
+  \param axisId Axis id
   \sa setExpandingDirection()
 */
 QwtPlotRescaler::ExpandingDirection
@@ -222,7 +222,7 @@ void QwtPlotRescaler::setAspectRatio( double ratio )
   Set the aspect ratio between the scale of the reference axis
   and another scale. The default ratio is 1.0
 
-  \param axis Axis index ( see QwtPlot::AxisId )
+  \param axisId Axis id
   \param ratio Aspect ratio
   \sa aspectRatio()
 */
@@ -239,7 +239,7 @@ void QwtPlotRescaler::setAspectRatio( QwtAxisId axisId, double ratio )
 /*!
   \return Aspect ratio between an axis and the reference axis.
 
-  \param axis Axis index ( see QwtPlot::AxisId )
+  \param axisId Axis id
   \sa setAspectRatio()
 */
 double QwtPlotRescaler::aspectRatio( QwtAxisId axisId ) const
@@ -257,7 +257,7 @@ double QwtPlotRescaler::aspectRatio( QwtAxisId axisId ) const
   In Fitting mode, the hint is used as minimal interval
   that always needs to be displayed.
 
-  \param axis Axis, see QwtPlot::Axis
+  \param axisId Axis id
   \param interval Axis
   \sa intervalHint(), RescalePolicy
 */
@@ -270,7 +270,7 @@ void QwtPlotRescaler::setIntervalHint( QwtAxisId axisId,
 }
 
 /*!
-  \param axis Axis, see QwtPlot::Axis
+  \param axisId Axis id
   \return Interval hint
   \sa setIntervalHint(), RescalePolicy
 */
@@ -402,7 +402,7 @@ void QwtPlotRescaler::rescale(
 /*!
   Calculate the new scale interval of a plot axis
 
-  \param axis Axis index ( see QwtPlot::AxisId )
+  \param axisId Axis id
   \param oldSize Previous size of the canvas
   \param newSize New size of the canvas
 
@@ -465,7 +465,7 @@ QwtInterval QwtPlotRescaler::expandScale( QwtAxisId axisId,
 /*!
   Synchronize an axis scale according to the scale of the reference axis
 
-  \param axis Axis index ( see QwtPlot::AxisId )
+  \param axisId Axis id
   \param reference Interval of the reference axis
   \param size Size of the canvas
 
@@ -500,18 +500,15 @@ QwtInterval QwtPlotRescaler::syncScale( QwtAxisId axisId,
 
 /*!
   \return Orientation of an axis
-  \param axisPos Axis position ( see QwtPlot::AxisId )
+  \param axisId Axis id
 */
 Qt::Orientation QwtPlotRescaler::orientation( QwtAxisId axisId ) const
 {
-    if ( axisId.pos == QwtAxis::yLeft || axisId.pos == QwtAxis::yRight )
-        return Qt::Vertical;
-
-    return Qt::Horizontal;
+    return QwtAxis::isYAxis( axisId.pos ) ? Qt::Vertical : Qt::Horizontal;
 }
 
 /*!
-  \param axis Axis index ( see QwtPlot::AxisId )
+  \param axisId Axis id
   \return Normalized interval of an axis
 */
 QwtInterval QwtPlotRescaler::interval( QwtAxisId axisId ) const

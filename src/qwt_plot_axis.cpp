@@ -124,7 +124,6 @@ public:
                     align = QwtScaleDraw::TopScale;
                     name = "QwtPlotAxisXTop";
                     break;
-                default:;
             }
 
             if ( i > 0 )
@@ -137,7 +136,7 @@ public:
 
     inline int axesCount( int pos ) const
     {
-        if ( pos < 0 || pos >= QwtAxis::PosCount )
+        if ( !QwtAxis::isValid( pos ) )
             return -1;
 
         return d[pos].axisData.count();
@@ -448,7 +447,7 @@ QwtText QwtPlot::axisTitle( QwtAxisId axisId ) const
   Even when an axis is not visible curves, markers and can be attached
   to it, and transformation of screen coordinates into values works as normal.
 
-  Only xBottom and yLeft are visible by default.
+  Only QwtAxis::xBottom and QwtAxis::yLeft are visible by default.
 
   \param axisPos Axis position
   \param on \c true (visisble) or \c false (hidden)

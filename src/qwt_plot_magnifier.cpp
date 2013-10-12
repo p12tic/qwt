@@ -40,7 +40,7 @@ QwtPlotMagnifier::~QwtPlotMagnifier()
    Only Axes that are enabled will be zoomed.
    All other axes will remain unchanged.
 
-   \param axis Axis, see QwtPlot::Axis
+   \param axisId Axis id
    \param on On/Off
 
    \sa isAxisEnabled()
@@ -53,7 +53,7 @@ void QwtPlotMagnifier::setAxisEnabled( QwtAxisId axisId, bool on )
 /*!
    Test if an axis is enabled
 
-   \param axisPos Axis position, see QwtPlot::Axis
+   \param axisId Axis id
    \return True, if the axis is enabled
 
    \sa setAxisEnabled()

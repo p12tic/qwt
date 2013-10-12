@@ -71,7 +71,7 @@ Plot::Plot( QWidget *parent ):
             if ( i == 1 )
             {
                 setAxisScale( axisId, 1000000, 500000 );
-                if ( axisPos == QwtAxis::yLeft || axisPos == QwtAxis::yRight )
+                if ( QwtAxis::isYAxis( axisPos ) )
                     setAxisLabelRotation( axisId, -60 );
             }
 

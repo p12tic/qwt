@@ -141,7 +141,7 @@ const QwtPlot* PlotMatrix::plotAt( int row, int column ) const
 
 void PlotMatrix::enableAxis( int axis, bool tf )
 {
-    if ( axis >= 0 && axis < QwtAxis::PosCount )
+    if ( QwtAxis::isValid( axis ) )
     {
         if ( tf != d_data->isAxisEnabled[axis] )
         {
@@ -153,7 +153,7 @@ void PlotMatrix::enableAxis( int axis, bool tf )
 
 bool PlotMatrix::axisEnabled( int axis ) const
 {
-    if ( axis >= 0 && axis < QwtAxis::PosCount )
+    if ( QwtAxis::isValid( axis ) )
         return d_data->isAxisEnabled[axis];
 
     return false;
@@ -306,7 +306,7 @@ void PlotMatrix::updateLayout()
 
 void PlotMatrix::alignAxes( int rowOrColumn, int axis )
 {
-    if ( axis == QwtAxis::yLeft || axis == QwtAxis::yRight )
+    if ( QwtAxis::isYAxis( axis ) )
     {
         double maxExtent = 0;
 

@@ -101,10 +101,10 @@ public:
      */
     enum LegendPosition
     {
-        //! The legend will be left from the QwtPlot::yLeft axis.
+        //! The legend will be left from the QwtAxis::yLeft axis.
         LeftLegend,
 
-        //! The legend will be right from the QwtPlot::yRight axis.
+        //! The legend will be right from the QwtAxis::yRight axis.
         RightLegend,
 
         //! The legend will be below the footer 

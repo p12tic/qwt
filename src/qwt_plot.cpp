@@ -528,7 +528,7 @@ QSize QwtPlot::sizeHint() const
 
                 const QSize hint = scaleWidget->minimumSizeHint();
 
-                if ( axisPos == QwtAxis::yLeft || axisPos == QwtAxis::yRight )
+                if ( QwtAxis::isYAxis( axisPos ) )
                 {
                     const int hDiff = ( majCnt - 1 ) * niceDist - hint.height();
                     dh = qMax( dh, hDiff );
@@ -827,7 +827,7 @@ QwtScaleMap QwtPlot::canvasMap( QwtAxisId axisId ) const
     if ( isAxisVisible( axisId ) )
     {
         const QwtScaleWidget *s = axisWidget( axisId );
-        if ( axisId.pos == QwtAxis::yLeft || axisId.pos == QwtAxis::yRight )
+        if ( QwtAxis::isYAxis( axisId.pos ) )
         {
             double y = s->y() + s->startBorderDist() - d_data->canvas->y();
             double h = s->height() - s->startBorderDist() - s->endBorderDist();
@@ -847,7 +847,7 @@ QwtScaleMap QwtPlot::canvasMap( QwtAxisId axisId ) const
             margin = plotLayout()->canvasMargin( axisId.pos );
 
         const QRect &canvasRect = d_data->canvas->contentsRect();
-        if ( axisId.pos == QwtAxis::yLeft || axisId.pos == QwtAxis::yRight )
+        if ( QwtAxis::isYAxis( axisId.pos ) )
         {
             map.setPaintInterval( canvasRect.bottom() - margin,
                 canvasRect.top() + margin );

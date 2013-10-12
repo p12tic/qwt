@@ -472,8 +472,6 @@ int ScrollZoomer::oppositeAxis( int axis ) const
             return QwtAxis::yRight;
         case QwtAxis::yRight:
             return QwtAxis::yLeft;
-        default:
-            break;
     }
 
     return axis;
