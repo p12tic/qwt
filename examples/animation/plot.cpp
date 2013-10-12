@@ -206,7 +206,7 @@ Plot::Plot( QWidget *parent ):
     setTitle( "Animated Curves" );
 
     // hide all axes
-    for ( int axis = 0; axis < QwtPlot::NumAxisPositions; axis++ )
+    for ( int axis = 0; axis < QwtAxis::PosCount; axis++ )
         setAxisVisible( axis, false );
 
     plotLayout()->setCanvasMargin( 10 );

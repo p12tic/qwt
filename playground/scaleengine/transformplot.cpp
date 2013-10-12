@@ -49,8 +49,8 @@ TransformPlot::TransformPlot( QWidget *parent ):
     setTitle( "Transformations" );
     setCanvasBackground( Qt::white );
 
-    setAxisScale( QwtPlot::xBottom, 0.0, 1.0 );
-    setAxisScale( QwtPlot::yLeft, 0.0, 1.0 );
+    setAxisScale( QwtAxis::xBottom, 0.0, 1.0 );
+    setAxisScale( QwtAxis::yLeft, 0.0, 1.0 );
 
     QwtLegend *legend = new QwtLegend();
     legend->setDefaultItemMode( QwtLegendData::Checkable );

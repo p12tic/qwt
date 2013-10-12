@@ -15,7 +15,7 @@
 class QwtAxesMask::PrivateData
 {
 public:
-    QList<int> disabledAxes[ QwtPlot::NumAxisPositions ];
+    QList<int> disabledAxes[ QwtAxis::PosCount ];
 };
 
 QwtAxesMask::QwtAxesMask()
@@ -41,7 +41,7 @@ QwtAxesMask::~QwtAxesMask()
 */
 void QwtAxesMask::setEnabled( QwtAxisId axisId, bool on )
 {
-    if ( axisId.pos < 0 || axisId.pos >= QwtPlot::NumAxisPositions )
+    if ( axisId.pos < 0 || axisId.pos >= QwtAxis::PosCount )
         return;
 
     QList<int> &axes = d_data->disabledAxes[ axisId.pos ];
@@ -72,7 +72,7 @@ void QwtAxesMask::setEnabled( QwtAxisId axisId, bool on )
 */
 bool QwtAxesMask::isEnabled( QwtAxisId axisId ) const
 {
-    if ( axisId.pos >= 0 && axisId.pos < QwtPlot::NumAxisPositions )
+    if ( axisId.pos >= 0 && axisId.pos < QwtAxis::PosCount )
     {
         const QList<int> &axes = d_data->disabledAxes[ axisId.pos ];
         return qFind( axes, axisId.id ) != axes.end();

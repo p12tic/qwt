@@ -51,11 +51,11 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
     const QwtPlot *plot = QwtPlotPicker::plot();
     // attach axes
 
-    int xAxis = QwtPlot::xBottom;
-    if ( plot->axesCount( QwtPlot::xTop, true ) > 0 && 
-        plot->axesCount( QwtPlot::xBottom, true ) == 0 )
+    int xAxis = QwtAxis::xBottom;
+    if ( plot->axesCount( QwtAxis::xTop, true ) > 0 && 
+        plot->axesCount( QwtAxis::xBottom, true ) == 0 )
     {
-        xAxis = QwtPlot::xTop;
+        xAxis = QwtAxis::xTop;
     }
 
     for ( int i = 0; i < plot->axesCount( xAxis ); i++ )
@@ -67,11 +67,11 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
         }
     }
 
-    int yAxis = QwtPlot::yLeft;
-    if ( plot->axesCount( QwtPlot::yRight, true ) > 0
-         && plot->axesCount( QwtPlot::yLeft, true ) == 0 )
+    int yAxis = QwtAxis::yLeft;
+    if ( plot->axesCount( QwtAxis::yRight, true ) > 0
+         && plot->axesCount( QwtAxis::yLeft, true ) == 0 )
     {
-        yAxis = QwtPlot::yRight;
+        yAxis = QwtAxis::yRight;
     }
 
     for ( int i = 0; i < plot->axesCount( yAxis ); i++ )

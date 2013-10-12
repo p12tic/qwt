@@ -94,25 +94,6 @@ class QWT_EXPORT QwtPlot: public QFrame, public QwtPlotDict
 #endif
 
 public:
-    //! \brief Axis position
-    enum AxisPosition
-    {
-        //! Y axis left of the canvas
-        yLeft,
-
-        //! Y axis right of the canvas
-        yRight,
-
-        //! X axis below the canvas
-        xBottom,
-
-        //! X axis above the canvas
-        xTop,
-
-        //! Number of axes
-        NumAxisPositions
-    };
-
     /*!
         Position of the legend, relative to the canvas.
 
@@ -267,6 +248,28 @@ public:
 
     virtual QVariant itemToInfo( QwtPlotItem * ) const;
     virtual QwtPlotItem *infoToItem( const QVariant & ) const;
+
+#if QWT_COMPAT
+    enum Axis
+    {
+        yLeft = QwtAxis::yLeft,
+        yRight = QwtAxis::yRight,
+        xBottom = QwtAxis::xBottom,
+        xTop = QwtAxis::xTop,
+        axisCnt = QwtAxis::PosCount
+    };
+
+
+    void enableAxis( int axisId, bool on = true )
+    {
+        setAxisVisible( axisId, on );
+    }
+        
+    bool axisEnabled( int axisId ) const
+    {
+        return isAxisVisible( axisId );
+    }
+#endif
 
 Q_SIGNALS:
     /*!

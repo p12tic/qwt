@@ -53,11 +53,11 @@ Plot::Plot( QWidget *parent ):
     grid->enableXMin( true );
     grid->setMajorPen( Qt::white, 0, Qt::DotLine );
     grid->setMinorPen( Qt::gray, 0 , Qt::DotLine );
-    grid->setAxes( QwtAxisId( xTop, 2 ), QwtAxisId( yRight, 1 ) );
+    grid->setAxes( QwtAxisId( QwtAxis::xTop, 2 ), QwtAxisId( QwtAxis::yRight, 1 ) );
     grid->attach( this );
 
     // axes
-    for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
+    for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
         setAxesCount( axisPos, 3 );
         
@@ -71,7 +71,7 @@ Plot::Plot( QWidget *parent ):
             if ( i == 1 )
             {
                 setAxisScale( axisId, 1000000, 500000 );
-                if ( axisPos == yLeft || axisPos == yRight )
+                if ( axisPos == QwtAxis::yLeft || axisPos == QwtAxis::yRight )
                     setAxisLabelRotation( axisId, -60 );
             }
 
@@ -80,25 +80,25 @@ Plot::Plot( QWidget *parent ):
         }
     }
 
-    setAxisVisible( QwtPlot::yRight );
-    setAxisVisible( QwtPlot::xTop );
-    setAxisMaxMajor( QwtPlot::xBottom, 6 );
-    setAxisMaxMinor( QwtPlot::xBottom, 9 );
-    setAxisScaleEngine( QwtPlot::xBottom, new QwtLogScaleEngine );
+    setAxisVisible( QwtAxis::yRight );
+    setAxisVisible( QwtAxis::xTop );
+    setAxisMaxMajor( QwtAxis::xBottom, 6 );
+    setAxisMaxMinor( QwtAxis::xBottom, 9 );
+    setAxisScaleEngine( QwtAxis::xBottom, new QwtLogScaleEngine );
 
     // curves
     d_curve1 = new QwtPlotCurve( "Amplitude" );
     d_curve1->setRenderHint( QwtPlotItem::RenderAntialiased );
     d_curve1->setPen( Qt::yellow );
     d_curve1->setLegendAttribute( QwtPlotCurve::LegendShowLine );
-    d_curve1->setYAxis( QwtPlot::yLeft );
+    d_curve1->setYAxis( QwtAxis::yLeft );
     d_curve1->attach( this );
 
     d_curve2 = new QwtPlotCurve( "Phase" );
     d_curve2->setRenderHint( QwtPlotItem::RenderAntialiased );
     d_curve2->setPen( Qt::cyan );
     d_curve2->setLegendAttribute( QwtPlotCurve::LegendShowLine );
-    d_curve2->setYAxis( QwtPlot::yRight );
+    d_curve2->setYAxis( QwtAxis::yRight );
     d_curve2->attach( this );
 
     // marker

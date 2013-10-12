@@ -147,7 +147,7 @@ int main( int argc, char **argv )
     plot.setTitle( "Plot Demo" );
     plot.setCanvasBackground( Qt::white );
 
-    plot.setAxisScale( QwtPlot::xBottom, -1.0, 6.0 );
+    plot.setAxisScale( QwtAxis::xBottom, -1.0, 6.0 );
 
     QwtLegend *legend = new QwtLegend();
     legend->setDefaultItemMode( QwtLegendData::Checkable );

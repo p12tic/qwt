@@ -82,13 +82,13 @@ Plot::Plot( QWidget *parent ):
 
     const QwtInterval zInterval = d_spectrogram->data()->interval( Qt::ZAxis );
     // A color bar on the right axis
-    QwtScaleWidget *rightAxis = axisWidget( QwtPlot::yRight );
+    QwtScaleWidget *rightAxis = axisWidget( QwtAxis::yRight );
     rightAxis->setTitle( "Intensity" );
     rightAxis->setColorBarEnabled( true );
     rightAxis->setColorMap( zInterval, new ColorMap() );
 
-    setAxisScale( QwtPlot::yRight, zInterval.minValue(), zInterval.maxValue() );
-    setAxisVisible( QwtPlot::yRight );
+    setAxisScale( QwtAxis::yRight, zInterval.minValue(), zInterval.maxValue() );
+    setAxisVisible( QwtAxis::yRight );
 
     plotLayout()->setAlignCanvasToScales( true );
     replot();
@@ -105,14 +105,14 @@ Plot::Plot( QWidget *parent ):
         Qt::RightButton );
 
     QwtPlotPanner *panner = new QwtPlotPanner( canvas() );
-    panner->setAxisEnabled( QwtPlot::yRight, false );
+    panner->setAxisEnabled( QwtAxis::yRight, false );
     panner->setMouseButton( Qt::MidButton );
 
     // Avoid jumping when labels with more/less digits
     // appear/disappear when scrolling vertically
 
-    const QFontMetrics fm( axisWidget( QwtPlot::yLeft )->font() );
-    QwtScaleDraw *sd = axisScaleDraw( QwtPlot::yLeft );
+    const QFontMetrics fm( axisWidget( QwtAxis::yLeft )->font() );
+    QwtScaleDraw *sd = axisScaleDraw( QwtAxis::yLeft );
     sd->setMinimumExtent( fm.width( "100.00" ) );
 
     const QColor c( Qt::darkBlue );

@@ -21,7 +21,7 @@ void CpuPieMarker::draw( QPainter *painter,
 {
     const CpuPlot *cpuPlot = static_cast<CpuPlot *> ( plot() );
 
-    const QwtScaleMap yMap = cpuPlot->canvasMap( QwtPlot::yLeft );
+    const QwtScaleMap yMap = cpuPlot->canvasMap( QwtAxis::yLeft );
 
     const int margin = 5;
 

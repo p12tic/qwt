@@ -114,7 +114,7 @@ void QwtPlotMagnifier::rescale( double factor )
     const bool autoReplot = plt->autoReplot();
     plt->setAutoReplot( false );
 
-    for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
+    for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
         const int axesCount = plt->axesCount( axisPos );
 

@@ -16,6 +16,28 @@
 #include <qdebug.h>
 #endif
 
+namespace QwtAxis
+{
+    //! \brief Axis position
+    enum Position
+    {
+        //! Y axis left of the canvas
+        yLeft,
+
+        //! Y axis right of the canvas
+        yRight,
+
+        //! X axis below the canvas
+        xBottom,
+
+        //! X axis above the canvas
+        xTop
+    };
+
+    //! \brief Number of axis positions
+	enum { PosCount = xTop + 1 };
+};
+
 class QWT_EXPORT QwtAxisId
 {
 public:

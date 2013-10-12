@@ -199,7 +199,7 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
     const bool doAutoReplot = plot->autoReplot();
     plot->setAutoReplot( false );
 
-    for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
+    for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
         const int axesCount = plot->axesCount( axisPos );
         for ( int i = 0; i < axesCount; i++ )
@@ -215,7 +215,7 @@ void QwtPlotPanner::moveCanvas( int dx, int dy )
             const double p2 = map.transform( plot->axisScaleDiv( axisId ).upperBound() );
 
             double d1, d2;
-            if ( axisPos == QwtPlot::xBottom || axisPos == QwtPlot::xTop )
+            if ( axisPos == QwtAxis::xBottom || axisPos == QwtAxis::xTop )
             {
                 d1 = map.invTransform( p1 - dx );
                 d2 = map.invTransform( p2 - dx );

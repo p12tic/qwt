@@ -35,8 +35,8 @@ Plot::Plot( QWidget *parent ):
     insertLegend( new QwtLegend(), QwtPlot::RightLegend );
 
     // axes
-    setAxisTitle( xBottom, "x -->" );
-    setAxisTitle( yLeft, "y -->" );
+    setAxisTitle( QwtAxis::xBottom, "x -->" );
+    setAxisTitle( QwtAxis::yLeft, "y -->" );
 #if 0
     setAxisScaleEngine( xBottom, new QwtLog10ScaleEngine );
     setAxisScaleEngine( yLeft, new QwtLog10ScaleEngine );

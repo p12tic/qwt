@@ -26,8 +26,8 @@ public:
         renderHints( 0 ),
         renderThreadCount( 1 ),
         z( 0.0 ),
-        xAxis( QwtPlot::xBottom ),
-        yAxis( QwtPlot::yLeft ),
+        xAxis( QwtAxis::xBottom ),
+        yAxis( QwtAxis::yLeft ),
         legendIconSize( 8, 8 )
     {
     }
@@ -476,13 +476,13 @@ void QwtPlotItem::legendChanged()
 void QwtPlotItem::setAxes( QwtAxisId xAxis, QwtAxisId yAxis )
 {
     if ( xAxis.id >= 0 &&
-        ( xAxis.pos == QwtPlot::xBottom || xAxis.pos == QwtPlot::xTop ) )
+        ( xAxis.pos == QwtAxis::xBottom || xAxis.pos == QwtAxis::xTop ) )
     {
         d_data->xAxis = xAxis;
     }
 
     if ( yAxis.id >= 0 && 
-        ( yAxis.pos == QwtPlot::yLeft || yAxis.pos == QwtPlot::yRight ) )
+        ( yAxis.pos == QwtAxis::yLeft || yAxis.pos == QwtAxis::yRight ) )
     {
         d_data->yAxis = yAxis;
     }
@@ -500,7 +500,7 @@ void QwtPlotItem::setAxes( QwtAxisId xAxis, QwtAxisId yAxis )
 */
 void QwtPlotItem::setXAxis( QwtAxisId axisId )
 {
-    if ( axisId.pos == QwtPlot::xBottom || axisId.pos == QwtPlot::xTop )
+    if ( axisId.pos == QwtAxis::xBottom || axisId.pos == QwtAxis::xTop )
     {
         if ( axisId.id >= 0 )
         {
@@ -520,7 +520,7 @@ void QwtPlotItem::setXAxis( QwtAxisId axisId )
 */
 void QwtPlotItem::setYAxis( QwtAxisId axisId )
 {
-    if ( axisId.pos == QwtPlot::yLeft || axisId.pos == QwtPlot::yRight )
+    if ( axisId.pos == QwtAxis::yLeft || axisId.pos == QwtAxis::yRight )
     {
         if ( axisId.id >= 0 )
         {

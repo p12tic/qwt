@@ -73,13 +73,13 @@ class QwtPlot::ScaleData
 public:
     ScaleData( QwtPlot *plot )
     {
-        for ( int axisPos = 0; axisPos < QwtPlot::NumAxisPositions; axisPos++ )
+        for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
             setAxesCount( plot, axisPos, 1 );
     }
 
     ~ScaleData()
     {
-        for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
+        for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
         {
             for ( int i = 0; i < d[axisPos].axisData.size(); i++ )
             {
@@ -108,19 +108,19 @@ public:
 
             switch( axisPos )
             {
-                case QwtPlot::yLeft:
+                case QwtAxis::yLeft:
                     align = QwtScaleDraw::LeftScale;
                     name = "QwtPlotAxisYLeft";
                     break;
-                case QwtPlot::yRight:
+                case QwtAxis::yRight:
                     align = QwtScaleDraw::RightScale;
                     name = "QwtPlotAxisYRight";
                     break;
-                case QwtPlot::xBottom:
+                case QwtAxis::xBottom:
                     align = QwtScaleDraw::BottomScale;
                     name = "QwtPlotAxisXBottom";
                     break;
-                case QwtPlot::xTop:
+                case QwtAxis::xTop:
                     align = QwtScaleDraw::TopScale;
                     name = "QwtPlotAxisXTop";
                     break;
@@ -137,7 +137,7 @@ public:
 
     inline int axesCount( int pos ) const
     {
-        if ( pos < 0 || pos >= QwtPlot::NumAxisPositions )
+        if ( pos < 0 || pos >= QwtAxis::PosCount )
             return -1;
 
         return d[pos].axisData.count();
@@ -157,7 +157,7 @@ public:
     {
         QVector< QwtPlotAxisData > axisData;
 
-    } d[ QwtPlot::NumAxisPositions ];
+    } d[ QwtAxis::PosCount ];
 };
 
 //! Initialize axes
@@ -165,8 +165,8 @@ void QwtPlot::initScaleData()
 {
     d_scaleData = new ScaleData( this );
 
-    d_scaleData->axisData( yRight ).isVisible = false;
-    d_scaleData->axisData( xTop ).isVisible = false;
+    d_scaleData->axisData( QwtAxis::yRight ).isVisible = false;
+    d_scaleData->axisData( QwtAxis::xTop ).isVisible = false;
 }
 
 void QwtPlot::deleteScaleData()
@@ -748,7 +748,7 @@ void QwtPlot::updateAxes()
     // Find bounding interval of the item data
     // for all axes, where autoscaling is enabled
 
-    QwtInterval intv[NumAxisPositions];
+    QwtInterval intv[QwtAxis::PosCount];
 
     const QwtPlotItemList& itmList = itemList();
 
@@ -777,7 +777,7 @@ void QwtPlot::updateAxes()
 
     // Adjust scales
 
-    for ( int axisPos = 0; axisPos < NumAxisPositions; axisPos++ )
+    for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
         for ( int i = 0; i < d_scaleData->axesCount( axisPos ); i++ )
         {

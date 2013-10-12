@@ -22,12 +22,12 @@ public:
     bool isValid( QwtAxisId ) const;
     const QwtScaleMap &map( QwtAxisId ) const;
 
-    QList< QwtScaleMap > maps[ QwtPlot::NumAxisPositions ];
+    QList< QwtScaleMap > maps[ QwtAxis::PosCount ];
 };
 
 inline bool QwtScaleMapTable::isValid( QwtAxisId axisId ) const
 {
-    if ( axisId.pos >= 0 && axisId.pos < QwtPlot::NumAxisPositions && axisId.id >= 0 )
+    if ( axisId.pos >= 0 && axisId.pos < QwtAxis::PosCount && axisId.id >= 0 )
         return maps[ axisId.pos ].size() > axisId.id;
 
     return false;
