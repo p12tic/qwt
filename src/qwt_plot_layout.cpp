@@ -20,7 +20,7 @@ class QwtPlotLayoutData
 public:
     struct LegendData
     {
-        void init( const QwtAbstractLegend *legend, const QRectF &rect )
+        void init( const QwtAbstractLegend *legend )
         {
             if ( legend )
             {
@@ -28,20 +28,22 @@ public:
                 hScrollExtent = legend->scrollExtent( Qt::Horizontal );
                 vScrollExtent = legend->scrollExtent( Qt::Vertical );
 
-                const QSize legendHint = legend->sizeHint();
-
-                int w = qMin( legendHint.width(), qFloor( rect.width() ) );
-
-                int h = legend->heightForWidth( w );
-                if ( h <= 0 )
-                    h = legendHint.height();
-
-                if ( h > rect.height() )
-                    w += hScrollExtent;
-
-                hint = QSize( w, h );
+                hint = legend->sizeHint();
             }
+        }
 
+        QSize legendHint( const QwtAbstractLegend *legend, const QRectF &rect ) const
+        {
+            int w = qMin( hint.width(), qFloor( rect.width() ) );
+
+            int h = legend->heightForWidth( w );
+            if ( h <= 0 )
+                h = hint.height();
+
+            if ( h > rect.height() )
+                w += hScrollExtent;
+
+            return QSize( w, h );
         }
 
         int frameWidth;
@@ -140,7 +142,7 @@ public:
         NumLabels
     };
 
-    void init( const QwtPlot *, const QRectF &rect );
+    void init( const QwtPlot * );
     bool hasSymmetricYAxes() const;
 
     int numAxes( int axisPos ) const
@@ -170,9 +172,9 @@ public:
 /*
   Extract all layout relevant data from the plot components
 */
-void QwtPlotLayoutData::init( const QwtPlot *plot, const QRectF &rect )
+void QwtPlotLayoutData::init( const QwtPlot *plot )
 {
-    legendData.init( plot->legend(), rect );
+    legendData.init( plot->legend() );
     labelData[ Title ].init( plot->titleLabel() );
     labelData[ Footer ].init( plot->footerLabel() );
 
@@ -315,9 +317,9 @@ public:
     }
 
     QRectF layoutLegend( QwtPlotLayout::Options, 
-        const QwtPlotLayoutData::LegendData &, const QRectF & ) const;
+        const QwtPlotLayoutData::LegendData &, const QRectF &, const QSize & ) const;
 
-    QRectF alignLegend( const QwtPlotLayoutData::LegendData &,
+    QRectF alignLegend( const QSize &legendHint,
         const QRectF &canvasRect, const QRectF &legendRect ) const;
 
     void alignScales( QwtPlotLayout::Options, const QwtPlotLayoutData &,
@@ -356,7 +358,8 @@ private:
 };
 
 QRectF QwtPlotLayoutEngine::layoutLegend( QwtPlotLayout::Options options,
-    const QwtPlotLayoutData::LegendData &legendData, const QRectF &rect ) const
+    const QwtPlotLayoutData::LegendData &legendData, 
+    const QRectF &rect, const QSize &legendHint ) const
 {
     int dim;
     if ( d_legendPos == QwtPlot::LeftLegend
@@ -365,11 +368,11 @@ QRectF QwtPlotLayoutEngine::layoutLegend( QwtPlotLayout::Options options,
         // We don't allow vertical legends to take more than
         // half of the available space.
 
-        dim = qMin( legendData.hint.width(), int( rect.width() * d_legendRatio ) );
+        dim = qMin( legendHint.width(), int( rect.width() * d_legendRatio ) );
 
         if ( !( options & QwtPlotLayout::IgnoreScrollbars ) )
         {
-            if ( legendData.hint.height() > rect.height() )
+            if ( legendHint.height() > rect.height() )
             {
                 // The legend will need additional
                 // space for the vertical scrollbar.
@@ -380,7 +383,7 @@ QRectF QwtPlotLayoutEngine::layoutLegend( QwtPlotLayout::Options options,
     }
     else
     {
-        dim = qMin( legendData.hint.height(), int( rect.height() * d_legendRatio ) );
+        dim = qMin( legendHint.height(), int( rect.height() * d_legendRatio ) );
         dim = qMax( dim, legendData.vScrollExtent );
     }
 
@@ -414,8 +417,7 @@ QRectF QwtPlotLayoutEngine::layoutLegend( QwtPlotLayout::Options options,
     return legendRect;
 }
 
-QRectF QwtPlotLayoutEngine::alignLegend( 
-    const QwtPlotLayoutData::LegendData &legendData,
+QRectF QwtPlotLayoutEngine::alignLegend( const QSize &legendHint,
     const QRectF &canvasRect, const QRectF &legendRect ) const
 {
     QRectF alignedRect = legendRect;
@@ -423,7 +425,7 @@ QRectF QwtPlotLayoutEngine::alignLegend(
     if ( d_legendPos == QwtPlot::BottomLegend
         || d_legendPos == QwtPlot::TopLegend )
     {
-        if ( legendData.hint.width() < canvasRect.width() )
+        if ( legendHint.width() < canvasRect.width() )
         {
             alignedRect.setX( canvasRect.x() );
             alignedRect.setWidth( canvasRect.width() );
@@ -431,7 +433,7 @@ QRectF QwtPlotLayoutEngine::alignLegend(
     }
     else
     {
-        if ( legendData.hint.height() < canvasRect.height() )
+        if ( legendHint.height() < canvasRect.height() )
         {
             alignedRect.setY( canvasRect.y() );
             alignedRect.setHeight( canvasRect.height() );
@@ -1471,13 +1473,17 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
     // and save them to d_data->layoutData.
 
     QwtPlotLayoutData &layoutData = d_data->layoutData;
-    layoutData.init( plot, rect );
+    layoutData.init( plot );
+
+    QSize legendHint;
 
     if ( !( options & IgnoreLegend )
         && plot->legend() && !plot->legend()->isEmpty() )
     {
+        legendHint = layoutData.legendData.legendHint( plot->legend(), rect );
+
         d_data->legendRect = d_data->layoutEngine.layoutLegend( 
-            options, layoutData.legendData, rect );
+            options, layoutData.legendData, rect, legendHint );
 
         // subtract d_data->legendRect from rect
 
@@ -1653,6 +1659,6 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
         // the complete plot - if possible.
 
         d_data->legendRect = d_data->layoutEngine.alignLegend( 
-            layoutData.legendData, d_data->canvasRect, d_data->legendRect );
+            legendHint, d_data->canvasRect, d_data->legendRect );
     }
 }
