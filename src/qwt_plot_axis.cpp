@@ -193,7 +193,8 @@ int QwtPlot::axesCount( int axisPos, bool onlyVisible ) const
     {
         for ( int i = 0; i < d_scaleData->axesCount( axisPos ); i++ )
         {
-            if ( d_scaleData->axisData( axisPos ).isVisible )
+            const QwtAxisId axisId( axisPos, i );
+            if ( d_scaleData->axisData( axisId ).isVisible )
                 count++;
         }
     }
