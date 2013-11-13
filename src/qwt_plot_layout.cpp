@@ -366,6 +366,42 @@ QwtPlotLayoutHintData::QwtPlotLayoutHintData( const QwtPlot *plot )
                 }
             }
         }
+
+        if ( axesCount > 1 )
+        {
+            // The width of the y axes and the height of the x axes depends
+            // on the line breaks in the scale title. So after knowning the 
+            // bounding height/width we might have some to subtract some line
+            // breaks, we don't have anymore.
+
+            for ( int i = 0; i < axesCount; i++ )
+            {
+                QSize &axesSize = m_axesSize[ axisPos ];
+
+                const QwtAxisId axisId( axisPos, i );
+
+                if ( plot->isAxisVisible( axisId ) )
+                {
+                    const QwtScaleWidget *scl = plot->axisWidget( axisId );
+                    ScaleData &sd = axisData( axisId );
+
+                    if ( QwtAxis::isYAxis( axisId.pos ) )
+                    {
+                        int off = scl->titleHeightForWidth( sd.h ) -
+                            scl->titleHeightForWidth( yAxesHeight() );
+
+                        axesSize.setWidth( axesSize.width() - off );
+                    }
+                    else
+                    {
+                        int off = scl->titleHeightForWidth( sd.w ) -
+                            scl->titleHeightForWidth( xAxesWidth() );
+
+                        axesSize.setHeight( axesSize.height() - off );
+                    }
+                }
+            }
+        }
     }
 }
 
