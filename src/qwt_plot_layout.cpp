@@ -1307,21 +1307,22 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
         ScaleData &sd = scaleData[ axisPos ];
         if ( sd.w && QwtAxis::isXAxis( axisPos ) )
         {
-            if ( ( sd.minLeft > canvasBorder[QwtAxis::yLeft] )
-                && scaleData[QwtAxis::yLeft].w )
+            const int leftW = scaleData[QwtAxis::yLeft].w;
+            const int rightW = scaleData[QwtAxis::yRight].w;
+
+            if ( ( sd.minLeft > canvasBorder[QwtAxis::yLeft] ) && leftW )
             {
                 int shiftLeft = sd.minLeft - canvasBorder[QwtAxis::yLeft];
-                if ( shiftLeft > scaleData[QwtAxis::yLeft].w )
-                    shiftLeft = scaleData[QwtAxis::yLeft].w;
+                if ( shiftLeft > leftW )
+                    shiftLeft = leftW;
 
                 sd.w -= shiftLeft;
             }
-            if ( ( sd.minRight > canvasBorder[QwtAxis::yRight] )
-                && scaleData[QwtAxis::yRight].w )
+            if ( ( sd.minRight > canvasBorder[QwtAxis::yRight] ) && rightW )
             {
                 int shiftRight = sd.minRight - canvasBorder[QwtAxis::yRight];
-                if ( shiftRight > scaleData[QwtAxis::yRight].w )
-                    shiftRight = scaleData[QwtAxis::yRight].w;
+                if ( shiftRight > rightW )
+                    shiftRight = rightW;
 
                 sd.w -= shiftRight;
             }
@@ -1329,8 +1330,10 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
 
         if ( sd.h && QwtAxis::isYAxis( axisPos ) )
         {
-            if ( ( sd.minLeft > canvasBorder[QwtAxis::xBottom] ) &&
-                scaleData[QwtAxis::xBottom].h )
+            const int topH = scaleData[QwtAxis::xTop].h;
+            const int bottomH = scaleData[QwtAxis::xBottom].h;
+
+            if ( ( sd.minLeft > canvasBorder[QwtAxis::xBottom] ) && bottomH )
             {
                 int shiftBottom = sd.minLeft - canvasBorder[QwtAxis::xBottom];
                 if ( shiftBottom > scaleData[QwtAxis::xBottom].tickOffset )
@@ -1338,8 +1341,7 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
 
                 sd.h -= shiftBottom;
             }
-            if ( ( sd.minLeft > canvasBorder[QwtAxis::xTop] ) &&
-                scaleData[QwtAxis::xTop].h )
+            if ( ( sd.minLeft > canvasBorder[QwtAxis::xTop] ) && topH )
             {
                 int shiftTop = sd.minRight - canvasBorder[QwtAxis::xTop];
                 if ( shiftTop > scaleData[QwtAxis::xTop].tickOffset )
