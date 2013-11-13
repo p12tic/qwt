@@ -142,7 +142,7 @@ public:
         NumLabels
     };
 
-    void init( const QwtPlot * );
+    QwtPlotLayoutData( const QwtPlot * );
     bool hasSymmetricYAxes() const;
 
     int numAxes( int axisPos ) const
@@ -172,7 +172,7 @@ public:
 /*
   Extract all layout relevant data from the plot components
 */
-void QwtPlotLayoutData::init( const QwtPlot *plot )
+QwtPlotLayoutData::QwtPlotLayoutData( const QwtPlot *plot )
 {
     legendData.init( plot->legend() );
     labelData[ Title ].init( plot->titleLabel() );
@@ -229,18 +229,39 @@ bool QwtPlotLayoutData::hasSymmetricYAxes() const
 class QwtPlotLayoutHintData
 {
 public:
-    void init( const QwtPlot *plot );
-    bool hasSymmetricYAxes() const;
+    QwtPlotLayoutHintData( const QwtPlot *plot );
 
-    int yAxesWidth() const;
-    int yAxesHeight() const;
-    int xAxesHeight() const;
-    int xAxesWidth() const;
+    bool hasSymmetricYAxes() const
+    {
+        return numVisibleScales[ QwtAxis::yLeft ] ==
+            numVisibleScales[ QwtAxis::yRight ];
+    }
 
-	int axesWidth( int axisPos ) const;
-	int axesHeight( int axisPos ) const;
+    int yAxesWidth() const 
+    { 
+        return m_axesSize[ QwtAxis::yLeft ].width() +
+            m_axesSize[ QwtAxis::yRight ].width();
+    }
 
-	int alignedSize( const QwtAxisId ) const;
+    int yAxesHeight() const 
+    { 
+        return qMax( m_axesSize[ QwtAxis::yLeft ].height(),
+            m_axesSize[ QwtAxis::yRight ].height() );
+    }
+
+    int xAxesHeight() const 
+    { 
+        return m_axesSize[ QwtAxis::xTop ].height() +
+            m_axesSize[ QwtAxis::xBottom ].height();
+    }
+
+    int xAxesWidth() const 
+    { 
+        return qMax( m_axesSize[ QwtAxis::xTop ].width(),
+            m_axesSize[ QwtAxis::xBottom ].width() );
+    }
+
+    int alignedSize( const QwtAxisId ) const;
 
     struct ScaleData
     {
@@ -255,135 +276,137 @@ public:
         int minRight;
     };
 
-    const ScaleData &axisData( QwtAxisId axisId ) const
-    {
-        return scaleData[ axisId.pos ];
-    }
-
     int canvasBorder[QwtAxis::PosCount];
     int tickOffset[QwtAxis::PosCount];
     int numVisibleScales[ QwtAxis::PosCount ];
 
 private:
-    ScaleData scaleData[ QwtAxis::PosCount ];
+    const ScaleData &axisData( QwtAxisId axisId ) const
+    {
+        return scaleData[ axisId.pos ][ axisId.id ];
+    }
+
+    ScaleData &axisData( QwtAxisId axisId ) 
+    {
+        return scaleData[ axisId.pos ][ axisId.id ];
+    }
+
+    int axesWidth( int axisPos ) const
+    {
+        return m_axesSize[axisPos].width();
+    }
+
+    int axesHeight( int axisPos ) const
+    {
+        return m_axesSize[axisPos].height();
+    }
+
+    QSize m_axesSize[ QwtAxis::PosCount ];
+
+    QVector<ScaleData> scaleData[ QwtAxis::PosCount ];
 };
 
-void QwtPlotLayoutHintData::init( const QwtPlot *plot )
+QwtPlotLayoutHintData::QwtPlotLayoutHintData( const QwtPlot *plot )
 {
     int contentsMargins[ 4 ];
 
     plot->canvas()->getContentsMargins(
-    	&contentsMargins[ QwtAxis::yLeft ],
-    	&contentsMargins[ QwtAxis::xTop ],
-    	&contentsMargins[ QwtAxis::yRight ],
-    	&contentsMargins[ QwtAxis::xBottom ] );
+        &contentsMargins[ QwtAxis::yLeft ],
+        &contentsMargins[ QwtAxis::xTop ],
+        &contentsMargins[ QwtAxis::yRight ],
+        &contentsMargins[ QwtAxis::xBottom ] );
 
     for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
+        QSize &axesSize = m_axesSize[ axisPos ];
+        axesSize = QSize( 0, 0 );
+
         canvasBorder[ axisPos ] = contentsMargins[axisPos] + 
-			plot->plotLayout()->canvasMargin( axisPos ) + 1;
+            plot->plotLayout()->canvasMargin( axisPos ) + 1;
 
         numVisibleScales[ axisPos ] = 0;
         tickOffset[ axisPos ] = 0;
 
-        const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
+        const int axesCount = plot->axesCount( axisPos );
+        scaleData[ axisPos ].resize( axesCount );
 
-        if ( plot->isAxisVisible( axisId ) )
+        for ( int i = 0; i < axesCount; i++ )
         {
-            const QwtScaleWidget *scl = plot->axisWidget( axisId );
-            ScaleData &sd = scaleData[ axisPos ];
+            const QwtAxisId axisId( axisPos, i );
 
-            const QSize hint = scl->minimumSizeHint();
-            sd.w = hint.width();
-            sd.h = hint.height();
-            scl->getBorderDistHint( sd.minLeft, sd.minRight );
+            if ( plot->isAxisVisible( axisId ) )
+            {
+                const QwtScaleWidget *scl = plot->axisWidget( axisId );
 
-#if 1
-            tickOffset[axisPos] = scl->margin();
-            if ( scl->scaleDraw()->hasComponent( QwtAbstractScaleDraw::Ticks ) )
-                tickOffset[axisPos] += qCeil( scl->scaleDraw()->maxTickLength() );
-#endif
+                const QSize hint = scl->minimumSizeHint();
 
-			numVisibleScales[axisPos]++;
+                ScaleData &sd = axisData( axisId );
+                sd.w = hint.width();
+                sd.h = hint.height();
+                scl->getBorderDistHint( sd.minLeft, sd.minRight );
+
+                if ( numVisibleScales[axisPos] == 0 )
+                {
+                    tickOffset[axisPos] = scl->margin();
+                    if ( scl->scaleDraw()->hasComponent( QwtAbstractScaleDraw::Ticks ) )
+                        tickOffset[axisPos] += qCeil( scl->scaleDraw()->maxTickLength() );
+                }
+
+                numVisibleScales[axisPos]++;
+
+                if ( QwtAxis::isYAxis( axisId.pos ) )
+                {
+                    axesSize.setWidth( axesSize.width() + sd.w );
+                    axesSize.setHeight( qMax( axesSize.height(), sd.h ) );
+                }
+                else
+                {
+                    axesSize.setHeight( axesSize.height() + sd.h );
+                    axesSize.setWidth( qMax( axesSize.width(), sd.w ) );
+                }
+            }
         }
     }
 }
 
 int QwtPlotLayoutHintData::alignedSize( const QwtAxisId axisId ) const
 {
-	const QwtPlotLayoutHintData::ScaleData &sd = axisData( axisId );
-	if ( sd.w && QwtAxis::isXAxis( axisId.pos ) && sd.w )
-	{
-		int w = sd.w;
+    const QwtPlotLayoutHintData::ScaleData &sd = axisData( axisId );
+    if ( QwtAxis::isXAxis( axisId.pos ) && sd.w )
+    {
+        int w = sd.w;
+        const int leftW = m_axesSize[QwtAxis::yLeft].width(); 
+        const int rightW = m_axesSize[QwtAxis::yRight].width(); 
 
-		const int leftW = axesWidth(QwtAxis::yLeft);
-		const int rightW = axesWidth(QwtAxis::yRight);
+        const int shiftLeft = sd.minLeft - canvasBorder[QwtAxis::yLeft];
+        if ( shiftLeft > 0 && leftW )
+            w -= qMin( shiftLeft, leftW );
 
-		const int shiftLeft = sd.minLeft - canvasBorder[QwtAxis::yLeft];
-		if ( shiftLeft > 0 && leftW )
-			w -= qMin( shiftLeft, leftW );
+        const int shiftRight = sd.minRight - canvasBorder[QwtAxis::yRight];
+        if ( shiftRight > 0 && rightW )
+            w -= qMin( shiftRight, rightW );
 
-		const int shiftRight = sd.minRight - canvasBorder[QwtAxis::yRight];
-		if ( shiftRight > 0 && rightW )
-			w -= qMin( shiftRight, rightW );
+        return w;
+    }
+    if ( QwtAxis::isYAxis( axisId.pos ) && sd.h )
+    {
+        int h = sd.h;
 
-		return w;
-	}
-	if ( QwtAxis::isYAxis( axisId.pos ) && sd.h )
-	{
-		int h = sd.h;
+        const int topH = m_axesSize[QwtAxis::xTop].height(); 
+        const int bottomH = m_axesSize[QwtAxis::xBottom].height(); 
 
-		const int topH = axesHeight(QwtAxis::xTop);
-		const int bottomH = axesHeight(QwtAxis::xBottom);
+        const int shiftBottom = sd.minLeft - canvasBorder[QwtAxis::xBottom];
+        if ( shiftBottom > 0 && bottomH )
+            h -= qMin( shiftBottom, tickOffset[QwtAxis::xBottom] );
 
-		const int shiftBottom = sd.minLeft - canvasBorder[QwtAxis::xBottom];
-		if ( shiftBottom > 0 && bottomH )
-			h -= qMin( shiftBottom, tickOffset[QwtAxis::xBottom] );
+        const int shiftTop = sd.minRight - canvasBorder[QwtAxis::xTop];
+        if ( shiftTop > 0 && topH )
+            h -= qMin( shiftTop, tickOffset[QwtAxis::xTop] );
 
-		const int shiftTop = sd.minRight - canvasBorder[QwtAxis::xTop];
-		if ( shiftTop > 0 && topH )
-			h -= qMin( shiftTop, tickOffset[QwtAxis::xTop] );
+        return h;
+    }
 
-		return h;
-	}
-
-	return 0;
-}
-
-bool QwtPlotLayoutHintData::hasSymmetricYAxes() const
-{
-    return numVisibleScales[ QwtAxis::yLeft ] ==
-        numVisibleScales[ QwtAxis::yRight ];
-}
-
-int QwtPlotLayoutHintData::yAxesWidth() const
-{
-    return scaleData[QwtAxis::yLeft].w + scaleData[QwtAxis::yRight].w;
-}
-
-int QwtPlotLayoutHintData::yAxesHeight() const
-{
-    return qMax( scaleData[QwtAxis::yLeft].h, scaleData[QwtAxis::yRight].h );
-}
-
-int QwtPlotLayoutHintData::xAxesHeight() const
-{
-    return scaleData[QwtAxis::xTop].h + scaleData[QwtAxis::xBottom].h;
-}
-
-int QwtPlotLayoutHintData::xAxesWidth() const
-{
-    return qMax( scaleData[QwtAxis::xTop].w, scaleData[QwtAxis::xBottom].w );
-}
-
-int QwtPlotLayoutHintData::axesWidth( int axisPos ) const
-{
-	return scaleData[axisPos].w;
-}
-
-int QwtPlotLayoutHintData::axesHeight( int axisPos ) const
-{
-	return scaleData[axisPos].h;
+    return 0;
 }
 
 class QwtPlotLayoutEngine
@@ -1417,28 +1440,27 @@ void QwtPlotLayout::invalidate()
 */
 QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
 {
-    QwtPlotLayoutHintData hintData;
-    hintData.init( plot );
+    QwtPlotLayoutHintData hintData( plot );
 
     /*
       When having x and y axes, we try to use the empty 
       corners for the tick labels that are exceeding the
       scale backbones.
      */
-	int xAxesWidth = 0;
-	int yAxesHeight = 0;
+    int xAxesWidth = 0;
+    int yAxesHeight = 0;
 
     for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
-		for ( int i = 0; i < plot->axesCount( axisPos ); i++ )
-		{
-			const int sz = hintData.alignedSize( QwtAxisId( axisPos, i ) );
+        for ( int i = 0; i < plot->axesCount( axisPos ); i++ )
+        {
+            const int sz = hintData.alignedSize( QwtAxisId( axisPos, i ) );
 
-			if ( QwtAxis::isXAxis( axisPos ) )
-				xAxesWidth = qMax( xAxesWidth, sz );
-			else
-				yAxesHeight = qMax( yAxesHeight, sz );
-		}
+            if ( QwtAxis::isXAxis( axisPos ) )
+                xAxesWidth = qMax( xAxesWidth, sz );
+            else
+                yAxesHeight = qMax( yAxesHeight, sz );
+        }
     }
 
     const QWidget *canvas = plot->canvas();
@@ -1556,8 +1578,7 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
     // We extract all layout relevant parameters from the widgets,
     // and save them to d_data->layoutData.
 
-    QwtPlotLayoutData layoutData;
-    layoutData.init( plot );
+    QwtPlotLayoutData layoutData( plot );
 
     QSize legendHint;
 
