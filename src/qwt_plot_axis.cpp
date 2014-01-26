@@ -748,7 +748,9 @@ void QwtPlot::updateAxes()
     // Find bounding interval of the item data
     // for all axes, where autoscaling is enabled
 
-    QwtInterval intv[QwtAxis::PosCount];
+    QVector< QwtInterval > boundingIntervals[QwtAxis::PosCount];
+    for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
+        boundingIntervals[axisPos].resize( axesCount( axisPos ) );
 
     const QwtPlotItemList& itmList = itemList();
 
@@ -768,10 +770,18 @@ void QwtPlot::updateAxes()
             const QRectF rect = item->boundingRect();
 
             if ( rect.width() >= 0.0 )
-                intv[ item->xAxis().pos ] |= QwtInterval( rect.left(), rect.right() );
+            {
+                const QwtAxisId xAxis = item->xAxis();
+                boundingIntervals[ xAxis.pos ][ xAxis.id ] |= 
+                    QwtInterval( rect.left(), rect.right() );
+            }
 
             if ( rect.height() >= 0.0 )
-                intv[ item->yAxis().pos ] |= QwtInterval( rect.top(), rect.bottom() );
+            {
+                const QwtAxisId yAxis = item->yAxis();
+                boundingIntervals[ yAxis.pos ][ yAxis.id ] |= 
+                    QwtInterval( rect.top(), rect.bottom() );
+            }
         }
     }
 
@@ -789,12 +799,14 @@ void QwtPlot::updateAxes()
             double maxValue = d.maxValue;
             double stepSize = d.stepSize;
 
-            if ( d.doAutoScale && intv[axisPos].isValid() )
+            const QwtInterval &interval = boundingIntervals[axisPos][i];
+
+            if ( d.doAutoScale && interval.isValid() )
             {
                 d.isValid = false;
 
-                minValue = intv[axisPos].minValue();
-                maxValue = intv[axisPos].maxValue();
+                minValue = interval.minValue();
+                maxValue = interval.maxValue();
 
                 d.scaleEngine->autoScale( d.maxMajor,
                     minValue, maxValue, stepSize );
@@ -802,8 +814,7 @@ void QwtPlot::updateAxes()
             if ( !d.isValid )
             {
                 d.scaleDiv = d.scaleEngine->divideScale(
-                    minValue, maxValue,
-                    d.maxMajor, d.maxMinor, stepSize );
+                    minValue, maxValue, d.maxMajor, d.maxMinor, stepSize );
                 d.isValid = true;
             }
 
