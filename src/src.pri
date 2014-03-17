@@ -95,6 +95,8 @@ contains(QWT_CONFIG, QwtPlot) {
         qwt_axis_id.h \
         qwt_axes_mask.h \
         qwt_curve_fitter.h \
+        qwt_spline_curve_fitter.h \
+        qwt_weeding_curve_fitter.h \
         qwt_event_pattern.h \
         qwt_abstract_legend.h \
         qwt_legend.h \
@@ -144,6 +146,8 @@ contains(QWT_CONFIG, QwtPlot) {
         qwt_axis_id.cpp \
         qwt_axes_mask.cpp \
         qwt_curve_fitter.cpp \
+        qwt_spline_curve_fitter.cpp \
+        qwt_weeding_curve_fitter.cpp \
         qwt_abstract_legend.cpp \
         qwt_legend.cpp \
         qwt_legend_data.cpp \

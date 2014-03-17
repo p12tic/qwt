@@ -53,26 +53,43 @@ Plot::Plot( QWidget *parent ):
     grid->enableXMin( true );
     grid->setMajorPen( Qt::white, 0, Qt::DotLine );
     grid->setMinorPen( Qt::gray, 0 , Qt::DotLine );
+#if 0
     grid->setAxes( QwtAxisId( QwtAxis::xTop, 2 ), QwtAxisId( QwtAxis::yRight, 1 ) );
+#endif
     grid->attach( this );
 
     // axes
     for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
-        setAxesCount( axisPos, 3 );
+        //setAxesCount( axisPos, 3 );
         
         for ( int i = 0; i < axesCount( axisPos ); i++ )
         {
             QwtAxisId axisId( axisPos, i );
 
-            QString title( "Normalized Frequency or any other important stuff" );
-            setAxisTitle( axisId, title + QString().setNum( i ) );
+			if ( QwtAxis::isXAxis( axisPos ) )
+			{
+            	QString title( "Stuff" );
+            	setAxisTitle( axisId, title + QString().setNum( i ) );
+			}
+			else
+			{
+#if 1
+            	QString title( "Important Stuff " );
+            	setAxisTitle( axisId, title + QString().setNum( i ) );
+#else
+            	QString title( "Normalized Frequency or any other important stuff" );
+            	setAxisTitle( axisId, title + QString().setNum( i ) );
+#endif
+			}
 
             if ( i == 1 )
             {
                 setAxisScale( axisId, 1000000, 500000 );
+#if 0
                 if ( QwtAxis::isYAxis( axisPos ) )
                     setAxisLabelRotation( axisId, -60 );
+#endif
             }
 
             if ( i == 2 )
@@ -80,8 +97,8 @@ Plot::Plot( QWidget *parent ):
         }
     }
 
-    setAxisVisible( QwtAxis::yRight );
-    setAxisVisible( QwtAxis::xTop );
+    setAxisVisible( QwtAxisId( QwtAxis::yRight, 0 ) );
+    setAxisVisible( QwtAxisId( QwtAxis::xTop, 0 ) );
     setAxisMaxMajor( QwtAxis::xBottom, 6 );
     setAxisMaxMinor( QwtAxis::xBottom, 9 );
     setAxisScaleEngine( QwtAxis::xBottom, new QwtLogScaleEngine );

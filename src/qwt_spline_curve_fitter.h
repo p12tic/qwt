@@ -7,24 +7,23 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
+#ifndef QWT_SPLINE_CURVE_FITTER_H
+#define QWT_SPLINE_CURVE_FITTER_H
+
 #include "qwt_curve_fitter.h"
 
-/*! 
-   Constructor
-   \param mode Preferred fitting mode
- */
-QwtCurveFitter::QwtCurveFitter( Mode mode ):
-    d_mode( mode )
+/*!
+  \brief A curve fitter using cubic splines
+  \sa QwtSpline
+*/
+class QWT_EXPORT QwtSplineCurveFitter: public QwtCurveFitter
 {
-}
+public:
+    QwtSplineCurveFitter();
+    virtual ~QwtSplineCurveFitter();
 
-//! Destructor
-QwtCurveFitter::~QwtCurveFitter()
-{
-}
+    virtual QPolygonF fitCurve( const QPolygonF & ) const;
+    virtual QPainterPath fitCurvePath( const QPolygonF & ) const;
+};
 
-//! \return Preferred fitting mode
-QwtCurveFitter::Mode QwtCurveFitter::mode() const
-{
-    return d_mode;
-}
+#endif

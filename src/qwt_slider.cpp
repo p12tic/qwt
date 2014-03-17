@@ -685,9 +685,20 @@ void QwtSlider::paintEvent( QPaintEvent *event )
 */
 void QwtSlider::resizeEvent( QResizeEvent *event )
 {
-    Q_UNUSED( event );
-
     layoutSlider( false );
+    QwtAbstractSlider::resizeEvent( event );
+}
+
+/*!
+   Qt event handler
+   \param event Event
+*/
+bool QwtSlider::event( QEvent *event )
+{
+    if ( event->type() == QEvent::PolishRequest )
+        layoutSlider( false );
+
+    return QwtAbstractSlider::event( event );
 }
 
 /*!

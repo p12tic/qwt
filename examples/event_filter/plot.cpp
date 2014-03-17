@@ -10,6 +10,7 @@
 #include <qwt_wheel.h>
 #include <stdlib.h>
 
+
 Plot::Plot( QWidget *parent ):
     QwtPlot( parent )
 {
@@ -145,6 +146,9 @@ void Plot::insertCurve( Qt::Orientation o,
     const QColor &c, double base )
 {
     QwtPlotCurve *curve = new QwtPlotCurve();
+
+    curve->setCurveAttribute( QwtPlotCurve::Fitted, true );
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased );
 
     curve->setPen( c );
     curve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,

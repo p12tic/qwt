@@ -147,33 +147,12 @@ MainWindow::MainWindow( QWidget *parent ):
 
 void MainWindow::print()
 {
-    QPrinter printer( QPrinter::HighResolution );
+	QwtAxisId axisId( QwtPlot::yRight, 2 );
 
-    QString docName = d_plot->title().text();
-    if ( !docName.isEmpty() )
-    {
-        docName.replace ( QRegExp ( QString::fromLatin1 ( "\n" ) ), tr ( " -- " ) );
-        printer.setDocName ( docName );
-    }
+	bool isVisible = d_plot->isAxisVisible( axisId );
+	d_plot->setAxisVisible( axisId, !isVisible );
 
-    printer.setCreator( "Bode example" );
-    printer.setOrientation( QPrinter::Landscape );
-
-    QPrintDialog dialog( &printer );
-    if ( dialog.exec() )
-    {
-        QwtPlotRenderer renderer;
-
-        if ( printer.colorMode() == QPrinter::GrayScale )
-        {
-            renderer.setDiscardFlag( QwtPlotRenderer::DiscardBackground );
-            renderer.setDiscardFlag( QwtPlotRenderer::DiscardCanvasBackground );
-            renderer.setDiscardFlag( QwtPlotRenderer::DiscardCanvasFrame );
-            renderer.setLayoutFlag( QwtPlotRenderer::FrameWithScales );
-        }
-
-        renderer.renderTo( d_plot, printer );
-    }
+	qDebug() << d_plot->axesCount( QwtPlot::yRight, true );
 }
 
 #endif
