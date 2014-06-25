@@ -40,7 +40,7 @@ namespace QwtAxis
     bool isValid( int axisPos );
     bool isYAxis( int axisPos );
     bool isXAxis( int axisPos );
-};
+}
 
 inline bool QwtAxis::isValid( int axisPos )
 {
