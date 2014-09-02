@@ -59,7 +59,7 @@ MainWindow::MainWindow( QWidget *parent ):
     setContextMenuPolicy( Qt::NoContextMenu );
 
     d_zoomer[0] = new Zoomer( 
-		QwtAxis::xBottom, QwtAxis::yLeft, d_plot->canvas() );
+        QwtAxis::xBottom, QwtAxis::yLeft, d_plot->canvas() );
     d_zoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
     d_zoomer[0]->setRubberBandPen( QColor( Qt::green ) );
     d_zoomer[0]->setTrackerMode( QwtPicker::ActiveOnly );
@@ -147,12 +147,33 @@ MainWindow::MainWindow( QWidget *parent ):
 
 void MainWindow::print()
 {
-	QwtAxisId axisId( QwtPlot::yRight, 2 );
+    QPrinter printer( QPrinter::HighResolution );
 
-	bool isVisible = d_plot->isAxisVisible( axisId );
-	d_plot->setAxisVisible( axisId, !isVisible );
+    QString docName = d_plot->title().text();
+    if ( !docName.isEmpty() )
+    {
+        docName.replace ( QRegExp ( QString::fromLatin1 ( "\n" ) ), tr ( " -- " ) );
+        printer.setDocName ( docName );
+    }
 
-	qDebug() << d_plot->axesCount( QwtPlot::yRight, true );
+    printer.setCreator( "Bode example" );
+    printer.setOrientation( QPrinter::Landscape );
+
+    QPrintDialog dialog( &printer );
+    if ( dialog.exec() )
+    {
+        QwtPlotRenderer renderer;
+
+        if ( printer.colorMode() == QPrinter::GrayScale )
+        {
+            renderer.setDiscardFlag( QwtPlotRenderer::DiscardBackground );
+            renderer.setDiscardFlag( QwtPlotRenderer::DiscardCanvasBackground );
+            renderer.setDiscardFlag( QwtPlotRenderer::DiscardCanvasFrame );
+            renderer.setLayoutFlag( QwtPlotRenderer::FrameWithScales );
+        }
+
+        renderer.renderTo( d_plot, printer );
+    }
 }
 
 #endif
