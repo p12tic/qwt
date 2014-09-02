@@ -843,21 +843,33 @@ QwtScaleMap QwtPlot::canvasMap( QwtAxisId axisId ) const
     }
     else
     {
-        int margin = 0;
-        if ( !plotLayout()->alignCanvasToScale( axisId.pos ) )
-            margin = plotLayout()->canvasMargin( axisId.pos );
+		const QRect &canvasRect = d_data->canvas->contentsRect();
+		if ( QwtAxis::isYAxis( axisId.pos ) )
+		{
+            int top = 0;
+            if ( !plotLayout()->alignCanvasToScale( xTop ) )
+                top = plotLayout()->canvasMargin( xTop );
 
-        const QRect &canvasRect = d_data->canvas->contentsRect();
-        if ( QwtAxis::isYAxis( axisId.pos ) )
-        {
-            map.setPaintInterval( canvasRect.bottom() - margin,
-                canvasRect.top() + margin );
-        }
-        else
-        {
-            map.setPaintInterval( canvasRect.left() + margin,
-                canvasRect.right() - margin );
-        }
+            int bottom = 0;
+            if ( !plotLayout()->alignCanvasToScale( xBottom ) )
+                bottom = plotLayout()->canvasMargin( xBottom );
+
+            map.setPaintInterval( canvasRect.bottom() - bottom,
+                canvasRect.top() + top );
+		}
+		else
+		{
+            int left = 0;
+            if ( !plotLayout()->alignCanvasToScale( yLeft ) )
+                left = plotLayout()->canvasMargin( yLeft );
+
+            int right = 0;
+            if ( !plotLayout()->alignCanvasToScale( yRight ) )
+                right = plotLayout()->canvasMargin( yRight );
+
+            map.setPaintInterval( canvasRect.left() + left,
+                canvasRect.right() - right );
+		}
     }
     return map;
 }
