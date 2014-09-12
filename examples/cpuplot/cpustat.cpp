@@ -44,7 +44,7 @@ void CpuStat::lookUp( double values[NValues] ) const
 #if 1
     if ( !file.open( QIODevice::ReadOnly ) )
 #else
-	if ( true )
+    if ( true )
 #endif
     {
         static double dummyValues[][NValues] =
