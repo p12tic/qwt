@@ -552,7 +552,7 @@ void QwtPlotRenderer::render( QwtPlot *plot,
 
     for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
     {
-        for ( int i = 0; i < plot->axesCount( i ); i++ )
+        for ( int i = 0; i < plot->axesCount( axisPos ); i++ )
         {
             const QwtAxisId axisId( axisPos, i );
 
