@@ -36,17 +36,7 @@ else {
 
 
 QMAKE_RPATHDIR *= $${QWT_ROOT}/lib
-
-contains(QWT_CONFIG, QwtFramework) {
-
-    LIBS      += -F$${QWT_OUT_ROOT}/lib
-}
-else {
-
-    LIBS      += -L$${QWT_OUT_ROOT}/lib
-}
-
-qwtAddLibrary(qwt)
+qwtAddLibrary($${QWT_OUT_ROOT}/lib, qwt)
 
 greaterThan(QT_MAJOR_VERSION, 4) {
 
@@ -73,8 +63,6 @@ else {
 }
 
 
-win32 {
-    contains(QWT_CONFIG, QwtDll) {
-        DEFINES    += QT_DLL QWT_DLL
-    }
+contains(QWT_CONFIG, QwtDll) {
+	DEFINES    += QT_DLL QWT_DLL
 }
