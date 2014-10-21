@@ -65,7 +65,7 @@ void ScrollZoomer::rescale()
             QwtPlotLayout *layout = plot()->plotLayout();
 
             for ( int axis = 0; axis < QwtAxis::PosCount; axis++ )
-                layout->setAlignCanvasToScale( axis, d_alignCanvasToScales );
+                layout->setAlignCanvasToScale( axis, d_alignCanvasToScales[ axis ] );
 
             d_inZoom = false;
         }
