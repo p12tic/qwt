@@ -73,7 +73,7 @@ public:
        \return color index, corresponding to value
      */
     virtual unsigned char colorIndex(
-        const QwtInterval &interval, double value ) const = 0;
+        const QwtInterval &interval, double value ) const;
 
     QColor color( const QwtInterval &, double value ) const;
     virtual QVector<QRgb> colorTable( const QwtInterval & ) const;
@@ -154,9 +154,6 @@ private:
     QwtAlphaColorMap( const QwtAlphaColorMap & );
     QwtAlphaColorMap &operator=( const QwtAlphaColorMap & );
 
-    virtual unsigned char colorIndex(
-        const QwtInterval &, double value ) const;
-
     class PrivateData;
     PrivateData *d_data;
 };
@@ -167,24 +164,21 @@ public:
     QwtHueColorMap();
     virtual ~QwtHueColorMap();
 
-	void setHueInterval( int hue1, int hue2 ); // direction ?
-	void setSaturation( int saturation );
-	void setValue( int value );
+    void setHueInterval( int hue1, int hue2 ); // direction ?
+    void setSaturation( int saturation );
+    void setValue( int value );
 
     int hue1() const;
     int hue2() const;
 
-	int saturation() const;
-	int value() const;
+    int saturation() const;
+    int value() const;
 
     virtual QRgb rgb( const QwtInterval &, double value ) const;
 
 private:
     QwtHueColorMap( const QwtHueColorMap & );
     QwtHueColorMap &operator=( const QwtHueColorMap & );
-
-    virtual unsigned char colorIndex(
-        const QwtInterval &, double value ) const;
 
     class PrivateData;
     PrivateData *d_data;
