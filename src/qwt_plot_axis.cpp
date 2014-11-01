@@ -104,7 +104,7 @@ public:
         for ( int i = numAxis; i < count; i++ )
         {
             QString name;
-            QwtScaleDraw::Alignment align;
+            QwtScaleDraw::Alignment align = QwtScaleDraw::LeftScale;
 
             switch( axisPos )
             {
