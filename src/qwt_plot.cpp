@@ -141,7 +141,7 @@ QwtPlot::QwtPlot( const QwtText &title, QWidget *parent ):
 //! Destructor
 QwtPlot::~QwtPlot()
 {
-	setAutoReplot( false );
+    setAutoReplot( false );
     detachItems( QwtPlotItem::Rtti_PlotItem, autoDelete() );
 
     delete d_data->layout;
@@ -843,9 +843,9 @@ QwtScaleMap QwtPlot::canvasMap( QwtAxisId axisId ) const
     }
     else
     {
-		const QRect &canvasRect = d_data->canvas->contentsRect();
-		if ( QwtAxis::isYAxis( axisId.pos ) )
-		{
+        const QRect &canvasRect = d_data->canvas->contentsRect();
+        if ( QwtAxis::isYAxis( axisId.pos ) )
+        {
             int top = 0;
             if ( !plotLayout()->alignCanvasToScale( xTop ) )
                 top = plotLayout()->canvasMargin( xTop );
@@ -856,9 +856,9 @@ QwtScaleMap QwtPlot::canvasMap( QwtAxisId axisId ) const
 
             map.setPaintInterval( canvasRect.bottom() - bottom,
                 canvasRect.top() + top );
-		}
-		else
-		{
+        }
+        else
+        {
             int left = 0;
             if ( !plotLayout()->alignCanvasToScale( yLeft ) )
                 left = plotLayout()->canvasMargin( yLeft );
@@ -869,7 +869,7 @@ QwtScaleMap QwtPlot::canvasMap( QwtAxisId axisId ) const
 
             map.setPaintInterval( canvasRect.left() + left,
                 canvasRect.right() - right );
-		}
+        }
     }
     return map;
 }

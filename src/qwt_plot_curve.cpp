@@ -480,13 +480,13 @@ void QwtPlotCurve::drawLines( QPainter *painter,
     bool doIntegers = false;
 
 #if QT_VERSION < 0x040800
-
-    // For Qt <= 4.7 the raster paint engine is significantly faster
-    // for rendering QPolygon than for QPolygonF. So let's
-    // see if we can use it.
-
     if ( painter->paintEngine()->type() == QPaintEngine::Raster )
     {
+
+        // For Qt <= 4.7 the raster paint engine is significantly faster
+        // for rendering QPolygon than for QPolygonF. So let's
+        // see if we can use it.
+
         // In case of filling or fitting performance doesn't count
         // because both operations are much more expensive
         // then drawing the polyline itself
@@ -496,11 +496,19 @@ void QwtPlotCurve::drawLines( QPainter *painter,
     }
 #endif
 
-    const bool noDuplicates = d_data->paintAttributes & FilterPoints;
-
     QwtPointMapper mapper;
-    mapper.setFlag( QwtPointMapper::RoundPoints, doAlign );
-    mapper.setFlag( QwtPointMapper::WeedOutPoints, noDuplicates );
+
+    if ( doAlign )
+    {
+        mapper.setFlag( QwtPointMapper::RoundPoints, true );
+        mapper.setFlag( QwtPointMapper::WeedOutIntermediatePointsX, 
+            testPaintAttribute( FilterPointsAggressive ) );
+    }
+
+    mapper.setFlag( QwtPointMapper::WeedOutPoints, 
+        testPaintAttribute( FilterPoints ) || 
+        testPaintAttribute( FilterPointsAggressive ) );
+
     mapper.setBoundingRect( canvasRect );
 
     if ( doIntegers )
@@ -508,7 +516,7 @@ void QwtPlotCurve::drawLines( QPainter *painter,
         QPolygon polyline = mapper.toPolygon( 
             xMap, yMap, data(), from, to );
 
-        if ( d_data->paintAttributes & ClipPolygons )
+        if ( testPaintAttribute( ClipPolygons ) )
         {
             polyline = QwtClipper::clipPolygon( 
                 clipRect.toAlignedRect(), polyline, false );
@@ -552,7 +560,7 @@ void QwtPlotCurve::drawLines( QPainter *painter,
         }
         else
         {
-            if ( d_data->paintAttributes & ClipPolygons )
+            if ( testPaintAttribute( ClipPolygons ) )
             {
                 polyline = QwtClipper::clipPolygonF( 
                     clipRect, polyline, false );
