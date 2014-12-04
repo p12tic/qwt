@@ -72,11 +72,12 @@ public:
     virtual QRgb rgb( const QwtInterval &interval,
         double value ) const = 0;
 
-    virtual unsigned char colorIndex(
+    virtual uint colorIndex( int numColors,
         const QwtInterval &interval, double value ) const;
 
     QColor color( const QwtInterval &, double value ) const;
-    virtual QVector<QRgb> colorTable( const QwtInterval & ) const;
+    virtual QVector<QRgb> colorTable( int numColors ) const;
+    virtual QVector<QRgb> colorTable256() const;
 
 private:
     Format d_format;
@@ -122,7 +123,7 @@ public:
     QColor color2() const;
 
     virtual QRgb rgb( const QwtInterval &, double value ) const;
-    virtual unsigned char colorIndex(
+    virtual uint colorIndex( int numColors,
         const QwtInterval &, double value ) const;
 
     class ColorStops;
@@ -163,6 +164,17 @@ private:
     PrivateData *d_data;
 };
 
+/*!
+  \brief QwtHueColorMap varies the hue value of the HSV color model.
+
+  QwtHueColorMap can be used to set up a color map easily, that runs cyclic over
+  all colors. Each cycle has 360 different steps.
+
+  The values for value and saturation are in the range of 0 to 255 and doesn't
+  depend on the data value to be mapped.
+  
+  \sa QwtSaturationValueColorMap
+*/
 class QWT_EXPORT QwtHueColorMap: public QwtColorMap
 {
 public:
@@ -172,12 +184,13 @@ public:
     void setHueInterval( int hue1, int hue2 ); // direction ?
     void setSaturation( int saturation );
     void setValue( int value );
+    void setAlpha( int alpha ); 
 
     int hue1() const;
     int hue2() const;
-
     int saturation() const;
     int value() const;
+    int alpha() const;
 
     virtual QRgb rgb( const QwtInterval &, double value ) const;
 
@@ -189,24 +202,32 @@ private:
     PrivateData *d_data;
 };
 
+/*!
+  \brief QwtSaturationValueColorMap varies the saturation and/or value for a given
+         hue in the HSV color model.
+
+  Value and saturation are in the range of 0 to 255 while hue is inthe range
+  of 0 to 259.
+  
+  \sa QwtHueColorMap
+*/
 class QWT_EXPORT QwtSaturationValueColorMap: public QwtColorMap
 {
 public:
     QwtSaturationValueColorMap();
     virtual ~QwtSaturationValueColorMap();
 
-    void setValueInterval( int value1, int value2 );
-    void setSaturationInterval( int sat1, int sat2 ); 
     void setHue( int hue );
-
-    int value1() const;
-    int value2() const;
-
-    int saturation1() const;
-    int saturation2() const;
+    void setSaturationInterval( int sat1, int sat2 ); 
+    void setValueInterval( int value1, int value2 );
+    void setAlpha( int alpha ); 
 
     int hue() const;
-    int saturation() const;
+    int saturation1() const;
+    int saturation2() const;
+    int value1() const;
+    int value2() const;
+    int alpha() const;
 
     virtual QRgb rgb( const QwtInterval &, double value ) const;
 
@@ -225,23 +246,11 @@ private:
    \param value Value
 
    \return Color corresponding to value
-
-   \warning This method is slow for Indexed color maps. If it is
-            necessary to map many values, its better to get the
-            color table once and find the color using colorIndex().
 */
 inline QColor QwtColorMap::color(
     const QwtInterval &interval, double value ) const
 {
-    if ( d_format == RGB )
-    {
-        return QColor( rgb( interval, value ) );
-    }
-    else
-    {
-        const unsigned int index = colorIndex( interval, value );
-        return colorTable( interval )[index]; // slow
-    }
+    return QColor::fromRgba( rgb( interval, value ) );
 }
 
 /*!
