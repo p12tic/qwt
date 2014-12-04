@@ -35,6 +35,11 @@ class SpectrogramData: public QwtRasterData
 public:
     SpectrogramData()
     {
+        // some minor performance improvements wgen the spectrogram item
+        // does not need to check for NaN values
+
+        setAttribute( QwtRasterData::WithoutGaps, true );
+
         setInterval( Qt::XAxis, QwtInterval( -1.5, 1.5 ) );
         setInterval( Qt::YAxis, QwtInterval( -1.5, 1.5 ) );
         setInterval( Qt::ZAxis, QwtInterval( 0.0, 10.0 ) );
@@ -203,6 +208,26 @@ void Plot::showSpectrogram( bool on )
     d_spectrogram->setDefaultContourPen( 
         on ? QPen( Qt::black, 0 ) : QPen( Qt::NoPen ) );
 
+    replot();
+}
+
+void Plot::setColorTableSize( int type )
+{
+    int numColors = 0;
+    switch( type )
+    {
+        case 1:
+            numColors = 256;
+            break;
+        case 2:
+            numColors = 1024;
+            break;
+        case 3:
+            numColors = 16384;
+            break;
+    }
+
+    d_spectrogram->setMaxRGBTableSize( numColors );
     replot();
 }
 
