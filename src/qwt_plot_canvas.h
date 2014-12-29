@@ -100,7 +100,7 @@ public:
           \brief Render the canvas via an OpenGL buffer
 
           In OpenGLBuffer mode the plot scene will be rendered to a temporary
-          QGLPixelBuffer, that will be translated to a QImage afterwards.
+          OpenGL buffer, that will be translated to a QImage afterwards.
           Then this image will be painted to the canvas.
 
           This mode might be useful for "heavy" plots on platforms to achieve 
@@ -114,9 +114,10 @@ public:
           been removed from Qt5.
 
           \note Using QwtPlotGLCanvas is an hardware accelerated alternative without 
-                suffering from the extra roundtrip of the rendered image. But this type of 
-                canvas does not have a backing store, that is important for the repaints because
-                of overlay widgets like the rubberband of a zoomer.
+                suffering from the extra roundtrip of the rendered image. But this 
+                type of canvas does not have a backing store, that helps to avoid
+                replots in combination with of overlay widgets ( f.e the 
+                rubberband of a zoomer ).
 
           \note The OpenGLBuffer mode has no effect, when "QwtOpenGL" has been disabled in 
                 qwtconfig.pri.
