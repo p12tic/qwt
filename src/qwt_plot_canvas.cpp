@@ -52,6 +52,12 @@ public:
             border.rectList += rects[i];
     }
 
+    virtual void drawRects(const QRect *rects, int count )
+    {
+        for ( int i = 0; i < count; i++ )
+            border.rectList += rects[i];
+    }
+
     virtual void drawPath( const QPainterPath &path )
     {
         const QRectF rect( QPointF( 0.0, 0.0 ), d_size );
@@ -736,12 +742,21 @@ void QwtPlotCanvas::paintEvent( QPaintEvent *event )
             bs = QwtPainter::backingStore( this, size() );
 
 #ifndef QWT_NO_OPENGL
-            if ( testPaintAttribute( PixelBuffer ) )
+            if ( testPaintAttribute( OpenGLBuffer ) )
             {
-                QGLPixelBuffer pixelBuffer( size() );
+                QGLFormat format = QGLFormat::defaultFormat();
+                format.setSampleBuffers( true );
+
+                QGLPixelBuffer pixelBuffer( size(), format );
 
                 QPainter p;
                 p.begin( &pixelBuffer );
+                if ( p.paintEngine()->type() == QPaintEngine::OpenGL2 )
+                {
+                    // work around a translation bug of QPaintEngine::OpenGL2
+                    p.translate( 1, 1 );
+                }
+
 
                 qwtFillBackground( &p, this );
                 drawCanvas( &p, true );
@@ -789,12 +804,14 @@ void QwtPlotCanvas::paintEvent( QPaintEvent *event )
     else
     {
 #ifndef QWT_NO_OPENGL
-        if ( testPaintAttribute( PixelBuffer ) )
+        if ( testPaintAttribute( OpenGLBuffer ) )
         {
-            QGLPixelBuffer pixelBuffer( size() );
+            QGLFormat format = QGLFormat::defaultFormat();
+            format.setSampleBuffers( true );
 
-            QPainter p;
-            p.begin( &pixelBuffer );
+            QGLPixelBuffer pixelBuffer( size(), format );
+
+            QPainter p( &pixelBuffer );
 
             qwtFillBackground( &p, this );
             drawCanvas( &p, true );
