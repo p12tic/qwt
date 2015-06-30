@@ -104,6 +104,10 @@ protected:
     void setCanvasRect( const QRectF & );
 
 private:
+    // Disabled copy constructor and operator=
+    explicit QwtPlotLayout( const QwtPlotLayout & );
+    QwtPlotLayout &operator=( const QwtPlotLayout & );
+
     class PrivateData;
     PrivateData *d_data;
 };
