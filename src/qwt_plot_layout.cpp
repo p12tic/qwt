@@ -34,14 +34,11 @@ public:
 
         QSize legendHint( const QwtAbstractLegend *legend, const QRectF &rect ) const
         {
-            int w = qMin( hint.width(), qFloor( rect.width() ) );
+            const int w = qMin( hint.width(), qFloor( rect.width() ) );
 
             int h = legend->heightForWidth( w );
             if ( h <= 0 )
                 h = hint.height();
-
-            if ( h > rect.height() )
-                w += hScrollExtent;
 
             return QSize( w, h );
         }
