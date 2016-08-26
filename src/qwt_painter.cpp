@@ -689,9 +689,10 @@ void QwtPainter::drawFocusRect( QPainter *painter, const QWidget *widget,
     opt.init( widget );
     opt.rect = rect;
     opt.state |= QStyle::State_HasFocus;
+    opt.backgroundColor = widget->palette().color( widget->backgroundRole() );
 
-    widget->style()->drawPrimitive( QStyle::PE_FrameFocusRect,
-        &opt, painter, widget );
+    widget->style()->drawPrimitive(
+        QStyle::PE_FrameFocusRect, &opt, painter, widget );
 }
 
 /*!
