@@ -541,8 +541,9 @@ public:
     ~PrivateData()
     {
         delete backingStore;
+
 #ifndef QWT_NO_OPENGL
-        delete surfaceGL;;
+        delete surfaceGL;
 #endif
     }
 
@@ -1169,7 +1170,7 @@ QPainterPath QwtPlotCanvas::borderPath( const QRect &rect ) const
 
 QImage QwtPlotCanvas::toImageFBO( const QSize &size ) 
 {
-    const int numSamples = 16;
+    const int numSamples = 4;
 
 #if FBO_OPENGL
 
@@ -1204,10 +1205,14 @@ QImage QwtPlotCanvas::toImageFBO( const QSize &size )
 
     d_data->surfaceGL->makeCurrent();
 
+#if QT_VERSION >= 0x040600
     QGLFramebufferObjectFormat fboFormat;
     fboFormat.setSamples(numSamples);
 
     QGLFramebufferObject fbo( size, fboFormat );
+#else
+    QGLFramebufferObject fbo( size );
+#endif
     QGLFramebufferObject &pd = fbo;
 
 #endif
@@ -1222,9 +1227,10 @@ QImage QwtPlotCanvas::toImageFBO( const QSize &size )
     
     painter.end();
 
-	QImage image = fbo.toImage();
+    QImage image = fbo.toImage();
+
 #if QT_VERSION >= 0x050000
-	image.setDevicePixelRatio( devicePixelRatioF() );
+    image.setDevicePixelRatio( QwtPainter::devicePixelRatio( this ) );
 #endif
     return image;
 }
