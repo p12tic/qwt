@@ -37,6 +37,7 @@ contains(QWT_CONFIG, QwtPlot) {
         SUBDIRS += \
             bode \
             event_filter \
+            splineeditor \
             oscilloscope  
     }
 }

@@ -8,17 +8,57 @@
  *****************************************************************************/
 
 #include "qwt_spline_curve_fitter.h"
-#include "qwt_spline.h"
+#include "qwt_spline_local.h"
+#include "qwt_spline_parametrization.h"
 
 //! Constructor
 QwtSplineCurveFitter::QwtSplineCurveFitter():
     QwtCurveFitter( QwtCurveFitter::Path )
 {
+    d_spline = new QwtSplineLocal( QwtSplineLocal::Cardinal );
+    d_spline->setParametrization( QwtSplineParametrization::ParameterUniform );
 }
 
 //! Destructor
 QwtSplineCurveFitter::~QwtSplineCurveFitter()
 {
+    delete d_spline;
+}
+
+/*!
+  Assign a spline
+
+  The spline needs to be allocated by new and will be deleted
+  in the destructor of the fitter.
+
+  \param spline Spline
+  \sa spline()
+*/
+void QwtSplineCurveFitter::setSpline( QwtSpline *spline )
+{
+    if ( d_spline == spline )
+        return;
+
+    delete d_spline;
+    d_spline = spline;
+}
+
+/*!
+  \return Spline
+  \sa setSpline()
+*/
+const QwtSpline *QwtSplineCurveFitter::spline() const
+{
+    return d_spline;
+}
+
+/*!
+  \return Spline
+  \sa setSpline()
+*/
+QwtSpline *QwtSplineCurveFitter::spline() 
+{
+    return d_spline;
 }
 
 /*!
@@ -50,5 +90,10 @@ QPolygonF QwtSplineCurveFitter::fitCurve( const QPolygonF &points ) const
 */
 QPainterPath QwtSplineCurveFitter::fitCurvePath( const QPolygonF &points ) const
 {
-    return QwtSpline::bezierPath( points );
+    QPainterPath path;
+
+    if ( d_spline )
+        path = d_spline->painterPath( points );
+
+    return path;
 }

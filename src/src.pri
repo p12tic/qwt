@@ -11,6 +11,7 @@
 HEADERS += \
     qwt.h \
     qwt_abstract_scale_draw.h \
+    qwt_bezier.h \
     qwt_clipper.h \
     qwt_color_map.h \
     qwt_compat.h \
@@ -41,6 +42,12 @@ HEADERS += \
     qwt_scale_map.h \
     qwt_scale_map_table.h \
     qwt_spline.h \
+    qwt_spline_basis.h \
+    qwt_spline_parametrization.h \
+    qwt_spline_local.h \
+    qwt_spline_cubic.h \
+    qwt_spline_pleasing.h \
+    qwt_spline_polynomial.h \
     qwt_symbol.h \
     qwt_system_clock.h \
     qwt_text_engine.h \
@@ -51,6 +58,7 @@ HEADERS += \
 
 SOURCES += \
     qwt_abstract_scale_draw.cpp \
+    qwt_bezier.cpp \
     qwt_clipper.cpp \
     qwt_color_map.cpp \
     qwt_column_symbol.cpp \
@@ -78,8 +86,13 @@ SOURCES += \
     qwt_scale_draw.cpp \
     qwt_scale_map.cpp \
     qwt_scale_map_table.h \
-    qwt_spline.cpp \
     qwt_scale_engine.cpp \
+    qwt_spline.cpp \
+    qwt_spline_basis.cpp \
+    qwt_spline_parametrization.cpp \
+    qwt_spline_local.cpp \
+    qwt_spline_cubic.cpp \
+    qwt_spline_pleasing.cpp \
     qwt_symbol.cpp \
     qwt_system_clock.cpp \
     qwt_text_engine.cpp \
@@ -196,6 +209,7 @@ contains(QWT_CONFIG, QwtPlot) {
 
         HEADERS += \
             qwt_plot_svgitem.h
+
         SOURCES += \
             qwt_plot_svgitem.cpp
     }
