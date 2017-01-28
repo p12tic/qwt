@@ -1005,7 +1005,13 @@ void QwtPlotCanvas::drawBorder( QPainter *painter )
     else
     {
 #if QT_VERSION >= 0x040500
+
+#if QT_VERSION < 0x050000
         QStyleOptionFrameV3 opt;
+#else
+        QStyleOptionFrame opt;
+#endif
+
         opt.init(this);
 
         int frameShape  = frameStyle() & QFrame::Shape_Mask;
