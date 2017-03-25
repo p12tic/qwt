@@ -647,7 +647,15 @@ void QwtPlot::updateLayout()
             if ( isAxisVisible( axisId ) )
             {
                 const QRect scaleRect = d_data->layout->scaleRect( axisId ).toRect();
-                scaleWidget->setGeometry( scaleRect );
+
+                if ( scaleRect != scaleWidget->geometry() )
+                {
+                    scaleWidget->setGeometry( scaleRect );
+
+                    int startDist, endDist;
+                    scaleWidget->getBorderDistHint( startDist, endDist );
+                    scaleWidget->setBorderDist( startDist, endDist );
+                }
 
                 if ( !scaleWidget->isVisibleTo( this ) )
                     scaleWidget->show();
