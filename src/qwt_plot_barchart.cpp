@@ -95,6 +95,8 @@ void QwtPlotBarChart::setSamples(
     const QVector<double> &samples )
 {
     QVector<QPointF> points;
+    points.reserve( samples.size() );
+
     for ( int i = 0; i < samples.size(); i++ )
         points += QPointF( i, samples[ i ] );
 
@@ -251,6 +253,8 @@ void QwtPlotBarChart::drawSeries( QPainter *painter,
   \param canvasRect Contents rect of the canvas
   \param boundingInterval Bounding interval of sample values
   \param sample Value of the sample
+
+  \return Geometry of the column
 */
 QwtColumnRect QwtPlotBarChart::columnRect( 
     const QwtScaleMap &xMap, const QwtScaleMap &yMap,
@@ -413,6 +417,10 @@ QList<QwtLegendData> QwtPlotBarChart::legendData() const
     if ( d_data->legendMode == LegendBarTitles )
     {
         const size_t numSamples = dataSize();
+#if QT_VERSION >= 0x040700
+        list.reserve( numSamples );
+#endif
+
         for ( size_t i = 0; i < numSamples; i++ )
         {
             QwtLegendData data;
