@@ -106,7 +106,6 @@ contains(QWT_CONFIG, QwtPlot) {
 
     HEADERS += \
         qwt_axis_id.h \
-        qwt_axes_mask.h \
         qwt_curve_fitter.h \
         qwt_spline_curve_fitter.h \
         qwt_weeding_curve_fitter.h \
@@ -157,7 +156,6 @@ contains(QWT_CONFIG, QwtPlot) {
 
     SOURCES += \
         qwt_axis_id.cpp \
-        qwt_axes_mask.cpp \
         qwt_curve_fitter.cpp \
         qwt_spline_curve_fitter.cpp \
         qwt_weeding_curve_fitter.cpp \

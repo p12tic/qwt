@@ -99,6 +99,11 @@ inline bool QwtAxisId::isYAxis() const
     return QwtAxis::isYAxis( pos );
 }
 
+inline uint qHash( const QwtAxisId &axisId, uint seed = 0 ) noexcept
+{
+    return qHash( axisId.pos, seed ) ^ qHash( axisId.id, seed );
+}
+
 #ifndef QT_NO_DEBUG_STREAM
 QWT_EXPORT QDebug operator<<( QDebug, const QwtAxisId & );
 #endif

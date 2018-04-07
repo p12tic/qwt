@@ -11,10 +11,10 @@
 #include "qwt_scale_div.h"
 #include "qwt_plot.h"
 #include "qwt_painter.h"
-#include "qwt_axes_mask.h"
 #include <qbitmap.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
+#include <qset.h>
 
 static QBitmap qwtBorderMask( const QWidget *canvas, const QSize &size )
 {
@@ -91,7 +91,7 @@ static QBitmap qwtBorderMask( const QWidget *canvas, const QSize &size )
 class QwtPlotPanner::PrivateData
 {
 public:
-    QwtAxesMask disabledAxes;
+    QSet<QwtAxisId> disabledAxes;
 };
 
 /*!
@@ -131,7 +131,10 @@ QwtPlotPanner::~QwtPlotPanner()
 */
 void QwtPlotPanner::setAxisEnabled( QwtAxisId axisId, bool on )
 {
-    d_data->disabledAxes.setEnabled( axisId, !on );
+    if (on)
+        d_data->disabledAxes.remove( axisId );
+    else
+        d_data->disabledAxes.insert( axisId );
 }
 
 /*!
@@ -144,7 +147,7 @@ void QwtPlotPanner::setAxisEnabled( QwtAxisId axisId, bool on )
 */
 bool QwtPlotPanner::isAxisEnabled( QwtAxisId axisId ) const
 {
-    return !d_data->disabledAxes.isEnabled( axisId );
+    return !d_data->disabledAxes.contains( axisId );
 }
 
 //! Return observed plot canvas

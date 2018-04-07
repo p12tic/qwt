@@ -10,12 +10,12 @@
 #include "qwt_plot.h"
 #include "qwt_scale_div.h"
 #include "qwt_plot_magnifier.h"
-#include "qwt_axes_mask.h"
+#include <qset.h>
 
 class QwtPlotMagnifier::PrivateData
 {
 public:
-    QwtAxesMask disabledAxes;
+    QSet< QwtAxisId > disabledAxes;
 };
 
 /*!
@@ -47,7 +47,10 @@ QwtPlotMagnifier::~QwtPlotMagnifier()
 */
 void QwtPlotMagnifier::setAxisEnabled( QwtAxisId axisId, bool on )
 {
-    d_data->disabledAxes.setEnabled( axisId, !on );
+    if (on)
+        d_data->disabledAxes.remove( axisId );
+    else
+        d_data->disabledAxes.insert( axisId );
 }
 
 /*!
@@ -60,7 +63,7 @@ void QwtPlotMagnifier::setAxisEnabled( QwtAxisId axisId, bool on )
 */
 bool QwtPlotMagnifier::isAxisEnabled( QwtAxisId axisId ) const
 {
-    return !d_data->disabledAxes.isEnabled( axisId );
+    return !d_data->disabledAxes.contains( axisId );
 }
 
 //! Return observed plot canvas
