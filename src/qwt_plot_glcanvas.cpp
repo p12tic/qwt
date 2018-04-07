@@ -243,11 +243,13 @@ void QwtPlotGLCanvas::paintEvent( QPaintEvent *event )
 
     QPainter painter( this );
 
+#if QT_VERSION >= 0x040600
     if ( painter.paintEngine()->type() == QPaintEngine::OpenGL2 )
     {
         // work around a translation bug of QPaintEngine::OpenGL2
         painter.translate( 1, 1 );
     }
+#endif
 
     drawBackground( &painter );
     drawItems( &painter );
