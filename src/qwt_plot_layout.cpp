@@ -373,8 +373,6 @@ QwtPlotLayoutHintData::QwtPlotLayoutHintData( const QwtPlot *plot )
 
             for ( int i = 0; i < axesCount; i++ )
             {
-                QSize &axesSize = m_axesSize[ axisPos ];
-
                 const QwtAxisId axisId( axisPos, i );
 
                 if ( plot->isAxisVisible( axisId ) )
@@ -387,14 +385,16 @@ QwtPlotLayoutHintData::QwtPlotLayoutHintData( const QwtPlot *plot )
                         int off = scl->titleHeightForWidth( sd.h ) -
                             scl->titleHeightForWidth( yAxesHeight() );
 
-                        axesSize.setWidth( axesSize.width() - off );
+                        QSize &axSize = m_axesSize[ axisPos ];
+                        axSize.setWidth( axSize.width() - off );
                     }
                     else
                     {
                         int off = scl->titleHeightForWidth( sd.w ) -
                             scl->titleHeightForWidth( xAxesWidth() );
 
-                        axesSize.setHeight( axesSize.height() - off );
+                        QSize &axSize = m_axesSize[ axisPos ];
+                        axSize.setHeight( axSize.height() - off );
                     }
                 }
             }
