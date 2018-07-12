@@ -20,6 +20,14 @@ CONFIG           -= depend_includepath
 # CONFIG += sanitize
 # CONFIG += pedantic
 
+sanitize {
+
+    CONFIG += sanitizer
+    CONFIG += sanitize_address
+    #CONFIG *= sanitize_memory
+    CONFIG *= sanitize_undefined
+}
+
 ######################################################################
 # release/debug mode
 ######################################################################
@@ -64,13 +72,13 @@ linux {
 
         # CONFIG           += separate_debug_info
 
-        sanitize {
+        sanitize_undefined {
         
-            #GCC_VERSION = $$system("$$QMAKE_CXX -dumpversion")
-            #equals(GCC_VERSION,4) || contains(GCC_VERSION, 4.* ) {
+            GCC_VERSION = $$system("$$QMAKE_CXX -dumpversion")
+            equals(GCC_VERSION,4) || contains(GCC_VERSION, 4.* ) {
 
-                #CONFIG -= sanitize
-            #}
+                CONFIG -= sanitize_undefined
+            }
         }
 
         pedantic {
@@ -145,14 +153,6 @@ linux {
     }
 
     # QMAKE_CXXFLAGS   *= -Werror
-}
-
-sanitize {
-
-    CONFIG += sanitizer
-    CONFIG += sanitize_address
-    #CONFIG *= sanitize_memory
-    CONFIG *= sanitize_undefined
 }
 
 ######################################################################
