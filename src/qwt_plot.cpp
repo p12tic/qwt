@@ -92,7 +92,7 @@ static void qwtSetTabOrder(
     }
 }
 
-QwtScaleMapTable qwtScaleMapTable( const QwtPlot *plot ) 
+static QwtScaleMapTable qwtScaleMapTable( const QwtPlot *plot ) 
 {
     QwtScaleMapTable table;
           
