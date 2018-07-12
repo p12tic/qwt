@@ -28,6 +28,11 @@ sanitize {
     CONFIG *= sanitize_undefined
 }
 
+# Include the generated moc files in the corresponding cpp file
+# what increases the compile time significantly
+
+DEFINES += QWT_MOC_INCLUDE=1
+
 ######################################################################
 # release/debug mode
 ######################################################################
@@ -147,7 +152,7 @@ linux {
     linux-clang {
 
         # workaround for a clang 3.8 bug
-        DEFINES += __STRICT_ANSI__
+        # DEFINES += __STRICT_ANSI__
 
         # QMAKE_CXXFLAGS_RELEASE  *= -O3
     }

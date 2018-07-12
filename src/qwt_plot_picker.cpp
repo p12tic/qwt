@@ -421,3 +421,7 @@ QPoint QwtPlotPicker::transform( const QPointF &pos ) const
 void QwtPlotPicker::axesChanged()
 {
 }
+
+#if QWT_MOC_INCLUDE
+#include "moc_qwt_plot_picker.cpp"
+#endif

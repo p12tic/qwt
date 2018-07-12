@@ -387,3 +387,7 @@ QRect QwtPlotGLCanvas::frameRect() const
     const int fw = frameWidth();
     return contentsRect().adjusted( -fw, -fw, fw, fw );
 }
+
+#if QWT_MOC_INCLUDE
+#include "moc_qwt_plot_glcanvas.cpp"
+#endif
