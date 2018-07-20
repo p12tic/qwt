@@ -13,9 +13,11 @@
 #include "qwt_global.h"
 #include "qwt_picker.h"
 #include "qwt_axis_id.h"
-#include <qvector.h>
 
 class QwtPlot;
+class QPointF;
+class QRectF;
+template <typename T> class QVector;
 
 /*!
   \brief QwtPlotPicker provides selections on a plot canvas

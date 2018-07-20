@@ -12,10 +12,6 @@
 
 #include "qwt_global.h"
 
-#ifndef QT_NO_DEBUG_STREAM
-#include <qdebug.h>
-#endif
-
 namespace QwtAxis
 {
     //! \brief Axis position

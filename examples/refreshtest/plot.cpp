@@ -15,6 +15,8 @@
 #include <qevent.h>
 #endif
 
+#include <qmath.h>
+
 static double wave( double x )
 {
     const double period = 1.0;

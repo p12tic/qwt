@@ -8,7 +8,9 @@
  *****************************************************************************/
 
 #include "qwt_series_data.h"
-#include "qwt_math.h"
+#include "qwt_point_polar.h"
+
+#include <cmath>
 
 static inline QRectF qwtBoundingRect( const QPointF &sample )
 {
@@ -40,6 +42,7 @@ static inline QRectF qwtBoundingRect( const QwtSetSample &sample )
     {
         if ( sample.set[i] < minY )
             minY = sample.set[i];
+
         if ( sample.set[i] > maxY )
             maxY = sample.set[i];
     }

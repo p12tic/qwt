@@ -9,12 +9,14 @@
 
 #include "qwt_plot_opengl_canvas.h"
 #include "qwt_plot.h"
+#include "qwt_painter.h"
+
 #include <qevent.h>
 #include <qpainter.h>
 #include <qdrawutil.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
-#include "qwt_painter.h"
+#include <qpaintengine.h>
 
 static QWidget *qwtBGWidget2( QWidget *widget )
 {

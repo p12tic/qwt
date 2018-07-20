@@ -12,10 +12,10 @@
 
 #include "qwt_global.h"
 #include <qframe.h>
-#include <qpainterpath.h>
 
 class QwtPlot;
 class QPixmap;
+class QPainterPath;
 
 /*!
   \brief Canvas of a QwtPlot.
@@ -103,11 +103,11 @@ public:
           OpenGL buffer, that will be translated to a QImage afterwards.
           Then this image will be painted to the canvas.
 
-          This mode might be useful for "heavy" plots on platforms to achieve 
+          This mode might be useful for "heavy" plots to achieve 
           hardware acceleration on platforms, where the raster paint engine 
           ( = software renderer ) would be used otherwise.
           But the penalty for copying out the buffer to the image makes this mode
-          less optimal when looking for high rfresh rates of a "lightweight" plot.
+          less optimal when looking for high refresh rates of a "lightweight" plot.
 
           On a hardware accelerated graphics system ( f.e. Qt4/X11 "native" ) 
           using this mode does not make much sense. Unfortunately those systems have 

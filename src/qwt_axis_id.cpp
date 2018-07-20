@@ -11,6 +11,8 @@
 
 #ifndef QT_NO_DEBUG_STREAM
 
+#include <qdebug.h>
+
 QDebug operator<<( QDebug debug, const QwtAxisId &axisId )
 {
     static const char *posNames[] = { "yLeft", "yRight", "xBottom", "xTop" };

@@ -16,6 +16,7 @@
 #include <qsize.h>
 
 class QwtPlot;
+class QwtScaleMap;
 class QRectF;
 class QPainter;
 class QPaintDevice;

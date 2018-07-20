@@ -8,6 +8,8 @@
  *****************************************************************************/
 
 #include "qwt_plot_seriesitem.h"
+#include "qwt_scale_div.h"
+#include "qwt_text.h"
 
 class QwtPlotSeriesItem::PrivateData
 {
@@ -39,6 +41,7 @@ QwtPlotSeriesItem::QwtPlotSeriesItem( const QString &title ):
     QwtPlotItem( QwtText( title ) )
 {
     d_data = new PrivateData();
+    setItemInterest( QwtPlotItem::ScaleInterest, true );
 }
 
 //! Destructor

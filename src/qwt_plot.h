@@ -12,22 +12,22 @@
 
 #include "qwt_global.h"
 #include "qwt_axis_id.h"
-#include "qwt_text.h"
 #include "qwt_plot_dict.h"
-#include "qwt_scale_map.h"
-#include "qwt_interval.h"
+
 #include <qframe.h>
-#include <qlist.h>
-#include <qvariant.h>
 
 class QwtPlotLayout;
 class QwtAbstractLegend;
 class QwtScaleWidget;
 class QwtScaleEngine;
 class QwtScaleDiv;
+class QwtScaleMap;
+class QwtScaleMapTable;
 class QwtScaleDraw;
 class QwtTextLabel;
-class QwtScaleMapTable;
+class QwtInterval;
+class QwtText;
+template <typename T> class QList;
 
 #define QWT_COMPAT 1 // flag to disable compatibilities - will be removed later
 #define QWT_DUMMY_ID 0 // dummy id to help for migrating the code - will be removed later
