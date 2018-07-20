@@ -1,8 +1,8 @@
 #include "plot.h"
 #include "scalepicker.h"
 #include "canvaspicker.h"
+
 #include <qwt_plot_layout.h>
-#include <qwt_plot_canvas.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_renderer.h>
@@ -15,10 +15,10 @@
 #include <qwt_spline_basis.h>
 #include <qwt_spline_parametrization.h>
 #include <qwt_curve_fitter.h>
-#include <qwt_spline_curve_fitter.h>
 #include <qwt_legend.h>
 #include <qwt_legend_label.h>
-#include <qevent.h>
+
+#include <qcoreevent.h>
 #include <qprinter.h>
 #include <qprintdialog.h>
 
@@ -193,15 +193,11 @@ private:
 
         // always the same at both ends
 
-        QwtSpline *spline = dynamic_cast<QwtSpline *>( d_spline );
-        if ( spline )
-        {
-            spline->setBoundaryCondition( QwtSpline::AtBeginning, condition );
-            spline->setBoundaryValue( QwtSpline::AtBeginning, value );
+        d_spline->setBoundaryCondition( QwtSpline::AtBeginning, condition );
+        d_spline->setBoundaryValue( QwtSpline::AtBeginning, value );
 
-            spline->setBoundaryCondition( QwtSpline::AtEnd, condition );
-            spline->setBoundaryValue( QwtSpline::AtEnd, value );
-        }
+        d_spline->setBoundaryCondition( QwtSpline::AtEnd, condition );
+        d_spline->setBoundaryValue( QwtSpline::AtEnd, value );
     }
 
     QwtSpline *d_spline;
