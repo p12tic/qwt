@@ -18,8 +18,8 @@
 #include "qwt_legend.h"
 #include "qwt_legend_data.h"
 #include "qwt_plot_canvas.h"
+#include "qwt_math.h"
 
-#include <qmath.h>
 #include <qpainter.h>
 #include <qpointer.h>
 #include <qapplication.h>
@@ -749,7 +749,7 @@ void QwtPlot::updateCanvasMargins()
     {
         if ( margins[axisPos] >= 0.0 )
         {
-            const int m = qCeil( margins[axisPos] );
+            const int m = qwtCeil( margins[axisPos] );
             plotLayout()->setCanvasMargin( m, axisPos);
             doUpdate = true;
         }
@@ -804,6 +804,7 @@ void QwtPlot::drawItems( QPainter *painter,
 
                 painter->setRenderHint( QPainter::Antialiasing,
                     item->testRenderHint( QwtPlotItem::RenderAntialiased ) );
+
                 painter->setRenderHint( QPainter::HighQualityAntialiasing,
                     item->testRenderHint( QwtPlotItem::RenderAntialiased ) );
 
@@ -880,6 +881,7 @@ QwtScaleMap QwtPlot::canvasMap( QwtAxisId axisId ) const
                 canvasRect.right() - right );
         }
     }
+
     return map;
 }
 

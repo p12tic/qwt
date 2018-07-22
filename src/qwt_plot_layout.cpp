@@ -12,8 +12,7 @@
 #include "qwt_text_label.h"
 #include "qwt_scale_widget.h"
 #include "qwt_abstract_legend.h"
-
-#include <qmath.h>
+#include "qwt_math.h"
 
 class QwtPlotLayoutData
 {
@@ -34,7 +33,7 @@ public:
 
         QSize legendHint( const QwtAbstractLegend *legend, const QRectF &rect ) const
         {
-            const int w = qMin( hint.width(), qFloor( rect.width() ) );
+            const int w = qMin( hint.width(), qwtFloor( rect.width() ) );
 
             int h = legend->heightForWidth( w );
             if ( h <= 0 )
@@ -346,7 +345,7 @@ QwtPlotLayoutHintData::QwtPlotLayoutHintData( const QwtPlot *plot )
                 {
                     tickOffset[axisPos] = scl->margin();
                     if ( scl->scaleDraw()->hasComponent( QwtAbstractScaleDraw::Ticks ) )
-                        tickOffset[axisPos] += qCeil( scl->scaleDraw()->maxTickLength() );
+                        tickOffset[axisPos] += qwtCeil( scl->scaleDraw()->maxTickLength() );
                 }
 
                 numVisibleScales[axisPos]++;
@@ -677,7 +676,7 @@ int QwtPlotLayoutEngine::heightForWidth(
         w -= axesWidth;
     }
 
-    int d = qCeil( labelData.text.heightForWidth( w ) );
+    int d = qwtCeil( labelData.text.heightForWidth( w ) );
     if ( !( options & QwtPlotLayout::IgnoreFrames ) )
         d += 2 * labelData.frameWidth;
 
@@ -800,7 +799,7 @@ QwtPlotLayoutEngine::layoutDimensions( QwtPlotLayout::Options options,
                     int d = scaleData.dimWithoutTitle;
                     if ( !scaleData.scaleWidget->title().isEmpty() )
                     {
-                        d += scaleData.scaleWidget->titleHeightForWidth( qFloor( length ) );
+                        d += scaleData.scaleWidget->titleHeightForWidth( qwtFloor( length ) );
                     }
 
 

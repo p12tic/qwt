@@ -9,23 +9,22 @@
 #include <qwt_plot_layout.h>
 #include <qwt_scale_widget.h>
 #include <qwt_scale_draw.h>
+#include <qwt_math.h>
 
 #ifndef QWT_NO_OPENGL
 #include <qwt_plot_glcanvas.h>
 #include <qevent.h>
 #endif
 
-#include <qmath.h>
-
 static double wave( double x )
 {
     const double period = 1.0;
     const double c = 5.0;
 
-    double v = ::fmod( x, period );
+    double v = std::fmod( x, period );
 
     const double amplitude = qAbs( x - qRound( x / c ) * c ) / ( 0.5 * c );
-    v = amplitude * qSin( v / period * 2 * M_PI );
+    v = amplitude * std::sin( v / period * 2 * M_PI );
 
     return v;
 }
