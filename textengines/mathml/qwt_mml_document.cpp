@@ -3434,6 +3434,10 @@ QwtMmlNode *QwtMmlDocument::domToMml( const QDomNode &dom_node, bool *ok, QStrin
                 return 0;
             }
 
+#ifdef Q_FALLTHROUGH
+            Q_FALLTHROUGH();
+#endif
+
             // ...and continue just as in ChildAny
 
         case QwtMmlNodeSpec::ChildAny:
