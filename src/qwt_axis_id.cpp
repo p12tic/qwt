@@ -24,7 +24,7 @@ QDebug operator<<( QDebug debug, const QwtAxisId &axisId )
     if ( axisId.pos >= 0 && axisId.pos < 4 )
         debug << posNames[axisId.pos];
     else
-        debug << axisId.pos; 
+        debug << axisId.pos;
 
     debug << "," << axisId.id << ")";
 

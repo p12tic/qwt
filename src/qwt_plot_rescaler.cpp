@@ -143,7 +143,7 @@ QwtPlotRescaler::RescalePolicy QwtPlotRescaler::rescalePolicy() const
 /*!
   Set the reference axis ( see RescalePolicy )
 
-  \param axisId Axis id 
+  \param axisId Axis id
   \sa referenceAxis()
 */
 void QwtPlotRescaler::setReferenceAxis( QwtAxisId axisId )
@@ -390,7 +390,7 @@ void QwtPlotRescaler::rescale(
         const QwtAxisId axisId( axisPos, QWT_DUMMY_ID );
         if ( aspectRatio( axisId ) > 0.0 && axisId != refAxis )
         {
-            intervals[axisPos] = syncScale( axisId, 
+            intervals[axisPos] = syncScale( axisId,
                 intervals[ refAxis.pos ], newSize );
         }
     }

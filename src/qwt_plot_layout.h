@@ -42,7 +42,7 @@ public:
          */
         IgnoreScrollbars = 0x02,
 
-        //! Ignore all frames. 
+        //! Ignore all frames.
         IgnoreFrames = 0x04,
 
         //! Ignore the legend.

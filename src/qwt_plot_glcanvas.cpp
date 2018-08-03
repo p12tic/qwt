@@ -24,7 +24,7 @@ static QWidget *qwtBGWidget( QWidget *widget )
 
     for ( ; w->parentWidget() != NULL; w = w->parentWidget() )
     {
-        if ( w->autoFillBackground() || 
+        if ( w->autoFillBackground() ||
             w->testAttribute( Qt::WA_StyledBackground ) )
         {
             return w;
@@ -65,7 +65,7 @@ public:
     }
 };
 
-/*! 
+/*!
   \brief Constructor
 
   \param plot Parent plot widget
@@ -104,9 +104,9 @@ QwtPlotGLCanvas::~QwtPlotGLCanvas()
 /*!
   Set the frame style
 
-  \param style The bitwise OR between a shape and a shadow. 
-  
-  \sa frameStyle(), QFrame::setFrameStyle(), 
+  \param style The bitwise OR between a shape and a shadow.
+
+  \sa frameStyle(), QFrame::setFrameStyle(),
       setFrameShadow(), setFrameShape()
  */
 void QwtPlotGLCanvas::setFrameStyle( int style )
@@ -219,7 +219,7 @@ void QwtPlotGLCanvas::setMidLineWidth( int width )
 /*!
   \return Midline width of the frame
   \sa setMidLineWidth(), lineWidth()
- */ 
+ */
 int QwtPlotGLCanvas::midLineWidth() const
 {
     return d_data->midLineWidth;
@@ -289,7 +289,7 @@ bool QwtPlotGLCanvas::event( QEvent *event )
   \param painter Painter
 
   \sa QwtPlot::drawCanvas()
-*/  
+*/
 void QwtPlotGLCanvas::drawItems( QPainter *painter )
 {
     painter->save();
@@ -306,7 +306,7 @@ void QwtPlotGLCanvas::drawItems( QPainter *painter )
 /*!
   Draw the background of the canvas
   \param painter Painter
-*/ 
+*/
 void QwtPlotGLCanvas::drawBackground( QPainter *painter )
 {
     painter->save();
@@ -326,7 +326,7 @@ void QwtPlotGLCanvas::drawBackground( QPainter *painter )
         opt.initFrom( w );
         w->style()->drawPrimitive( QStyle::PE_Widget, &opt, painter, w);
     }
-    else 
+    else
     {
         if ( !autoFillBackground() )
         {
@@ -350,7 +350,7 @@ void QwtPlotGLCanvas::drawBorder( QPainter *painter )
 
     if ( frameShadow() == QwtPlotGLCanvas::Plain )
     {
-        qDrawPlainRect( painter, frameRect(), 
+        qDrawPlainRect( painter, frameRect(),
             palette().shadow().color(), lineWidth() );
     }
     else
@@ -362,7 +362,7 @@ void QwtPlotGLCanvas::drawBorder( QPainter *painter )
         }
         else
         {
-            qDrawShadePanel( painter, frameRect(), palette(), 
+            qDrawShadePanel( painter, frameRect(), palette(),
                 frameShadow() == Sunken, lineWidth() );
         }
     }

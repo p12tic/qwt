@@ -34,14 +34,14 @@ public:
     void initWidget( QwtScaleDraw::Alignment align, const QString& name, QwtPlot* plot )
     {
         scaleWidget = new QwtScaleWidget( align, plot );
-        scaleWidget->setObjectName( name ); 
+        scaleWidget->setObjectName( name );
 
 #if 1
         // better find the font sizes from the application font
         const QFont fscl( plot->fontInfo().family(), 10 );
         const QFont fttl( plot->fontInfo().family(), 12, QFont::Bold );
 #endif
-    
+
         scaleWidget->setTransformation( scaleEngine->transformation() );
 
         scaleWidget->setFont( fscl );
@@ -153,7 +153,7 @@ public:
         return d[ axisId.pos ].axisData[ axisId.id ];
     }
 
-    struct 
+    struct
     {
         QVector< QwtPlotAxisData > axisData;
 
@@ -396,7 +396,7 @@ QwtScaleDraw *QwtPlot::axisScaleDraw( QwtAxisId axisId )
 }
 
 /*!
-  \brief Return the step size parameter that has been set in setAxisScale. 
+  \brief Return the step size parameter that has been set in setAxisScale.
 
   This doesn't need to be the step size of the current scale.
 
@@ -417,7 +417,7 @@ double QwtPlot::axisStepSize( QwtAxisId axisId ) const
   \brief Return the current interval of the specified axis
 
   This is only a convenience function for axisScaleDiv( axisPos )->interval();
-  
+
   \param axisPos Axis position
   \return Scale interval
 
@@ -539,8 +539,8 @@ void QwtPlot::setAxisAutoScale( QwtAxisId axisId, bool on )
 /*!
   \brief Disable autoscaling and specify a fixed scale for a selected axis.
 
-  In updateAxes() the scale engine calculates a scale division from the 
-  specified parameters, that will be assigned to the scale widget. So 
+  In updateAxes() the scale engine calculates a scale division from the
+  specified parameters, that will be assigned to the scale widget. So
   updates of the scale widget usually happen delayed with the next replot.
 
   \param axisPos Axis position
@@ -572,7 +572,7 @@ void QwtPlot::setAxisScale( QwtAxisId axisId, double min, double max, double ste
   \brief Disable autoscaling and specify a fixed scale for a selected axis.
 
   The scale division will be stored locally only until the next call
-  of updateAxes(). So updates of the scale widget usually happen delayed with 
+  of updateAxes(). So updates of the scale widget usually happen delayed with
   the next replot.
 
   \param axisPos Axis position
@@ -720,26 +720,26 @@ void QwtPlot::setAxisTitle( QwtAxisId axisId, const QwtText &title )
         axisWidget( axisId )->setTitle( title );
 }
 
-/*! 
+/*!
   \brief Rebuild the axes scales
 
-  In case of autoscaling the boundaries of a scale are calculated 
-  from the bounding rectangles of all plot items, having the 
-  QwtPlotItem::AutoScale flag enabled ( QwtScaleEngine::autoScale() ). 
-  Then a scale division is calculated ( QwtScaleEngine::didvideScale() ) 
+  In case of autoscaling the boundaries of a scale are calculated
+  from the bounding rectangles of all plot items, having the
+  QwtPlotItem::AutoScale flag enabled ( QwtScaleEngine::autoScale() ).
+  Then a scale division is calculated ( QwtScaleEngine::didvideScale() )
   and assigned to scale widget.
 
-  When the scale boundaries have been assigned with setAxisScale() a 
+  When the scale boundaries have been assigned with setAxisScale() a
   scale division is calculated ( QwtScaleEngine::didvideScale() )
   for this interval and assigned to the scale widget.
 
-  When the scale has been set explicitly by setAxisScaleDiv() the 
+  When the scale has been set explicitly by setAxisScaleDiv() the
   locally stored scale division gets assigned to the scale widget.
 
-  The scale widget indicates modifications by emitting a 
+  The scale widget indicates modifications by emitting a
   QwtScaleWidget::scaleDivChanged() signal.
 
-  updateAxes() is usually called by replot(). 
+  updateAxes() is usually called by replot().
 
   \sa setAxisAutoScale(), setAxisScale(), setAxisScaleDiv(), replot()
       QwtPlotItem::boundingRect()
@@ -773,14 +773,14 @@ void QwtPlot::updateAxes()
             if ( rect.width() >= 0.0 )
             {
                 const QwtAxisId xAxis = item->xAxis();
-                boundingIntervals[ xAxis.pos ][ xAxis.id ] |= 
+                boundingIntervals[ xAxis.pos ][ xAxis.id ] |=
                     QwtInterval( rect.left(), rect.right() );
             }
 
             if ( rect.height() >= 0.0 )
             {
                 const QwtAxisId yAxis = item->yAxis();
-                boundingIntervals[ yAxis.pos ][ yAxis.id ] |= 
+                boundingIntervals[ yAxis.pos ][ yAxis.id ] |=
                     QwtInterval( rect.top(), rect.bottom() );
             }
         }

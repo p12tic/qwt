@@ -15,7 +15,7 @@
 #include "qwt_picker_machine.h"
 
 class QwtPlotPicker::PrivateData
-{       
+{
 public:
     PrivateData():
         xAxis( -1 ),
@@ -52,7 +52,7 @@ QwtPlotPicker::QwtPlotPicker( QWidget *canvas ):
     // attach axes
 
     int xAxis = QwtAxis::xBottom;
-    if ( plot->axesCount( QwtAxis::xTop, true ) > 0 && 
+    if ( plot->axesCount( QwtAxis::xTop, true ) > 0 &&
         plot->axesCount( QwtAxis::xBottom, true ) == 0 )
     {
         xAxis = QwtAxis::xTop;

@@ -60,7 +60,7 @@ public:
                 text = label->text();
                 if ( !( text.testPaintAttribute( QwtText::PaintUsingTextFont ) ) )
                     text.setFont( label->font() );
-        
+
                 frameWidth = label->frameWidth();
             }
         }
@@ -218,7 +218,7 @@ QwtPlotLayoutData::QwtPlotLayoutData( const QwtPlot *plot )
 
 bool QwtPlotLayoutData::hasSymmetricYAxes() const
 {
-    return numVisibleScales[ QwtAxis::yLeft ] == 
+    return numVisibleScales[ QwtAxis::yLeft ] ==
         numVisibleScales[ QwtAxis::yRight ];
 }
 
@@ -233,26 +233,26 @@ public:
             numVisibleScales[ QwtAxis::yRight ];
     }
 
-    int yAxesWidth() const 
-    { 
+    int yAxesWidth() const
+    {
         return m_axesSize[ QwtAxis::yLeft ].width() +
             m_axesSize[ QwtAxis::yRight ].width();
     }
 
-    int yAxesHeight() const 
-    { 
+    int yAxesHeight() const
+    {
         return qMax( m_axesSize[ QwtAxis::yLeft ].height(),
             m_axesSize[ QwtAxis::yRight ].height() );
     }
 
-    int xAxesHeight() const 
-    { 
+    int xAxesHeight() const
+    {
         return m_axesSize[ QwtAxis::xTop ].height() +
             m_axesSize[ QwtAxis::xBottom ].height();
     }
 
-    int xAxesWidth() const 
-    { 
+    int xAxesWidth() const
+    {
         return qMax( m_axesSize[ QwtAxis::xTop ].width(),
             m_axesSize[ QwtAxis::xBottom ].width() );
     }
@@ -282,7 +282,7 @@ private:
         return scaleData[ axisId.pos ][ axisId.id ];
     }
 
-    ScaleData &axisData( QwtAxisId axisId ) 
+    ScaleData &axisData( QwtAxisId axisId )
     {
         return scaleData[ axisId.pos ][ axisId.id ];
     }
@@ -317,7 +317,7 @@ QwtPlotLayoutHintData::QwtPlotLayoutHintData( const QwtPlot *plot )
         QSize &axesSize = m_axesSize[ axisPos ];
         axesSize = QSize( 0, 0 );
 
-        canvasBorder[ axisPos ] = contentsMargins[axisPos] + 
+        canvasBorder[ axisPos ] = contentsMargins[axisPos] +
             plot->plotLayout()->canvasMargin( axisPos ) + 1;
 
         numVisibleScales[ axisPos ] = 0;
@@ -366,7 +366,7 @@ QwtPlotLayoutHintData::QwtPlotLayoutHintData( const QwtPlot *plot )
         if ( axesCount > 1 )
         {
             // The width of the y axes and the height of the x axes depends
-            // on the line breaks in the scale title. So after knowning the 
+            // on the line breaks in the scale title. So after knowning the
             // bounding height/width we might have some to subtract some line
             // breaks, we don't have anymore.
 
@@ -407,8 +407,8 @@ int QwtPlotLayoutHintData::alignedSize( const QwtAxisId axisId ) const
     if ( QwtAxis::isXAxis( axisId.pos ) && sd.w )
     {
         int w = sd.w;
-        const int leftW = m_axesSize[QwtAxis::yLeft].width(); 
-        const int rightW = m_axesSize[QwtAxis::yRight].width(); 
+        const int leftW = m_axesSize[QwtAxis::yLeft].width();
+        const int rightW = m_axesSize[QwtAxis::yRight].width();
 
         const int shiftLeft = sd.minLeft - canvasBorder[QwtAxis::yLeft];
         if ( shiftLeft > 0 && leftW )
@@ -424,8 +424,8 @@ int QwtPlotLayoutHintData::alignedSize( const QwtAxisId axisId ) const
     {
         int h = sd.h;
 
-        const int topH = m_axesSize[QwtAxis::xTop].height(); 
-        const int bottomH = m_axesSize[QwtAxis::xBottom].height(); 
+        const int topH = m_axesSize[QwtAxis::xTop].height();
+        const int bottomH = m_axesSize[QwtAxis::xBottom].height();
 
         const int shiftBottom = sd.minLeft - canvasBorder[QwtAxis::xBottom];
         if ( shiftBottom > 0 && bottomH )
@@ -452,7 +452,7 @@ public:
             dimTitle = dimFooter = 0;
             for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
             {
-                dimAxisVector[axisPos] = 
+                dimAxisVector[axisPos] =
                     QVector<int>( layoutData.numAxes( axisPos ), 0 );
             }
         }
@@ -467,7 +467,7 @@ public:
             dimAxisVector[ axisId.pos ][ axisId.id ] = dim;
         }
 
-        inline int dimAxes( int axisPos ) const 
+        inline int dimAxes( int axisPos ) const
         {
             const QVector<int> &dims = dimAxisVector[ axisPos ];
 
@@ -478,12 +478,12 @@ public:
             return dim;
         }
 
-        inline int dimYAxes() const 
+        inline int dimYAxes() const
         {
             return dimAxes( QwtAxis::yLeft ) + dimAxes( QwtAxis::yRight );
         }
-        
-        inline int dimXAxes() const 
+
+        inline int dimXAxes() const
         {
             return dimAxes( QwtAxis::xTop ) + dimAxes( QwtAxis::xBottom );
         }
@@ -499,9 +499,9 @@ public:
 
         inline QRectF innerRect( const QRectF &rect ) const
         {
-            QRectF r( 
+            QRectF r(
                 rect.x() + dimAxes( QwtAxis::yLeft ),
-                rect.y() + dimAxes( QwtAxis::xTop ), 
+                rect.y() + dimAxes( QwtAxis::xTop ),
                 rect.width() - dimYAxes(),
                 rect.height() - dimXAxes() );
 
@@ -531,17 +531,17 @@ public:
     {
     }
 
-    QRectF layoutLegend( QwtPlotLayout::Options, 
+    QRectF layoutLegend( QwtPlotLayout::Options,
         const QwtPlotLayoutData::LegendData &, const QRectF &, const QSize & ) const;
 
     QRectF alignLegend( const QSize &legendHint,
         const QRectF &canvasRect, const QRectF &legendRect ) const;
 
     void alignScales( QwtPlotLayout::Options, const QwtPlotLayoutData &,
-        QRectF &canvasRect, 
+        QRectF &canvasRect,
         QVector<QRectF> scaleRect[QwtAxis::PosCount] ) const;
 
-    Dimensions layoutDimensions( QwtPlotLayout::Options, 
+    Dimensions layoutDimensions( QwtPlotLayout::Options,
         const QwtPlotLayoutData &, const QRectF &rect ) const;
 
     inline void setSpacing( int spacing ) { d_spacing = spacing; }
@@ -560,9 +560,9 @@ public:
     inline double legendRatio() const { return d_legendRatio; }
 
 private:
-    int heightForWidth( QwtPlotLayoutData::Label, const QwtPlotLayoutData &, 
+    int heightForWidth( QwtPlotLayoutData::Label, const QwtPlotLayoutData &,
         QwtPlotLayout::Options, double width, int axesWidth ) const;
-    
+
     QwtPlot::LegendPosition d_legendPos;
     double d_legendRatio;
 
@@ -573,7 +573,7 @@ private:
 };
 
 QRectF QwtPlotLayoutEngine::layoutLegend( QwtPlotLayout::Options options,
-    const QwtPlotLayoutData::LegendData &legendData, 
+    const QwtPlotLayoutData::LegendData &legendData,
     const QRectF &rect, const QSize &legendHint ) const
 {
     int dim;
@@ -658,8 +658,8 @@ QRectF QwtPlotLayoutEngine::alignLegend( const QSize &legendHint,
     return alignedRect;
 }
 
-int QwtPlotLayoutEngine::heightForWidth( 
-    QwtPlotLayoutData::Label labelType, const QwtPlotLayoutData &layoutData, 
+int QwtPlotLayoutEngine::heightForWidth(
+    QwtPlotLayoutData::Label labelType, const QwtPlotLayoutData &layoutData,
     QwtPlotLayout::Options options,
     double width, int axesWidth ) const
 {
@@ -684,7 +684,7 @@ int QwtPlotLayoutEngine::heightForWidth(
 }
 
 QwtPlotLayoutEngine::Dimensions
-QwtPlotLayoutEngine::layoutDimensions( QwtPlotLayout::Options options, 
+QwtPlotLayoutEngine::layoutDimensions( QwtPlotLayout::Options options,
     const QwtPlotLayoutData &layoutData, const QRectF &rect ) const
 {
     Dimensions dimensions( layoutData );
@@ -725,7 +725,7 @@ QwtPlotLayoutEngine::layoutDimensions( QwtPlotLayout::Options options,
             }
         }
 
-        if ( !( options & QwtPlotLayout::IgnoreFooter ) ) 
+        if ( !( options & QwtPlotLayout::IgnoreFooter ) )
         {
             const int d = heightForWidth( QwtPlotLayoutData::Footer, layoutData, options,
                 rect.width(), dimensions.dimYAxes() );
@@ -775,7 +775,7 @@ QwtPlotLayoutEngine::layoutDimensions( QwtPlotLayout::Options options,
                             length -= 1;
 
                         /*
-                          The tick labels of the y axes are always left/right from the 
+                          The tick labels of the y axes are always left/right from the
                           backbone/ticks of the x axes - but we have to take care,
                           that te labels don't overlap.
                          */
@@ -817,7 +817,7 @@ QwtPlotLayoutEngine::layoutDimensions( QwtPlotLayout::Options options,
 }
 
 void QwtPlotLayoutEngine::alignScales( QwtPlotLayout::Options options,
-    const QwtPlotLayoutData &layoutData, QRectF &canvasRect, 
+    const QwtPlotLayoutData &layoutData, QRectF &canvasRect,
     QVector<QRectF> scaleRect[QwtAxis::PosCount] ) const
 {
     int backboneOffset[QwtAxis::PosCount];
@@ -832,7 +832,7 @@ void QwtPlotLayoutEngine::alignScales( QwtPlotLayout::Options options,
 
         if ( !( options & QwtPlotLayout::IgnoreFrames ) )
         {
-            backboneOffset[ axisPos ] += 
+            backboneOffset[ axisPos ] +=
                 layoutData.canvasData.contentsMargins[ axisPos ];
         }
     }
@@ -903,7 +903,7 @@ void QwtPlotLayoutEngine::alignScales( QwtPlotLayout::Options options,
                          */
                         const double cRight = canvasRect.right(); // qreal -> double
                         canvasRect.setRight( qMin( cRight, axisRect.right() + dx ) );
-                    }   
+                    }
 
                     const double maxRight = rightScaleRect.right();
                     const double right = axisRect.right() - rightOffset;
@@ -1452,7 +1452,7 @@ QRectF QwtPlotLayout::canvasRect() const
 */
 void QwtPlotLayout::invalidate()
 {
-    d_data->titleRect = d_data->footerRect = 
+    d_data->titleRect = d_data->footerRect =
         d_data->legendRect = d_data->canvasRect = QRectF();
 
     for ( int axisPos = 0; axisPos < QwtAxis::PosCount; axisPos++ )
@@ -1475,7 +1475,7 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
     QwtPlotLayoutHintData hintData( plot );
 
     /*
-      When having x and y axes, we try to use the empty 
+      When having x and y axes, we try to use the empty
       corners for the tick labels that are exceeding the
       scale backbones.
      */
@@ -1563,7 +1563,7 @@ QSize QwtPlotLayout::minimumSizeHint( const QwtPlot *plot ) const
 
             w += legendW + spacing();
         }
-        else 
+        else
         {
             int legendW = qMin( legend->sizeHint().width(), w );
             int legendH = legend->heightForWidth( legendW );
@@ -1619,7 +1619,7 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
     {
         legendHint = layoutData.legendData.legendHint( plot->legend(), rect );
 
-        d_data->legendRect = d_data->layoutEngine.layoutLegend( 
+        d_data->legendRect = d_data->layoutEngine.layoutLegend(
             options, layoutData.legendData, rect, legendHint );
 
         // subtract d_data->legendRect from rect
@@ -1700,7 +1700,7 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
     {
         QRectF &labelRect = d_data->footerRect;
 
-        labelRect.setRect( rect.left(), rect.bottom() - dimensions.dimFooter, 
+        labelRect.setRect( rect.left(), rect.bottom() - dimensions.dimFooter,
             rect.width(), dimensions.dimFooter );
 
         rect.setBottom( labelRect.top() - spacing() );
@@ -1787,7 +1787,7 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
     // corners to extend the axes, so that the label texts
     // left/right of the min/max ticks are moved into them.
 
-    d_data->layoutEngine.alignScales( options, layoutData, 
+    d_data->layoutEngine.alignScales( options, layoutData,
         d_data->canvasRect, d_data->scaleRects );
 
     if ( !d_data->legendRect.isEmpty() )
@@ -1795,7 +1795,7 @@ void QwtPlotLayout::activate( const QwtPlot *plot,
         // We prefer to align the legend to the canvas - not to
         // the complete plot - if possible.
 
-        d_data->legendRect = d_data->layoutEngine.alignLegend( 
+        d_data->legendRect = d_data->layoutEngine.alignLegend(
             legendHint, d_data->canvasRect, d_data->legendRect );
     }
 }

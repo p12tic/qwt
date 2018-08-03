@@ -24,7 +24,7 @@ static QWidget *qwtBGWidget2( QWidget *widget )
 
     for ( ; w->parentWidget() != NULL; w = w->parentWidget() )
     {
-        if ( w->autoFillBackground() || 
+        if ( w->autoFillBackground() ||
             w->testAttribute( Qt::WA_StyledBackground ) )
         {
             return w;
@@ -221,7 +221,7 @@ void QwtPlotOpenGLCanvas::drawBackground( QPainter *painter )
         opt.initFrom( w );
         w->style()->drawPrimitive( QStyle::PE_Widget, &opt, painter, w);
     }
-    else 
+    else
     {
         if ( !autoFillBackground() )
         {
@@ -241,7 +241,7 @@ void QwtPlotOpenGLCanvas::drawBorder( QPainter *painter )
 
     if ( frameShadow() == QwtPlotOpenGLCanvas::Plain )
     {
-        qDrawPlainRect( painter, frameRect(), 
+        qDrawPlainRect( painter, frameRect(),
             palette().shadow().color(), lineWidth() );
     }
     else
@@ -253,7 +253,7 @@ void QwtPlotOpenGLCanvas::drawBorder( QPainter *painter )
         }
         else
         {
-            qDrawShadePanel( painter, frameRect(), palette(), 
+            qDrawShadePanel( painter, frameRect(), palette(),
                 frameShadow() == Sunken, lineWidth() );
         }
     }

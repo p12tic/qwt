@@ -293,8 +293,8 @@ void QwtPlotRenderer::renderDocument( QwtPlot *plot,
         pdfWriter.setPageSizeMM( sizeMM );
         pdfWriter.setTitle( title );
         pdfWriter.setPageMargins( QMarginsF() );
-        pdfWriter.setResolution( resolution ); 
-        
+        pdfWriter.setResolution( resolution );
+
         QPainter painter( &pdfWriter );
         render( plot, &painter, documentRect );
 #else
@@ -926,7 +926,7 @@ void QwtPlotRenderer::renderCanvas( const QwtPlot *plot,
    \param canvasRect Target rectangle
    \param maps Scale maps to be calculated
 */
-QwtScaleMapTable QwtPlotRenderer::buildCanvasMaps( 
+QwtScaleMapTable QwtPlotRenderer::buildCanvasMaps(
     const QwtPlot *plot, const QRectF &canvasRect ) const
 {
     QwtScaleMapTable mapTable;
