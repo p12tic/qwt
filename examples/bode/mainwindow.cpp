@@ -58,7 +58,7 @@ MainWindow::MainWindow( QWidget *parent ):
 
     setContextMenuPolicy( Qt::NoContextMenu );
 
-    d_zoomer[0] = new Zoomer( 
+    d_zoomer[0] = new Zoomer(
         QwtAxis::xBottom, QwtAxis::yLeft, d_plot->canvas() );
     d_zoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
     d_zoomer[0]->setRubberBandPen( QColor( Qt::green ) );

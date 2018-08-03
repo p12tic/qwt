@@ -37,7 +37,7 @@ MainWindow::MainWindow( QWidget *parent ):
     updatePlot();
 
     connect( d_panel, SIGNAL( edited() ), SLOT( updatePlot() ) );
-    connect( d_plot->axisWidget( QwtAxis::yLeft ), 
+    connect( d_plot->axisWidget( QwtAxis::yLeft ),
         SIGNAL( scaleDivChanged() ), SLOT( updatePanel() ) );
 }
 

@@ -388,27 +388,27 @@ void PlotMatrix::alignScaleBorder( int rowOrColumn, int axis )
             plot = plotAt( rowOrColumn, col );
             if ( plot )
                 plot->axisWidget( axis )->setMinBorderDist( startDist, endDist );
-        }       
+        }
     }
     if ( axis == QwtAxis::xTop )
     {
         QwtPlot *plot = plotAt( rowOrColumn, 0 );
         if ( plot )
             plot->axisWidget( axis )->getBorderDistHint( startDist, endDist );
-    
+
         for ( int row = 1; row < numRows(); row++ )
         {
             plot = plotAt( row, rowOrColumn );
             if ( plot )
                 plot->axisWidget( axis )->setMinBorderDist( startDist, endDist );
-        }   
-    }   
+        }
+    }
     else if ( axis == QwtAxis::xBottom )
-    {       
+    {
         QwtPlot *plot = plotAt( numRows() - 1, rowOrColumn );
         if ( plot )
             plot->axisWidget( axis )->getBorderDistHint( startDist, endDist );
-    
+
         for ( int row = 0; row < numRows() - 1; row++ )
         {
             plot = plotAt( row, rowOrColumn );
