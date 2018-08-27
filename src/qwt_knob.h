@@ -137,7 +137,7 @@ public:
     void setKnobStyle( KnobStyle );
     KnobStyle knobStyle() const;
 
-    void setBorderWidth( int bw );
+    void setBorderWidth( int );
     int borderWidth() const;
 
     void setMarkerStyle( MarkerStyle );
@@ -146,8 +146,8 @@ public:
     void setMarkerSize( int );
     int markerSize() const;
 
-    virtual QSize sizeHint() const;
-    virtual QSize minimumSizeHint() const;
+    virtual QSize sizeHint() const QWT_OVERRIDE;
+    virtual QSize minimumSizeHint() const QWT_OVERRIDE;
 
     void setScaleDraw( QwtRoundScaleDraw * );
 
@@ -157,18 +157,18 @@ public:
     QRect knobRect() const;
 
 protected:
-    virtual void paintEvent( QPaintEvent * );
-    virtual void changeEvent( QEvent * );
+    virtual void paintEvent( QPaintEvent * ) QWT_OVERRIDE;
+    virtual void changeEvent( QEvent * ) QWT_OVERRIDE;
 
     virtual void drawKnob( QPainter *, const QRectF & ) const;
 
     virtual void drawFocusIndicator( QPainter * ) const;
 
     virtual void drawMarker( QPainter *,
-        const QRectF &, double arc ) const;
+        const QRectF &, double angle ) const;
 
-    virtual double scrolledTo( const QPoint & ) const;
-    virtual bool isScrollPosition( const QPoint & ) const;
+    virtual double scrolledTo( const QPoint & ) const QWT_OVERRIDE;
+    virtual bool isScrollPosition( const QPoint & ) const QWT_OVERRIDE;
 
 private:
     class PrivateData;

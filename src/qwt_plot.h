@@ -227,8 +227,8 @@ public:
 
     // Misc
 
-    virtual QSize sizeHint() const;
-    virtual QSize minimumSizeHint() const;
+    virtual QSize sizeHint() const QWT_OVERRIDE;
+    virtual QSize minimumSizeHint() const QWT_OVERRIDE;
 
     virtual void updateLayout();
     virtual void drawCanvas( QPainter * );
@@ -240,8 +240,8 @@ public:
         const QwtScaleMapTable &, const QRectF &canvasRect,
         double &left, double &top, double &right, double &bottom) const;
 
-    virtual bool event( QEvent * );
-    virtual bool eventFilter( QObject *, QEvent * );
+    virtual bool event( QEvent * ) QWT_OVERRIDE;
+    virtual bool eventFilter( QObject *, QEvent * ) QWT_OVERRIDE;
 
     virtual void drawItems( QPainter *, const QRectF &,
         const QwtScaleMapTable & ) const;
@@ -299,11 +299,11 @@ public Q_SLOTS:
 
 protected:
 
-    virtual void resizeEvent( QResizeEvent *e );
+    virtual void resizeEvent( QResizeEvent * ) QWT_OVERRIDE;
 
 private Q_SLOTS:
     void updateLegendItems( const QVariant &itemInfo,
-        const QList<QwtLegendData> &data );
+        const QList<QwtLegendData> &legendData );
 
 private:
     friend class QwtPlotItem;

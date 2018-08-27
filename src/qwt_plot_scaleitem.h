@@ -53,7 +53,7 @@ public:
 
     virtual ~QwtPlotScaleItem();
 
-    virtual int rtti() const;
+    virtual int rtti() const QWT_OVERRIDE;
 
     void setScaleDiv( const QwtScaleDiv& );
     const QwtScaleDiv& scaleDiv() const;
@@ -75,16 +75,17 @@ public:
     void setPosition( double pos );
     double position() const;
 
-    void setBorderDistance( int numPixels );
+    void setBorderDistance( int );
     int borderDistance() const;
 
     void setAlignment( QwtScaleDraw::Alignment );
 
-    virtual void draw( QPainter *p,
+    virtual void draw( QPainter *,
         const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-        const QRectF &rect ) const;
+        const QRectF &canvasRect ) const QWT_OVERRIDE;
 
-    virtual void updateScaleDiv( const QwtScaleDiv &, const QwtScaleDiv & );
+    virtual void updateScaleDiv(
+        const QwtScaleDiv &, const QwtScaleDiv & ) QWT_OVERRIDE;
 
 private:
     class PrivateData;

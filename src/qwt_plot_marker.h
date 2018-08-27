@@ -71,7 +71,7 @@ public:
 
     virtual ~QwtPlotMarker();
 
-    virtual int rtti() const;
+    virtual int rtti() const QWT_OVERRIDE;
 
     double xValue() const;
     double yValue() const;
@@ -82,11 +82,11 @@ public:
     void setValue( double, double );
     void setValue( const QPointF & );
 
-    void setLineStyle( LineStyle st );
+    void setLineStyle( LineStyle );
     LineStyle lineStyle() const;
 
     void setLinePen( const QColor &, qreal width = 0.0, Qt::PenStyle = Qt::SolidLine );
-    void setLinePen( const QPen &p );
+    void setLinePen( const QPen & );
     const QPen &linePen() const;
 
     void setSymbol( const QwtSymbol * );
@@ -106,11 +106,12 @@ public:
 
     virtual void draw( QPainter *,
         const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-        const QRectF & ) const;
+        const QRectF & ) const QWT_OVERRIDE;
 
-    virtual QRectF boundingRect() const;
+    virtual QRectF boundingRect() const QWT_OVERRIDE;
 
-    virtual QwtGraphic legendIcon( int index, const QSizeF & ) const;
+    virtual QwtGraphic legendIcon(
+        int index, const QSizeF & ) const QWT_OVERRIDE;
 
 protected:
     virtual void drawLines( QPainter *,

@@ -173,7 +173,7 @@ public:
     const QPixmap *backingStore() const;
     Q_INVOKABLE void invalidateBackingStore();
 
-    virtual bool event( QEvent * );
+    virtual bool event( QEvent * ) QWT_OVERRIDE;
 
     Q_INVOKABLE QPainterPath borderPath( const QRect & ) const;
 
@@ -181,8 +181,8 @@ public Q_SLOTS:
     void replot();
 
 protected:
-    virtual void paintEvent( QPaintEvent * );
-    virtual void resizeEvent( QResizeEvent * );
+    virtual void paintEvent( QPaintEvent * ) QWT_OVERRIDE;
+    virtual void resizeEvent( QResizeEvent * ) QWT_OVERRIDE;
 
     virtual void drawFocusIndicator( QPainter * );
     virtual void drawBorder( QPainter * );

@@ -79,13 +79,13 @@ public:
 
     virtual void getCanvasMarginHint(
         const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-        const QRectF &canvasRect,
-        double &left, double &top, double &right, double &bottom) const;
+        const QRectF &canvasRect, double &left, double &top,
+        double &right, double &bottom) const QWT_OVERRIDE;
 
 
 protected:
     double sampleWidth( const QwtScaleMap &map,
-        double canvasSize, double dataSize,
+        double canvasSize, double boundingSize,
         double value ) const;
 
 private:

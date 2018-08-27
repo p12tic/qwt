@@ -102,11 +102,11 @@ public:
     uint zoomRectIndex() const;
 
 public Q_SLOTS:
-    void moveBy( double x, double y );
+    void moveBy( double dx, double dy );
     virtual void moveTo( const QPointF & );
 
     virtual void zoom( const QRectF & );
-    virtual void zoom( int up );
+    virtual void zoom( int offset );
 
 Q_SIGNALS:
     /*!
@@ -123,14 +123,14 @@ protected:
 
     virtual QSizeF minZoomSize() const;
 
-    virtual void widgetMouseReleaseEvent( QMouseEvent * );
-    virtual void widgetKeyPressEvent( QKeyEvent * );
+    virtual void widgetMouseReleaseEvent( QMouseEvent * ) QWT_OVERRIDE;
+    virtual void widgetKeyPressEvent( QKeyEvent * ) QWT_OVERRIDE;
 
-    virtual void begin();
-    virtual bool end( bool ok = true );
-    virtual bool accept( QPolygon & ) const;
+    virtual void begin() QWT_OVERRIDE;
+    virtual bool end( bool ok = true ) QWT_OVERRIDE;
+    virtual bool accept( QPolygon & ) const QWT_OVERRIDE;
 
-    virtual void axesChanged();
+    virtual void axesChanged() QWT_OVERRIDE;
 
 private:
     void init( bool doReplot );
