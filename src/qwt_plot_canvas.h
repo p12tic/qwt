@@ -109,15 +109,12 @@ public:
           But the penalty for copying out the buffer to the image makes this mode
           less optimal when looking for high refresh rates of a "lightweight" plot.
 
-          On a hardware accelerated graphics system ( f.e. Qt4/X11 "native" )
-          using this mode does not make much sense. Unfortunately those systems have
-          been removed from Qt5.
+          On platforms, that already run on a hardware accelerated graphics pipeline   
+          this mode does not make much sense. Those platforms might be: 
 
-          \note Using QwtPlotGLCanvas is an hardware accelerated alternative without
-                suffering from the extra roundtrip of the rendered image. But this
-                type of canvas does not have a backing store, that helps to avoid
-                replots in combination with of overlay widgets ( f.e the
-                rubberband of a zoomer ).
+              - Qt4: QApplication::setGraphicsSystem( "opengl" ) )
+              - Qt4/X11: ( QApplication::setGraphicsSystem( "native" )
+              - Qt5/X11 ( >= Qt 5.10 ): export QT_XCB_NATIVE_PAINTING=1
 
           \note The OpenGLBuffer mode has no effect, when "QwtOpenGL" has been disabled in
                 qwtconfig.pri.
