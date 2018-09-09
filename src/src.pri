@@ -200,7 +200,22 @@ contains(QWT_CONFIG, QwtPlot) {
         qwt_sampling_thread.cpp \
         qwt_series_data.cpp \
         qwt_point_data.cpp \
-        qwt_scale_widget.cpp 
+        qwt_scale_widget.cpp
+
+    contains(QWT_CONFIG, QwtOpenGL) {
+
+        HEADERS += \
+            qwt_plot_glcanvas.h
+
+        SOURCES += \
+            qwt_plot_glcanvas.cpp
+
+        greaterThan(QT_MAJOR_VERSION, 4) {
+            HEADERS += qwt_plot_opengl_canvas.h
+            SOURCES += qwt_plot_opengl_canvas.cpp
+        }
+
+    }
 
     contains(QWT_CONFIG, QwtSvg) {
 
@@ -226,7 +241,7 @@ contains(QWT_CONFIG, QwtSvg) {
             QT += svg
         }
         else {
-            warning(QwtSvg is enabled in qwtconfig.pri, but Qt has not been built with svg support)
+            warning("QwtSvg is enabled in qwtconfig.pri, but Qt has not been built with svg support")
         }
     }
     else {
@@ -241,18 +256,6 @@ else {
 contains(QWT_CONFIG, QwtOpenGL) {
 
     QT += opengl
-
-    HEADERS += qwt_plot_glcanvas.h
-    SOURCES += qwt_plot_glcanvas.cpp
-
-    greaterThan(QT_MAJOR_VERSION, 4) {
-        
-        greaterThan(QT_MINOR_VERSION, 3) {
-
-            HEADERS += qwt_plot_opengl_canvas.h
-            SOURCES += qwt_plot_opengl_canvas.cpp
-        }
-    }
 }
 else {
 
