@@ -1,6 +1,11 @@
+/*****************************************************************************
+ * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
+ * This file may be used under the terms of the 3-clause BSD License
+ *****************************************************************************/
+
 #include "plot.h"
 #include "colorbar.h"
-#include <qevent.h>
+
 #include <qwt_plot_layout.h>
 #include <qwt_plot_canvas.h>
 #include <qwt_plot_grid.h>
@@ -8,8 +13,9 @@
 #include <qwt_symbol.h>
 #include <qwt_scale_widget.h>
 #include <qwt_wheel.h>
-#include <stdlib.h>
 
+#include <qevent.h>
+#include <cstdlib>
 
 Plot::Plot( QWidget *parent ):
     QwtPlot( parent )

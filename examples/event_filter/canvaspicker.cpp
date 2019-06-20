@@ -1,14 +1,21 @@
-#include <qapplication.h>
-#include <qevent.h>
-#include <qwhatsthis.h>
-#include <qpainter.h>
+/*****************************************************************************
+ * Qwt Examples - Copyright (C) 2002 Uwe Rathmann
+ * This file may be used under the terms of the 3-clause BSD License
+ *****************************************************************************/
+
+#include "canvaspicker.h"
+
 #include <qwt_plot.h>
 #include <qwt_symbol.h>
 #include <qwt_scale_map.h>
 #include <qwt_plot_canvas.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_directpainter.h>
-#include "canvaspicker.h"
+
+#include <qapplication.h>
+#include <qevent.h>
+#include <qwhatsthis.h>
+#include <qpainter.h>
 
 CanvasPicker::CanvasPicker( QwtPlot *plot ):
     QObject( plot ),
