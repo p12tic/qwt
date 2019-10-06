@@ -11,6 +11,7 @@
 #define QWT_AXIS_ID_H
 
 #include "qwt_global.h"
+#include <qhash.h>
 
 namespace QwtAxis
 {
