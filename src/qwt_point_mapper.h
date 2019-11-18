@@ -101,6 +101,12 @@ public:
     QPolygon toPolygon( const QwtScaleMap &xMap, const QwtScaleMap &yMap,
         const QwtSeriesData<QPointF> *series, int from, int to ) const;
 
+    QVector<QPolygonF> toPolygonsF( const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+        const QwtSeriesData<QPointF> *series, int from, int to ) const;
+
+    QVector<QPolygon> toPolygons( const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+        const QwtSeriesData<QPointF> *series, int from, int to ) const;
+
     QPolygon toPoints( const QwtScaleMap &xMap, const QwtScaleMap &yMap,
         const QwtSeriesData<QPointF> *series, int from, int to ) const;
 

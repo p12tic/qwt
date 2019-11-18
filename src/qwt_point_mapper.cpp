@@ -988,6 +988,185 @@ QPolygon QwtPointMapper::toPolygon(
 }
 
 /*!
+  \brief Translate a series of points into a one or more QPolygon
+
+  When the WeedOutPoints flag is enabled consecutive points,
+  that are mapped to the same position will be one point.
+
+  When the HandleNaNAsDiscontinuity flag is enabled,
+  points which have one or more coordinates as NaN will result in
+  creation of separate polygon for each set of contiguous non-NaN
+  points.
+
+  \param xMap x map
+  \param yMap y map
+  \param series Series of points to be mapped
+  \param from Index of the first point to be painted
+  \param to Index of the last point to be painted
+
+  \return Translated polygons
+*/
+QVector<QPolygonF> QwtPointMapper::toPolygonsF(
+    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+    const QwtSeriesData<QPointF> *series, int from, int to ) const
+{
+    QVector<QPolygonF> polylines;
+
+    if ( d_data->flags & RoundPoints )
+    {
+        if ( d_data->flags & WeedOutIntermediatePoints )
+        {
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputMultipleSplitNaNToPolygons< QPolygonF, QPointF > wrapper( polylines );
+                qwtMapPointsQuad(wrapper, xMap, yMap, series, from, to );
+            }
+            else
+            {
+                QwtMapperOutputMultipleDontSkip< QPolygonF, QPointF > wrapper( polylines );
+                qwtMapPointsQuad(wrapper, xMap, yMap, series, from, to );
+            }
+        }
+        else if ( d_data->flags & WeedOutPoints )
+        {
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputMultipleSplitNaNToPolygons< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputMultipleDontSkip< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtRoundF() );
+            }
+        }
+        else
+        {
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputMultipleSplitNaNToPolygons< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                     xMap, yMap, series, from, to, QwtRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputMultipleDontSkip< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                    xMap, yMap, series, from, to, QwtRoundF() );
+            }
+        }
+    }
+    else
+    {
+        if ( d_data->flags & WeedOutPoints )
+        {
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputMultipleSplitNaNToPolygons< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputMultipleDontSkip< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+        }
+        else
+        {
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputMultipleSplitNaNToPolygons< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                     xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputMultipleDontSkip< QPolygonF, QPointF > wrapper( polylines );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+        }
+    }
+
+    return polylines;
+}
+
+/*!
+  \brief Translate a series of points into a one or more QPolygon
+
+  When the WeedOutPoints flag is enabled consecutive points,
+  that are mapped to the same position will be one point.
+
+  When the HandleNaNAsDiscontinuity flag is enabled,
+  points which have one or more coordinates as NaN will result in
+  creation of separate polygon for each set of contiguous non-NaN
+  points.
+
+  \param xMap x map
+  \param yMap y map
+  \param series Series of points to be mapped
+  \param from Index of the first point to be painted
+  \param to Index of the last point to be painted
+
+  \return Translated polygons
+*/
+QVector<QPolygon> QwtPointMapper::toPolygons(
+    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+    const QwtSeriesData<QPointF> *series, int from, int to ) const
+{
+    QVector<QPolygon> polylines;
+
+    if ( d_data->flags & WeedOutIntermediatePoints )
+    {
+        // TODO WeedOutIntermediatePointsY ...
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
+        {
+            QwtMapperOutputMultipleSplitNaNToPolygons< QPolygon, QPoint > wrapper( polylines );
+            qwtMapPointsQuad( wrapper, xMap, yMap, series, from, to );
+        }
+        else
+        {
+            QwtMapperOutputMultipleDontSkip< QPolygon, QPoint > wrapper( polylines );
+            qwtMapPointsQuad( wrapper, xMap, yMap, series, from, to );
+        }
+    }
+    else if ( d_data->flags & WeedOutPoints )
+    {
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
+        {
+            QwtMapperOutputMultipleSplitNaNToPolygons< QPolygon, QPoint > wrapper( polylines );
+            qwtToPolylineFiltered(wrapper,
+                xMap, yMap, series, from, to, QwtRoundI() );
+        }
+        else
+        {
+            QwtMapperOutputMultipleDontSkip< QPolygon, QPoint > wrapper( polylines );
+            qwtToPolylineFiltered(wrapper,
+                xMap, yMap, series, from, to, QwtRoundI() );
+        }
+    }
+    else
+    {
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
+        {
+            QwtMapperOutputMultipleSplitNaNToPolygons< QPolygon, QPoint > wrapper( polylines );
+            qwtToPoints(wrapper, qwtInvalidRect, xMap, yMap, series, from, to, QwtRoundI() );
+        }
+        else
+        {
+            QwtMapperOutputMultipleDontSkip< QPolygon, QPoint > wrapper( polylines );
+            qwtToPoints(wrapper, qwtInvalidRect, xMap, yMap, series, from, to, QwtRoundI() );
+        }
+    }
+
+    return polylines;
+}
+
+/*!
   \brief Translate a series into a QPolygonF
 
   - WeedOutPoints & RoundPoints & boundingRect().isValid()
