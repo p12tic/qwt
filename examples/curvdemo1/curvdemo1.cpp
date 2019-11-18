@@ -28,12 +28,13 @@
 //   Array Sizes
 //
 const int Size = 27;
-const int CurvCnt = 6;
+const int CurvCnt = 7;
 
 //
 //   Arrays holding the values
 //
 double xval[Size];
+double xNaNval[Size];
 double yval[Size];
 QwtScaleMap xMap;
 QwtScaleMap yMap;
@@ -72,12 +73,13 @@ MainWin::MainWin()
     //
     for( i = 0; i < Size; i++ )
     {
-        xval[i] = double( i ) * 10.0 / double( Size - 1 );
+        xval[i] = xNaNval[i] = double( i ) * 10.0 / double( Size - 1 );
         yval[i] = std::sin( xval[i] ) * std::cos( 2.0 * xval[i] );
     }
+    xNaNval[20] = qQNaN();
 
     //
-    //  define curve styles
+    //  define curve styles and data
     //
     i = 0;
 
@@ -86,38 +88,46 @@ MainWin::MainWin()
     d_curves[i].setPen( Qt::darkGreen );
     d_curves[i].setStyle( QwtPlotCurve::Lines );
     d_curves[i].setCurveAttribute( QwtPlotCurve::Fitted );
+    d_curves[i].setRawSamples( xval, yval, Size );
+    i++;
+
+    d_curves[i].setSymbol( new QwtSymbol( QwtSymbol::Cross, Qt::NoBrush,
+                                          QPen( Qt::black ), QSize( 5, 5 ) ) );
+    d_curves[i].setPen( Qt::darkGreen );
+    d_curves[i].setStyle( QwtPlotCurve::Lines );
+    d_curves[i].setCurveAttribute( QwtPlotCurve::Fitted );
+    d_curves[i].setRawSamples( xNaNval, yval, Size );
+    d_curves[i].data()->setSeriesFlags(QwtSeriesDataBase::MayContainNaNs);
     i++;
 
     d_curves[i].setSymbol( new QwtSymbol( QwtSymbol::Ellipse, Qt::yellow,
         QPen( Qt::blue ), QSize( 5, 5 ) ) );
     d_curves[i].setPen( Qt::red );
     d_curves[i].setStyle( QwtPlotCurve::Sticks );
+    d_curves[i].setRawSamples( xval, yval, Size );
     i++;
 
     d_curves[i].setPen( Qt::darkBlue );
     d_curves[i].setStyle( QwtPlotCurve::Lines );
+    d_curves[i].setRawSamples( xval, yval, Size );
     i++;
 
     d_curves[i].setPen( Qt::darkBlue );
     d_curves[i].setStyle( QwtPlotCurve::Lines );
     d_curves[i].setRenderHint( QwtPlotItem::RenderAntialiased );
+    d_curves[i].setRawSamples( xval, yval, Size );
     i++;
 
     d_curves[i].setPen( Qt::darkCyan );
     d_curves[i].setStyle( QwtPlotCurve::Steps );
+    d_curves[i].setRawSamples( xval, yval, Size );
     i++;
 
     d_curves[i].setSymbol( new QwtSymbol( QwtSymbol::XCross, Qt::NoBrush,
         QPen( Qt::darkMagenta ), QSize( 5, 5 ) ) );
     d_curves[i].setStyle( QwtPlotCurve::NoCurve );
+    d_curves[i].setRawSamples( xval, yval, Size );
     i++;
-
-
-    //
-    // attach data
-    //
-    for( i = 0; i < CurvCnt; i++ )
-        d_curves[i].setRawSamples( xval, yval, Size );
 }
 
 void MainWin::shiftDown( QRect &rect, int offset ) const
@@ -178,6 +188,10 @@ void MainWin::drawContents( QPainter *painter )
     shiftDown( r, deltay );
 
     painter->drawText( 0, r.top(), r.width(), painter->fontMetrics().height(),
+        alignment, "Style: Line/Fitted, Symbol: XCross, NaNs" );
+    shiftDown( r, deltay );
+
+    painter->drawText( 0, r.top(), r.width(), painter->fontMetrics().height(),
         alignment, "Style: Sticks, Symbol: Ellipse" );
     shiftDown( r, deltay );
 
@@ -203,7 +217,7 @@ int main ( int argc, char **argv )
 
     MainWin w;
 
-    w.resize( 300, 600 );
+    w.resize( 350, 600 );
     w.show();
 
     return a.exec();
