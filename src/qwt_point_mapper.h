@@ -65,7 +65,16 @@ public:
           As the algorithm is fast it can be used inside of
           a polyline render cycle.
          */
-        WeedOutIntermediatePoints = 0x04
+        WeedOutIntermediatePoints = 0x04,
+
+        /*!
+          This flag indicates that points may have NaN coordinates which indicates
+          discontinuities that must not be drawn. In the case of toPoints(), toPointsF(),
+          toPolygon(), toPolygonF() such points will be ignored. In the case of toPolygons() and
+          toPolygonsF() such points will result in a creation of a separate polygon for each set
+          of contiguous non-NaN points.
+        */
+        HandleNaNAsDiscontinuity = 0x08
     };
 
     /*!

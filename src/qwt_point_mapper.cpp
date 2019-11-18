@@ -20,6 +20,7 @@
 
 #include <qthread.h>
 #include <qfuture.h>
+#include <qnumeric.h>
 #include <qtconcurrentrun.h>
 
 #if !defined(QT_NO_QFUTURE)
@@ -79,7 +80,7 @@ static Qt::Orientation qwtProbeOrientation(
 
 namespace
 {
-    template <class Polygon, class Point>
+    template <class MapperOutput, class Point>
     class QwtPolygonQuadrupelX
     {
     public:
@@ -104,34 +105,34 @@ namespace
             return true;
         }
 
-        inline void flush( Polygon &polyline )
+        inline void flush( MapperOutput &mapperOutput )
         {
-            appendTo( y1, polyline );
+            appendTo( y1, mapperOutput );
 
             if ( y2 > y1 )
                 qSwap( yMin, yMax );
 
             if ( yMax != y1 )
-                appendTo( yMax, polyline );
+                appendTo( yMax, mapperOutput );
 
             if ( yMin != yMax )
-                appendTo( yMin, polyline );
+                appendTo( yMin, mapperOutput );
 
             if ( y2 != yMin )
-                appendTo( y2, polyline );
+                appendTo( y2, mapperOutput );
         }
 
     private:
-        inline void appendTo( int y, Polygon &polyline )
+        inline void appendTo( int y, MapperOutput &mapperOutput )
         {
-            polyline += Point( x0, y );
+            mapperOutput.current().append( Point( x0, y ) );
         }
 
     private:
         int x0, y1, yMin, yMax, y2;
     };
 
-    template <class Polygon, class Point>
+    template <class MapperOutput, class Point>
     class QwtPolygonQuadrupelY
     {
     public:
@@ -156,101 +157,308 @@ namespace
             return true;
         }
 
-        inline void flush( Polygon &polyline )
+        inline void flush( MapperOutput &mapperOutput )
         {
-            appendTo( x1, polyline );
+            appendTo( x1, mapperOutput );
 
             if ( x2 > x1 )
                 qSwap( xMin, xMax );
 
             if ( xMax != x1 )
-                appendTo( xMax, polyline );
+                appendTo( xMax, mapperOutput );
 
             if ( xMin != xMax )
-                appendTo( xMin, polyline );
+                appendTo( xMin, mapperOutput );
 
             if ( x2 != xMin )
-                appendTo( x2, polyline );
+                appendTo( x2, mapperOutput );
         }
 
     private:
-        inline void appendTo( int x, Polygon &polyline )
+        inline void appendTo( int x, MapperOutput &mapperOutput )
         {
-            polyline += Point( x, y0 );
+            mapperOutput.current().append( Point( x, y0 ) );
         }
 
         int y0, x1, xMin, xMax, x2;
     };
+
+    template <class Polygon, class Point>
+    class QwtMapperOutputDontSkip
+    {
+    public:
+        typedef Polygon PolygonType;
+        typedef Point PointType;
+
+        static const bool isNone = true;
+
+        QwtMapperOutputDontSkip(Polygon& polygon) : m_polygon(polygon) {}
+
+        bool handleSkip( const QPointF& )
+        {
+            return false;
+        }
+
+        bool handleSkip( const QPointF&, Point*&, int&, int )
+        {
+            return false;
+        }
+
+        Polygon& current() { return m_polygon; }
+
+        const Polygon& current() const { return m_polygon; }
+    private:
+        Polygon& m_polygon;
+    };
+
+    template <class Polygon, class Point>
+    class QwtMapperOutputOmitNaN
+    {
+    public:
+        typedef Polygon PolygonType;
+        typedef Point PointType;
+
+        static const bool isNone = false;
+
+        QwtMapperOutputOmitNaN(Polygon& polygon) : m_polygon(polygon) {}
+
+        bool handleSkip(const QPointF& point)
+        {
+            return ( qIsNaN( point.x() ) || qIsNaN( point.y() ) );
+        }
+
+        bool handleSkip(const QPointF& point, Point*&, int&, int )
+        {
+            return handleSkip( point );
+        }
+
+        Polygon& current() { return m_polygon; }
+
+        const Polygon& current() const { return m_polygon; }
+    private:
+        Polygon& m_polygon;
+    };
+
+    template <class Polygon, class Point>
+    class QwtMapperOutputMultipleDontSkip
+    {
+    public:
+        typedef Polygon PolygonType;
+        typedef Point PointType;
+
+        static const bool isNone = false;
+
+        QwtMapperOutputMultipleDontSkip(QVector<Polygon>& polygons) :
+            m_polygons(polygons)
+        {
+            m_polygons.push_back(Polygon());
+        }
+
+        ~QwtMapperOutputMultipleDontSkip()
+        {
+        }
+
+        bool handleSkip( const QPointF& point )
+        {
+            return ( qIsNaN( point.x() ) || qIsNaN( point.y() ) );
+        }
+
+        bool handleSkip( const QPointF& point, Point*&, int&, int )
+        {
+            return handleSkip( point );
+        }
+
+        Polygon& current() { return m_polygons.back(); }
+
+        const Polygon& current() const { return m_polygons.back(); }
+
+    private:
+        QVector<Polygon>& m_polygons;
+    };
+
+    template <class Polygon, class Point>
+    class QwtMapperOutputMultipleSplitNaNToPolygons
+    {
+    public:
+        typedef Polygon PolygonType;
+        typedef Point PointType;
+
+        static const bool isNone = false;
+
+        QwtMapperOutputMultipleSplitNaNToPolygons( QVector<Polygon>& polygons ) :
+            m_polygons( polygons )
+        {
+            if ( m_polygons.empty() )
+                m_polygons.push_back( Polygon() );
+        }
+
+        ~QwtMapperOutputMultipleSplitNaNToPolygons()
+        {
+            // remove last polygon if it's empty, but always leave at least one polygon
+            if ( m_polygons.back().empty() && m_polygons.size() > 2 )
+                m_polygons.pop_back();
+        }
+
+        bool handleSkip( const QPointF& point )
+        {
+            bool isNaN = ( qIsNaN( point.x() ) || qIsNaN( point.y() ) );
+            if ( isNaN && !m_polygons.back().empty())
+            {
+                m_polygons.push_back( Polygon() );
+            }
+            return isNaN;
+        }
+
+        // this overload should be used in cases when the caller resizes
+        // the current() polygon to excessive size to avoid reallocations,
+        // pushes data into the polygon using the data() pointer and then
+        // resizes the current() polygon at the end to the actual number
+        // of pushed points. The function updates the cached data() pointer
+        // and the number of elements pushed to the current() polygon if
+        // there was a move to the next polygon. The size of the next polygon
+        // is set to remainingSize
+        bool handleSkip( const QPointF& point,
+            Point*& dataPtr, int& currSize, int remainingSize )
+        {
+            bool isNaN = ( qIsNaN( point.x() ) || qIsNaN( point.y() ) );
+            if ( isNaN && !m_polygons.back().empty())
+            {
+                m_polygons.back().resize(currSize);
+                currSize = 0;
+                m_polygons.push_back( Polygon() );
+                m_polygons.back().resize( remainingSize );
+                dataPtr = m_polygons.back().data();
+            }
+            return isNaN;
+        }
+
+        Polygon& current() { return m_polygons.back(); }
+
+        const Polygon& current() const { return m_polygons.back(); }
+
+    private:
+        QVector<Polygon>& m_polygons;
+    };
 }
 
-template <class Polygon, class Point, class PolygonQuadrupel>
-static Polygon qwtMapPointsQuad( const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+// note that last is not inclusive
+template <class MapperOutput, class Point>
+static int handleSkippedPointsInRange( MapperOutput& mapperOutput,
+    const QwtSeriesData<Point> *series, int first, int last )
+{
+    if ( MapperOutput::isNone )
+        return first;
+
+    while ( first < last && mapperOutput.handleSkip( series->sample( first ) ) )
+    {
+        first++;
+    }
+    return first;
+}
+
+// note that last is not inclusive
+template <class Point, class MapperOutput>
+static int handleSkippedPointsInRange( MapperOutput& mapperOutput,
+    const Point *series, int first, int last )
+{
+    if ( MapperOutput::isNone )
+        return first;
+
+    while ( first < last && mapperOutput.handleSkip( series[ first ] ) )
+    {
+        first++;
+    }
+    return first;
+}
+
+template <class MapperOutput, class PolygonQuadrupel>
+static void qwtMapPointsQuad( MapperOutput& output,
+    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
     const QwtSeriesData<QPointF> *series, int from, int to )
 {
+    from = handleSkippedPointsInRange( output, series, from, to + 1 );
+    if ( from > to )
+        return;
+
     const QPointF sample0 = series->sample( from );
 
     PolygonQuadrupel q;
     q.start( qwtRoundValue( xMap.transform( sample0.x() ) ),
         qwtRoundValue( yMap.transform( sample0.y() ) ) );
 
-    Polygon polyline;
     for ( int i = from; i <= to; i++ )
     {
         const QPointF sample = series->sample( i );
+
+        if ( output.handleSkip( sample ))
+            continue;
 
         const int x = qwtRoundValue( xMap.transform( sample.x() ) );
         const int y = qwtRoundValue( yMap.transform( sample.y() ) );
 
         if ( !q.append( x, y ) )
         {
-            q.flush( polyline );
+            q.flush( output );
             q.start( x, y );
         }
     }
-    q.flush( polyline );
-
-    return polyline;
+    q.flush( output );
 }
 
-template <class Polygon, class Point, class PolygonQuadrupel>
-static Polygon qwtMapPointsQuad( const Polygon &polyline )
+template <class MapperOutput, class PolygonQuadrupel>
+static void qwtMapPointsQuad( MapperOutput& output )
 {
-    const int numPoints = polyline.size();
+    typedef typename MapperOutput::PointType Point;
+    typedef typename MapperOutput::PolygonType Polygon;
 
-    if ( numPoints < 3 )
-        return polyline;
+    const int numPoints = output.current().size();
 
-    const Point *points = polyline.constData();
+    if ( MapperOutput::isNone && numPoints < 3 )
+    {
+        return;
+    }
 
-    Polygon polylineXY;
+    Polygon sourcePolygon;
+    sourcePolygon.swap( output.current() );
+    const Point *points = sourcePolygon.constData();
 
     PolygonQuadrupel q;
-    q.start( points[0].x(), points[0].y() );
 
-    for ( int i = 0; i < numPoints; i++ )
+    int i = handleSkippedPointsInRange( output, points, 0, numPoints );
+    if ( i >= numPoints )
     {
+        return;
+    }
+
+    q.start( points[i].x(), points[i].y() );
+
+    for ( ; i < numPoints; i++ )
+    {
+        if ( output.handleSkip( points[i] ) )
+            continue;
+
         const int x = points[i].x();
         const int y = points[i].y();
 
         if ( !q.append( x, y ) )
         {
-            q.flush( polylineXY );
+            q.flush( output );
             q.start( x, y );
         }
     }
-    q.flush( polylineXY );
-
-    return polylineXY;
+    q.flush( output );
 }
 
 
-template <class Polygon, class Point>
-static Polygon qwtMapPointsQuad( const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+template <class MapperOutput>
+static void qwtMapPointsQuad( MapperOutput& output,
+    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
     const QwtSeriesData<QPointF> *series, int from, int to )
 {
-    Polygon polyline;
+    typedef typename MapperOutput::PointType Point;
+
     if ( from > to )
-        return polyline;
+        return;
 
     /*
         probing some values, to decide if it is better
@@ -260,22 +468,22 @@ static Polygon qwtMapPointsQuad( const QwtScaleMap &xMap, const QwtScaleMap &yMa
 
     if ( orientation == Qt::Horizontal )
     {
-        polyline = qwtMapPointsQuad< Polygon, Point,
-            QwtPolygonQuadrupelY<Polygon, Point> >( xMap, yMap, series, from, to );
+        qwtMapPointsQuad< MapperOutput,
+            QwtPolygonQuadrupelY<MapperOutput, Point>
+            >( output, xMap, yMap, series, from, to );
 
-        polyline = qwtMapPointsQuad< Polygon, Point,
-            QwtPolygonQuadrupelX<Polygon, Point> >( polyline );
+        qwtMapPointsQuad< MapperOutput,
+            QwtPolygonQuadrupelX<MapperOutput, Point> >( output );
     }
     else
     {
-        polyline = qwtMapPointsQuad< Polygon, Point,
-            QwtPolygonQuadrupelX<Polygon, Point> >( xMap, yMap, series, from, to );
+        qwtMapPointsQuad< MapperOutput,
+            QwtPolygonQuadrupelX<MapperOutput, Point>
+            >( output, xMap, yMap, series, from, to );
 
-        polyline = qwtMapPointsQuad< Polygon, Point,
-            QwtPolygonQuadrupelY<Polygon, Point> >( polyline );
+        qwtMapPointsQuad< MapperOutput,
+            QwtPolygonQuadrupelY<MapperOutput, Point> >( output );
     }
-
-    return polyline;
 }
 
 // Helper class to work around the 5 parameters
@@ -342,15 +550,17 @@ struct QwtNoRoundF
 // mapping points without any filtering - beside checking
 // the bounding rectangle
 
-template<class Polygon, class Point, class Round>
-static inline Polygon qwtToPoints(
+template<class MapperOutput, class Round>
+static inline void qwtToPoints(
+    MapperOutput& output,
     const QRectF &boundingRect,
     const QwtScaleMap &xMap, const QwtScaleMap &yMap,
     const QwtSeriesData<QPointF> *series,
     int from, int to, Round round )
 {
-    Polygon polyline( to - from + 1 );
-    Point *points = polyline.data();
+    typedef typename MapperOutput::PointType Point;
+    output.current().resize( to - from + 1 );
+    Point *points = output.current().data();
 
     int numPoints = 0;
 
@@ -364,6 +574,9 @@ static inline Polygon qwtToPoints(
         {
             const QPointF sample = series->sample( i );
 
+            if ( output.handleSkip( sample, points, numPoints, to - i + 1 ) )
+                continue;
+
             const double x = xMap.transform( sample.x() );
             const double y = yMap.transform( sample.y() );
 
@@ -376,7 +589,7 @@ static inline Polygon qwtToPoints(
             }
         }
 
-        polyline.resize( numPoints );
+        output.current().resize( numPoints );
     }
     else
     {
@@ -387,6 +600,11 @@ static inline Polygon qwtToPoints(
         {
             const QPointF sample = series->sample( i );
 
+            if ( output.handleSkip( sample, points, numPoints, to - i + 1 ) )
+            {
+                continue;
+            }
+
             const double x = xMap.transform( sample.x() );
             const double y = yMap.transform( sample.y() );
 
@@ -395,37 +613,16 @@ static inline Polygon qwtToPoints(
 
             numPoints++;
         }
+        output.current().resize( numPoints );
     }
-
-    return polyline;
-}
-
-static inline QPolygon qwtToPointsI(
-    const QRectF &boundingRect,
-    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-    const QwtSeriesData<QPointF> *series,
-    int from, int to )
-{
-    return qwtToPoints<QPolygon, QPoint>(
-        boundingRect, xMap, yMap, series, from, to, QwtRoundI() );
-}
-
-template<class Round>
-static inline QPolygonF qwtToPointsF(
-    const QRectF &boundingRect,
-    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-    const QwtSeriesData<QPointF> *series,
-    int from, int to, Round round )
-{
-    return qwtToPoints<QPolygonF, QPointF>(
-        boundingRect, xMap, yMap, series, from, to, round );
 }
 
 // Mapping points with filtering out consecutive
 // points mapped to the same position
 
-template<class Polygon, class Point, class Round>
-static inline Polygon qwtToPolylineFiltered(
+template<class MapperOutput, class Round>
+static inline void qwtToPolylineFiltered(
+    MapperOutput& output,
     const QwtScaleMap &xMap, const QwtScaleMap &yMap,
     const QwtSeriesData<QPointF> *series,
     int from, int to, Round round )
@@ -434,52 +631,42 @@ static inline Polygon qwtToPolylineFiltered(
     // are often mapped to the same position. As this might
     // result in empty lines ( or symbols hidden by others )
     // we try to filter them out
+    from = handleSkippedPointsInRange( output, series, from, to );
+    if ( from > to )
+        return;
 
-    Polygon polyline( to - from + 1 );
-    Point *points = polyline.data();
+    typedef typename MapperOutput::PointType Point;
+    output.current().resize( to - from + 1 );
+    Point *points = output.current().data();
 
     const QPointF sample0 = series->sample( from );
 
     points[0].rx() = round( xMap.transform( sample0.x() ) );
     points[0].ry() = round( yMap.transform( sample0.y() ) );
 
-    int pos = 0;
+    int numPoints = 1;
     for ( int i = from + 1; i <= to; i++ )
     {
         const QPointF sample = series->sample( i );
 
+        if ( output.handleSkip( sample, points, numPoints, to - i + 1 ) )
+        {
+            continue;
+        }
+
         const Point p( round( xMap.transform( sample.x() ) ),
             round( yMap.transform( sample.y() ) ) );
 
-        if ( points[pos] != p )
-            points[++pos] = p;
+        if ( points[numPoints - 1] != p )
+            points[numPoints++] = p;
     }
 
-    polyline.resize( pos + 1 );
-    return polyline;
+    output.current().resize( numPoints );
 }
 
-static inline QPolygon qwtToPolylineFilteredI(
-    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-    const QwtSeriesData<QPointF> *series,
-    int from, int to )
-{
-    return qwtToPolylineFiltered<QPolygon, QPoint>(
-        xMap, yMap, series, from, to, QwtRoundI() );
-}
-
-template<class Round>
-static inline QPolygonF qwtToPolylineFilteredF(
-    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-    const QwtSeriesData<QPointF> *series,
-    int from, int to, Round round )
-{
-    return qwtToPolylineFiltered<QPolygonF, QPointF>(
-        xMap, yMap, series, from, to, round );
-}
-
-template<class Polygon, class Point>
-static inline Polygon qwtToPointsFiltered(
+template<class MapperOutput>
+static inline void qwtToPointsFiltered(
+    MapperOutput& output,
     const QRectF &boundingRect,
     const QwtScaleMap &xMap, const QwtScaleMap &yMap,
     const QwtSeriesData<QPointF> *series, int from, int to )
@@ -487,8 +674,9 @@ static inline Polygon qwtToPointsFiltered(
     // F.e. in scatter plots ( no connecting lines ) we
     // can sort out all duplicates ( not only consecutive points )
 
-    Polygon polygon( to - from + 1 );
-    Point *points = polygon.data();
+    typedef typename MapperOutput::PointType Point;
+    output.current().resize( to - from + 1 );
+    Point *points = output.current().data();
 
     QwtPixelMatrix pixelMatrix( boundingRect.toAlignedRect() );
 
@@ -496,6 +684,9 @@ static inline Polygon qwtToPointsFiltered(
     for ( int i = from; i <= to; i++ )
     {
         const QPointF sample = series->sample( i );
+
+        if ( output.handleSkip( sample, points, numPoints, to - i + 1 ) )
+            continue;
 
         const int x = qwtRoundValue( xMap.transform( sample.x() ) );
         const int y = qwtRoundValue( yMap.transform( sample.y() ) );
@@ -509,25 +700,16 @@ static inline Polygon qwtToPointsFiltered(
         }
     }
 
-    polygon.resize( numPoints );
-    return polygon;
+    output.current().resize( numPoints );
 }
 
-static inline QPolygon qwtToPointsFilteredI(
+template <class PointSkipStrategy >
+static QPolygonF qwtToPointsFilteredF(
     const QRectF &boundingRect,
     const QwtScaleMap &xMap, const QwtScaleMap &yMap,
     const QwtSeriesData<QPointF> *series, int from, int to )
 {
-    return qwtToPointsFiltered<QPolygon, QPoint>(
-        boundingRect, xMap, yMap, series, from, to );
-}
-
-static inline QPolygonF qwtToPointsFilteredF(
-    const QRectF &boundingRect,
-    const QwtScaleMap &xMap, const QwtScaleMap &yMap,
-    const QwtSeriesData<QPointF> *series, int from, int to )
-{
-    return qwtToPointsFiltered<QPolygonF, QPointF>(
+    return qwtToPointsFiltered<QPolygonF, QPointF, PointSkipStrategy>(
         boundingRect, xMap, yMap, series, from, to );
 }
 
@@ -636,6 +818,9 @@ QRectF QwtPointMapper::boundingRect() const
   When RoundPoints & WeedOutIntermediatePoints is enabled an even more
   aggressive weeding algorithm is enabled.
 
+  When the HandleNaNAsDiscontinuity flag is enabled,
+  points which have one or more coordinates as NaN will be ignored.
+
   \param xMap x map
   \param yMap y map
   \param series Series of points to be mapped
@@ -654,31 +839,79 @@ QPolygonF QwtPointMapper::toPolygonF(
     {
         if ( d_data->flags & WeedOutIntermediatePoints )
         {
-            polyline = qwtMapPointsQuad<QPolygonF, QPointF>(
-                xMap, yMap, series, from, to );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( polyline );
+                qwtMapPointsQuad(wrapper, xMap, yMap, series, from, to );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( polyline );
+                qwtMapPointsQuad(wrapper, xMap, yMap, series, from, to );
+            }
         }
         else if ( d_data->flags & WeedOutPoints )
         {
-            polyline = qwtToPolylineFilteredF(
-                xMap, yMap, series, from, to, QwtRoundF() );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtRoundF() );
+            }
         }
         else
         {
-            polyline = qwtToPointsF( qwtInvalidRect,
-                xMap, yMap, series, from, to, QwtRoundF() );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                     xMap, yMap, series, from, to, QwtRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                    xMap, yMap, series, from, to, QwtRoundF() );
+            }
         }
     }
     else
     {
         if ( d_data->flags & WeedOutPoints )
         {
-            polyline = qwtToPolylineFilteredF(
-                xMap, yMap, series, from, to, QwtNoRoundF() );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
         }
         else
         {
-            polyline = qwtToPointsF( qwtInvalidRect,
-                xMap, yMap, series, from, to, QwtNoRoundF() );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                     xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( polyline );
+                qwtToPoints( wrapper, qwtInvalidRect,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
         }
     }
 
@@ -690,6 +923,9 @@ QPolygonF QwtPointMapper::toPolygonF(
 
   When the WeedOutPoints flag is enabled consecutive points,
   that are mapped to the same position will be one point.
+
+  When the HandleNaNAsDiscontinuity flag is enabled,
+  points which have one or more coordinates as NaN will be ignored.
 
   \param xMap x map
   \param yMap y map
@@ -708,18 +944,44 @@ QPolygon QwtPointMapper::toPolygon(
     if ( d_data->flags & WeedOutIntermediatePoints )
     {
         // TODO WeedOutIntermediatePointsY ...
-        polyline = qwtMapPointsQuad<QPolygon, QPoint>(
-            xMap, yMap, series, from, to );
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
+        {
+            QwtMapperOutputOmitNaN< QPolygon, QPoint > wrapper( polyline );
+            qwtMapPointsQuad( wrapper, xMap, yMap, series, from, to );
+        }
+        else
+        {
+            QwtMapperOutputDontSkip< QPolygon, QPoint > wrapper( polyline );
+            qwtMapPointsQuad( wrapper, xMap, yMap, series, from, to );
+        }
     }
     else if ( d_data->flags & WeedOutPoints )
     {
-        polyline = qwtToPolylineFilteredI(
-            xMap, yMap, series, from, to );
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
+        {
+            QwtMapperOutputOmitNaN< QPolygon, QPoint > wrapper( polyline );
+            qwtToPolylineFiltered(wrapper,
+                xMap, yMap, series, from, to, QwtRoundI() );
+        }
+        else
+        {
+            QwtMapperOutputDontSkip< QPolygon, QPoint > wrapper( polyline );
+            qwtToPolylineFiltered(wrapper,
+                xMap, yMap, series, from, to, QwtRoundI() );
+        }
     }
     else
     {
-        polyline = qwtToPointsI(
-            qwtInvalidRect, xMap, yMap, series, from, to );
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
+        {
+            QwtMapperOutputOmitNaN< QPolygon, QPoint > wrapper( polyline );
+            qwtToPoints(wrapper, qwtInvalidRect, xMap, yMap, series, from, to, QwtRoundI() );
+        }
+        else
+        {
+            QwtMapperOutputDontSkip< QPolygon, QPoint > wrapper( polyline );
+            qwtToPoints(wrapper, qwtInvalidRect, xMap, yMap, series, from, to, QwtRoundI() );
+        }
     }
 
     return polyline;
@@ -766,41 +1028,92 @@ QPolygonF QwtPointMapper::toPointsF(
     {
         if ( d_data->flags & RoundPoints )
         {
-            if ( d_data->boundingRect.isValid() )
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
             {
-                points = qwtToPointsFilteredF( d_data->boundingRect,
-                    xMap, yMap, series, from, to );
+                if ( d_data->boundingRect.isValid() )
+                {
+                    QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( points );
+                    qwtToPointsFiltered( wrapper, d_data->boundingRect,
+                        xMap, yMap, series, from, to );
+                }
+                else
+                {
+                    // without a bounding rectangle all we can
+                    // do is to filter out duplicates of
+                    // consecutive points
+                    QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( points );
+                    qwtToPolylineFiltered(wrapper,
+                        xMap, yMap, series, from, to, QwtRoundF() );
+                }
             }
             else
             {
-                // without a bounding rectangle all we can
-                // do is to filter out duplicates of
-                // consecutive points
-
-                points = qwtToPolylineFilteredF(
-                    xMap, yMap, series, from, to, QwtRoundF() );
+                if ( d_data->boundingRect.isValid() )
+                {
+                    QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( points );
+                    qwtToPointsFiltered( wrapper, d_data->boundingRect,
+                        xMap, yMap, series, from, to );
+                }
+                else
+                {
+                    // without a bounding rectangle all we can
+                    // do is to filter out duplicates of
+                    // consecutive points
+                    QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( points );
+                    qwtToPolylineFiltered( wrapper,
+                        xMap, yMap, series, from, to, QwtRoundF() );
+                }
             }
         }
         else
         {
             // when rounding is not allowed we can't use
             // qwtToPointsFilteredF
-
-            points = qwtToPolylineFilteredF(
-                xMap, yMap, series, from, to, QwtNoRoundF() );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( points );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( points );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
         }
     }
     else
     {
         if ( d_data->flags & RoundPoints )
         {
-            points = qwtToPointsF( d_data->boundingRect,
-                xMap, yMap, series, from, to, QwtRoundF() );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( points );
+                qwtToPoints( wrapper, d_data->boundingRect,
+                     xMap, yMap, series, from, to, QwtRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( points );
+                qwtToPoints( wrapper, d_data->boundingRect,
+                    xMap, yMap, series, from, to, QwtRoundF() );
+            }
         }
         else
         {
-            points = qwtToPointsF( d_data->boundingRect,
-                xMap, yMap, series, from, to, QwtNoRoundF() );
+            if ( d_data->flags & HandleNaNAsDiscontinuity )
+            {
+                QwtMapperOutputOmitNaN< QPolygonF, QPointF > wrapper( points );
+                qwtToPoints( wrapper, d_data->boundingRect,
+                     xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
+            else
+            {
+                QwtMapperOutputDontSkip< QPolygonF, QPointF > wrapper( points );
+                qwtToPoints( wrapper, d_data->boundingRect,
+                    xMap, yMap, series, from, to, QwtNoRoundF() );
+            }
         }
     }
 
@@ -838,24 +1151,57 @@ QPolygon QwtPointMapper::toPoints(
 
     if ( d_data->flags & WeedOutPoints )
     {
-        if ( d_data->boundingRect.isValid() )
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
         {
-            points = qwtToPointsFilteredI( d_data->boundingRect,
-                xMap, yMap, series, from, to );
+            if ( d_data->boundingRect.isValid() )
+            {
+                QwtMapperOutputOmitNaN< QPolygon, QPoint > wrapper( points );
+                qwtToPointsFiltered( wrapper, d_data->boundingRect,
+                    xMap, yMap, series, from, to );
+            }
+            else
+            {
+                // when we don't have the bounding rectangle all
+                // we can do is to filter out consecutive duplicates
+
+                QwtMapperOutputOmitNaN< QPolygon, QPoint > wrapper( points );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtRoundI() );
+            }
         }
         else
         {
-            // when we don't have the bounding rectangle all
-            // we can do is to filter out consecutive duplicates
+            if ( d_data->boundingRect.isValid() )
+            {
+                QwtMapperOutputDontSkip< QPolygon, QPoint > wrapper( points );
+                qwtToPointsFiltered( wrapper, d_data->boundingRect,
+                    xMap, yMap, series, from, to );
+            }
+            else
+            {
+                // when we don't have the bounding rectangle all
+                // we can do is to filter out consecutive duplicates
 
-            points = qwtToPolylineFilteredI(
-                xMap, yMap, series, from, to );
+                QwtMapperOutputDontSkip< QPolygon, QPoint > wrapper( points );
+                qwtToPolylineFiltered(wrapper,
+                    xMap, yMap, series, from, to, QwtRoundI() );
+            }
         }
     }
     else
     {
-        points = qwtToPointsI(
-            d_data->boundingRect, xMap, yMap, series, from, to );
+        if ( d_data->flags & HandleNaNAsDiscontinuity )
+        {
+            QwtMapperOutputOmitNaN< QPolygon, QPoint > wrapper( points );
+            qwtToPoints(wrapper, d_data->boundingRect,
+                xMap, yMap, series, from, to, QwtRoundI() );
+        }
+        else
+        {
+            QwtMapperOutputDontSkip< QPolygon, QPoint > wrapper( points );
+            qwtToPoints(wrapper, d_data->boundingRect,
+                xMap, yMap, series, from, to, QwtRoundI() );
+        }
     }
 
     return points;
