@@ -25,6 +25,22 @@ public:
     QwtSeriesDataBase();
     ~QwtSeriesDataBase();
 
+    //! Flags
+    enum SeriesFlag
+    {
+        /*!
+            The data within the series may contain NaNs which should be checked
+            against when drawing the series.
+        */
+        MayContainNaNs = 1
+    };
+
+    typedef QFlags<SeriesFlag> SeriesFlags;
+
+    void setSeriesFlags( SeriesFlags flags );
+
+    SeriesFlags seriesFlags() const;
+
 protected:
     // marked as const, because cached bounding rect is effectively mutable data
     void setCachedBoundingRect( const QRectF& rect ) const;

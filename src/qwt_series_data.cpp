@@ -14,10 +14,12 @@ class QwtSeriesDataBase::PrivateData
 {
 public:
     PrivateData() :
-        cachedBoundingRect( 0.0, 0.0, -1.0, -1.0 )
+        cachedBoundingRect( 0.0, 0.0, -1.0, -1.0 ),
+        seriesFlags(0)
     {}
 
     mutable QRectF cachedBoundingRect;
+    SeriesFlags seriesFlags;
 };
 
 QwtSeriesDataBase::QwtSeriesDataBase()
@@ -43,6 +45,16 @@ void QwtSeriesDataBase::clearCachedBoundingRect() const
 QRectF QwtSeriesDataBase::cachedBoundingRect() const
 {
     return d_data->cachedBoundingRect;
+}
+
+void QwtSeriesDataBase::setSeriesFlags( SeriesFlags flags )
+{
+    d_data->seriesFlags = flags;
+}
+
+QwtSeriesDataBase::SeriesFlags QwtSeriesDataBase::seriesFlags() const
+{
+    return d_data->seriesFlags;
 }
 
 static inline QRectF qwtBoundingRect( const QPointF &sample )
