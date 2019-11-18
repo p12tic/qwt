@@ -237,12 +237,22 @@ void QwtPlotBarChart::drawSeries( QPainter *painter,
     const QRectF br = data()->boundingRect();
     const QwtInterval interval( br.left(), br.right() );
 
+    const bool doProcessNaN = data()->seriesFlags() & QwtSeriesDataBase::MayContainNaNs;
+
     painter->save();
 
     for ( int i = from; i <= to; i++ )
     {
+        const QPointF& s = sample( i );
+
+        if ( doProcessNaN )
+        {
+            if (qIsNaN( s.x() ) || qIsNaN( s.y() ) )
+                continue;
+        }
+
         drawSample( painter, xMap, yMap,
-                    canvasRect, interval, i, sample( i ) );
+                    canvasRect, interval, i, s );
     }
 
     painter->restore();
