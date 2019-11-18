@@ -493,6 +493,7 @@ void QwtPlotCurve::drawLines( QPainter *painter,
     const bool doAlign = !doFit && QwtPainter::roundingAlignment( painter );
     const bool doFill = ( d_data->brush.style() != Qt::NoBrush )
             && ( d_data->brush.color().alpha() > 0 );
+    const bool doProcessNaN = data()->seriesFlags() & QwtSeriesDataBase::MayContainNaNs;
 
     QRectF clipRect;
     if ( d_data->paintAttributes & ClipPolygons )
@@ -537,77 +538,93 @@ void QwtPlotCurve::drawLines( QPainter *painter,
 
     mapper.setBoundingRect( canvasRect );
 
+    if ( doProcessNaN )
+    {
+        mapper.setFlag( QwtPointMapper::HandleNaNAsDiscontinuity, true );
+    }
+
     if ( doIntegers )
     {
-        QPolygon polyline = mapper.toPolygon(
+        QVector<QPolygon> polylines = mapper.toPolygons(
             xMap, yMap, data(), from, to );
 
-        if ( testPaintAttribute( ClipPolygons ) )
+        for ( int i = 0; i < polylines.size(); ++i )
         {
-            QwtClipper::clipPolygon( clipRect, polyline, false );
-        }
+            QPolygon& polyline = polylines[i];
 
-        QwtPainter::drawPolyline( painter, polyline );
+            if ( testPaintAttribute( ClipPolygons ) )
+            {
+                QwtClipper::clipPolygon( clipRect, polyline, false );
+            }
+
+            QwtPainter::drawPolyline( painter, polyline );
+        }
     }
     else
     {
-        QPolygonF polyline = mapper.toPolygonF( xMap, yMap, data(), from, to );
+        QVector<QPolygonF> polylines = mapper.toPolygonsF(
+            xMap, yMap, data(), from, to );
 
-        if ( doFill )
+        for ( int i = 0; i < polylines.size(); ++i )
         {
-            if ( doFit )
+            QPolygonF& polyline = polylines[i];
+
+            if ( doFill )
             {
-                // it might be better to extend and draw the curvePath, but for
-                // the moment we keep an implementation, where we translate the
-                // path back to a polyline.
-
-                polyline = d_data->curveFitter->fitCurve( polyline );
-            }
-
-            if ( painter->pen().style() != Qt::NoPen )
-            {
-                // here we are wasting memory for the filled copy,
-                // do polygon clipping twice etc .. TODO
-
-                QPolygonF filled = polyline;
-                fillCurve( painter, xMap, yMap, canvasRect, filled );
-                filled.clear();
-
-                if ( d_data->paintAttributes & ClipPolygons )
-                    QwtClipper::clipPolygonF( clipRect, polyline, false );
-
-                QwtPainter::drawPolyline( painter, polyline );
-            }
-            else
-            {
-                fillCurve( painter, xMap, yMap, canvasRect, polyline );
-            }
-        }
-        else
-        {
-            if ( testPaintAttribute( ClipPolygons ) )
-            {
-                QwtClipper::clipPolygonF( clipRect, polyline, false );
-            }
-
-            if ( doFit )
-            {
-                if ( d_data->curveFitter->mode() == QwtCurveFitter::Path )
+                if ( doFit )
                 {
-                    const QPainterPath curvePath =
-                        d_data->curveFitter->fitCurvePath( polyline );
+                    // it might be better to extend and draw the curvePath, but for
+                    // the moment we keep an implementation, where we translate the
+                    // path back to a polyline.
 
-                    painter->drawPath( curvePath );
+                    polyline = d_data->curveFitter->fitCurve( polyline );
+                }
+
+                if ( painter->pen().style() != Qt::NoPen )
+                {
+                    // here we are wasting memory for the filled copy,
+                    // do polygon clipping twice etc .. TODO
+
+                    QPolygonF filled = polyline;
+                    fillCurve( painter, xMap, yMap, canvasRect, filled );
+                    filled.clear();
+
+                    if ( d_data->paintAttributes & ClipPolygons )
+                        QwtClipper::clipPolygonF( clipRect, polyline, false );
+
+                    QwtPainter::drawPolyline( painter, polyline );
                 }
                 else
                 {
-                    polyline = d_data->curveFitter->fitCurve( polyline );
-                    QwtPainter::drawPolyline( painter, polyline );
+                    fillCurve( painter, xMap, yMap, canvasRect, polyline );
                 }
             }
             else
             {
-                QwtPainter::drawPolyline( painter, polyline );
+                if ( testPaintAttribute( ClipPolygons ) )
+                {
+                    QwtClipper::clipPolygonF( clipRect, polyline, false );
+                }
+
+                if ( doFit )
+                {
+                    if ( d_data->curveFitter->mode() == QwtCurveFitter::Path )
+                    {
+                        const QPainterPath curvePath =
+                            d_data->curveFitter->fitCurvePath( polyline );
+
+                        painter->drawPath( curvePath );
+                    }
+                    else
+                    {
+                        polyline = d_data->curveFitter->fitCurve( polyline );
+                        QwtPainter::drawPolyline( painter, polyline );
+                    }
+                }
+                else
+                {
+                    QwtPainter::drawPolyline( painter, polyline );
+                }
             }
         }
     }
@@ -694,10 +711,12 @@ void QwtPlotCurve::drawDots( QPainter *painter,
     const bool doFill = ( d_data->brush.style() != Qt::NoBrush )
             && ( d_data->brush.color().alpha() > 0 );
     const bool doAlign = QwtPainter::roundingAlignment( painter );
+    const bool doProcessNaN = data()->seriesFlags() & QwtSeriesDataBase::MayContainNaNs;
 
     QwtPointMapper mapper;
     mapper.setBoundingRect( canvasRect );
     mapper.setFlag( QwtPointMapper::RoundPoints, doAlign );
+    mapper.setFlag( QwtPointMapper::HandleNaNAsDiscontinuity, doProcessNaN );
 
     if ( d_data->paintAttributes & FilterPoints )
     {
@@ -1031,6 +1050,9 @@ void QwtPlotCurve::drawSymbols( QPainter *painter, const QwtSymbol &symbol,
 
     const QRectF clipRect = qwtIntersectedClipRect( canvasRect, painter );
     mapper.setBoundingRect( clipRect );
+
+    const bool doProcessNaN = data()->seriesFlags() & QwtSeriesDataBase::MayContainNaNs;
+    mapper.setFlag( QwtPointMapper::HandleNaNAsDiscontinuity, doProcessNaN );
 
     const int chunkSize = 500;
 
