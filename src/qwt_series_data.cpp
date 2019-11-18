@@ -10,6 +10,41 @@
 #include "qwt_series_data.h"
 #include "qwt_point_polar.h"
 
+class QwtSeriesDataBase::PrivateData
+{
+public:
+    PrivateData() :
+        cachedBoundingRect( 0.0, 0.0, -1.0, -1.0 )
+    {}
+
+    mutable QRectF cachedBoundingRect;
+};
+
+QwtSeriesDataBase::QwtSeriesDataBase()
+{
+    d_data = new PrivateData();
+}
+
+QwtSeriesDataBase::~QwtSeriesDataBase()
+{
+    delete d_data;
+}
+
+void QwtSeriesDataBase::setCachedBoundingRect( const QRectF& rect ) const
+{
+    d_data->cachedBoundingRect = rect;
+}
+
+void QwtSeriesDataBase::clearCachedBoundingRect() const
+{
+    d_data->cachedBoundingRect = QRect( 0.0, 0.0, -1.0, -1.0 );
+}
+
+QRectF QwtSeriesDataBase::cachedBoundingRect() const
+{
+    return d_data->cachedBoundingRect;
+}
+
 static inline QRectF qwtBoundingRect( const QPointF &sample )
 {
     return QRectF( sample.x(), sample.y(), 0.0, 0.0 );
@@ -236,10 +271,14 @@ QwtPointSeriesData::QwtPointSeriesData(
 */
 QRectF QwtPointSeriesData::boundingRect() const
 {
-    if ( d_boundingRect.width() < 0.0 )
-        d_boundingRect = qwtBoundingRect( *this );
+    QRectF cachedRect = cachedBoundingRect();
+    if ( cachedRect.width() < 0.0 )
+    {
+        cachedRect = qwtBoundingRect( *this );
+        setCachedBoundingRect( cachedRect );
+    }
 
-    return d_boundingRect;
+    return cachedRect;
 }
 
 /*!
@@ -262,10 +301,14 @@ QwtPoint3DSeriesData::QwtPoint3DSeriesData(
 */
 QRectF QwtPoint3DSeriesData::boundingRect() const
 {
-    if ( d_boundingRect.width() < 0.0 )
-        d_boundingRect = qwtBoundingRect( *this );
+    QRectF cachedRect = cachedBoundingRect();
+    if ( cachedRect.width() < 0.0 )
+    {
+        cachedRect = qwtBoundingRect( *this );
+        setCachedBoundingRect( cachedRect );
+    }
 
-    return d_boundingRect;
+    return cachedRect;
 }
 
 /*!
@@ -288,10 +331,14 @@ QwtIntervalSeriesData::QwtIntervalSeriesData(
 */
 QRectF QwtIntervalSeriesData::boundingRect() const
 {
-    if ( d_boundingRect.width() < 0.0 )
-        d_boundingRect = qwtBoundingRect( *this );
+    QRectF cachedRect = cachedBoundingRect();
+    if ( cachedRect.width() < 0.0 )
+    {
+        cachedRect = qwtBoundingRect( *this );
+        setCachedBoundingRect( cachedRect );
+    }
 
-    return d_boundingRect;
+    return cachedRect;
 }
 
 /*!
@@ -314,10 +361,14 @@ QwtSetSeriesData::QwtSetSeriesData(
 */
 QRectF QwtSetSeriesData::boundingRect() const
 {
-    if ( d_boundingRect.width() < 0.0 )
-        d_boundingRect = qwtBoundingRect( *this );
+    QRectF cachedRect = cachedBoundingRect();
+    if ( cachedRect.width() < 0.0 )
+    {
+        cachedRect = qwtBoundingRect( *this );
+        setCachedBoundingRect( cachedRect );
+    }
 
-    return d_boundingRect;
+    return cachedRect;
 }
 
 /*!
@@ -340,8 +391,12 @@ QwtTradingChartData::QwtTradingChartData(
 */
 QRectF QwtTradingChartData::boundingRect() const
 {
-    if ( d_boundingRect.width() < 0.0 )
-        d_boundingRect = qwtBoundingRect( *this );
+    QRectF cachedRect = cachedBoundingRect();
+    if ( cachedRect.width() < 0.0 )
+    {
+        cachedRect = qwtBoundingRect( *this );
+        setCachedBoundingRect( cachedRect );
+    }
 
-    return d_boundingRect;
+    return cachedRect;
 }

@@ -19,6 +19,25 @@
 
 class QwtPointPolar;
 
+class QwtSeriesDataBase
+{
+public:
+    QwtSeriesDataBase();
+    ~QwtSeriesDataBase();
+
+protected:
+    // marked as const, because cached bounding rect is effectively mutable data
+    void setCachedBoundingRect( const QRectF& rect ) const;
+
+    void clearCachedBoundingRect() const;
+
+    QRectF cachedBoundingRect() const;
+
+private:
+    class PrivateData;
+    PrivateData* d_data;
+};
+
 /*!
    \brief Abstract interface for iterating over samples
 
@@ -42,11 +61,12 @@ class QwtPointPolar;
      the data. You can use qwtBoundingRect() for an implementation
      but often it is possible to implement a more efficient algorithm
      depending on the characteristics of the series.
-     The member d_boundingRect is intended for caching the calculated rectangle.
+     The setCachingBoundingRect() and cachingBoundingRect() functions inherited from
+     QwtSeriesDataBase are intended for caching the calculated rectangle.
 
 */
 template <typename T>
-class QwtSeriesData
+class QwtSeriesData : public QwtSeriesDataBase
 {
 public:
     //! Constructor
@@ -85,7 +105,7 @@ public:
     // Needed for generating the python bindings, but not for using them !
     virtual size_t size() const { return 0; }
     virtual T sample( size_t i ) const { return T(); }
-    virtual QRectF boundingRect() const { return d_boundingRect; }
+    virtual QRectF boundingRect() const { return cachedBoundingRect(); }
 #endif
 
     /*!
@@ -101,17 +121,12 @@ public:
     */
     virtual void setRectOfInterest( const QRectF &rect );
 
-protected:
-    //! Can be used to cache a calculated bounding rectangle
-    mutable QRectF d_boundingRect;
-
 private:
     QwtSeriesData<T> &operator=( const QwtSeriesData<T> & );
 };
 
 template <typename T>
-QwtSeriesData<T>::QwtSeriesData():
-    d_boundingRect( 0.0, 0.0, -1.0, -1.0 )
+QwtSeriesData<T>::QwtSeriesData()
 {
 }
 
@@ -183,7 +198,7 @@ QwtArraySeriesData<T>::QwtArraySeriesData( const QVector<T> &samples ):
 template <typename T>
 void QwtArraySeriesData<T>::setSamples( const QVector<T> &samples )
 {
-    QwtSeriesData<T>::d_boundingRect = QRectF( 0.0, 0.0, -1.0, -1.0 );
+    QwtSeriesDataBase::clearCachedBoundingRect();
     d_samples = samples;
 }
 

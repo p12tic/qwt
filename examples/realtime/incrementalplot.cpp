@@ -21,10 +21,15 @@ public:
 
     virtual QRectF boundingRect() const QWT_OVERRIDE
     {
-        if ( d_boundingRect.width() < 0.0 )
-            d_boundingRect = qwtBoundingRect( *this );
+        QRectF cachedRect = cachedBoundingRect();
 
-        return d_boundingRect;
+        if ( cachedRect.width() < 0.0 )
+        {
+            cachedRect = qwtBoundingRect( *this );
+            setCachedBoundingRect( cachedRect );
+        }
+
+        return cachedRect;
     }
 
     inline void append( const QPointF &point )
@@ -36,7 +41,7 @@ public:
     {
         d_samples.clear();
         d_samples.squeeze();
-        d_boundingRect = QRectF( 0.0, 0.0, -1.0, -1.0 );
+        clearCachedBoundingRect();
     }
 };
 
