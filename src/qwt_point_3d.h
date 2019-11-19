@@ -12,6 +12,7 @@
 #define QWT_POINT_3D_H
 
 #include "qwt_global.h"
+#include <qmath.h>
 #include <qpoint.h>
 
 /*!
@@ -181,6 +182,24 @@ inline bool QwtPoint3D::operator==( const QwtPoint3D &other ) const
 inline bool QwtPoint3D::operator!=( const QwtPoint3D &other ) const
 {
     return !operator==( other );
+}
+
+/*!
+    Checks if a point contains NaN values
+    \return true if any of the components is NaN.
+*/
+inline bool qwtIsNaN( const QPointF& p )
+{
+    return qIsNaN( p.x() ) || qIsNaN( p.y() );
+}
+
+/*!
+    Checks if a point contains NaN values
+    \return true if any of the components is NaN.
+*/
+inline bool qwtIsNaN( const QwtPoint3D& p )
+{
+    return qIsNaN( p.x() ) || qIsNaN( p.y() ) || qIsNaN( p.z() );
 }
 
 #endif

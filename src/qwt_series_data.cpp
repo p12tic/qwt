@@ -131,10 +131,16 @@ QRectF qwtBoundingRectT(
     if ( to < from )
         return boundingRect;
 
+    const bool processNaN = series.seriesFlags() & QwtSeriesDataBase::MayContainNaNs;
+
     int i;
     for ( i = from; i <= to; i++ )
     {
-        const QRectF rect = qwtBoundingRect( series.sample( i ) );
+        const T& sample = series.sample( i );
+        if ( processNaN && qwtIsNaN( sample ) )
+            continue;
+
+        const QRectF rect = qwtBoundingRect( sample );
         if ( rect.width() >= 0.0 && rect.height() >= 0.0 )
         {
             boundingRect = rect;
@@ -145,7 +151,11 @@ QRectF qwtBoundingRectT(
 
     for ( ; i <= to; i++ )
     {
-        const QRectF rect = qwtBoundingRect( series.sample( i ) );
+        const T& sample = series.sample( i );
+        if ( processNaN && qwtIsNaN( sample ) )
+            continue;
+
+        const QRectF rect = qwtBoundingRect( sample );
         if ( rect.width() >= 0.0 && rect.height() >= 0.0 )
         {
             boundingRect.setLeft( qMin( boundingRect.left(), rect.left() ) );

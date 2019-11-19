@@ -73,6 +73,17 @@ inline bool QwtIntervalSample::operator!=(
     return !( *this == other );
 }
 
+
+/*!
+    Checks if an interval contains NaN values
+    \return true if any of the components is NaN.
+*/
+inline bool qwtIsNaN( const QwtIntervalSample& p )
+{
+    return qIsNaN( p.value ) || qIsNaN( p.interval.minValue() ) ||
+            qIsNaN( p.interval.maxValue() );
+}
+
 //! \brief A sample of the types (x1...xn, y) or (x, y1..yn)
 class QWT_EXPORT QwtSetSample
 {
@@ -133,6 +144,25 @@ inline double QwtSetSample::added() const
         y += set[i];
 
     return y;
+}
+
+
+/*!
+    Checks if any values in the sample contain NaN values
+    \return true if the value of the sample is NaN or
+    any of the associated values is NaN
+*/
+inline bool qwtIsNaN( const QwtSetSample& s )
+{
+    if ( qIsNaN( s.value ) )
+        return true;
+
+    for ( int i = 0; i < s.set.size(); ++i )
+    {
+        if ( qIsNaN( s.set[i] ) )
+            return true;
+    }
+    return false;
 }
 
 /*!
@@ -235,6 +265,17 @@ inline QwtInterval QwtOHLCSample::boundingInterval() const
     maxY = qMax( maxY, close );
 
     return QwtInterval( minY, maxY );
+}
+
+/*!
+    Checks if a point contains NaN values
+    \return true if any of the components is NaN.
+*/
+inline bool qwtIsNaN( const QwtOHLCSample& p )
+{
+    return qIsNaN( p.low ) || qIsNaN( p.high ) ||
+            qIsNaN( p.open ) || qIsNaN( p.close ) ||
+            qIsNaN( p.time );
 }
 
 #endif

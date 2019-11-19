@@ -196,4 +196,14 @@ inline QwtPointPolar qwtFastPos2Polar( const QPointF &pos )
         qSqrt( qwtSqr( pos.x() ) + qwtSqr( pos.y() ) ) );
 }
 
+
+/*!
+    Checks if a point contains NaN values
+    \return true if any of the components is NaN.
+*/
+inline bool qwtIsNaN( const QwtPointPolar& p )
+{
+    return qIsNaN( p.azimuth() ) || qIsNaN( p.radius() );
+}
+
 #endif
