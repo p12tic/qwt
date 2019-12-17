@@ -56,7 +56,7 @@ public:
 
     size_t levelSize( size_t level ) const
     {
-        if ( level >= d_levelSizes.size() )
+        if ( level >= (size_t)d_levelSizes.size() )
             return 0;
         return d_levelSizes[ level ];
     }
@@ -185,15 +185,15 @@ void QwtBoundingRectCache::build( QwtAbstractBoundingRectProducer* rectProducer,
     }
 }
 
-static inline int ceilBoundary( int from )
+static inline size_t ceilBoundary( size_t from )
 {
-    int boundary = (from / kLevelFactor) * kLevelFactor;
+    size_t boundary = (from / kLevelFactor) * kLevelFactor;
     if ( boundary != from )
         boundary += kLevelFactor;
     return boundary;
 }
 
-static inline int floorBoundary( int to )
+static inline size_t floorBoundary( size_t to )
 {
     return (to / kLevelFactor) * kLevelFactor;
 }
@@ -234,7 +234,7 @@ QRectF QwtBoundingRectCache::boundingRect( double fromValue, double toValue ) co
     // rectangle indexes are known, now load values from cache
     QRectF res = *fromRect;
 
-    for ( int iLevel = 0; iLevel < d_data->rectStore.levelCount(); ++iLevel )
+    for ( size_t iLevel = 0; iLevel < d_data->rectStore.levelCount(); ++iLevel )
     {
         const QRectF* level = d_data->rectStore.getLevel( iLevel );
         size_t fromBoundary = ceilBoundary( from );
@@ -251,11 +251,11 @@ QRectF QwtBoundingRectCache::boundingRect( double fromValue, double toValue ) co
         }
 
         // at least one more level will be examined
-        for ( int i = from; i < fromBoundary; ++i )
+        for ( size_t i = from; i < fromBoundary; ++i )
         {
             res = qwtMergeBoundingRect( res, level[ i ] );
         }
-        for ( int i = toBoundary; i < to; ++i )
+        for ( size_t i = toBoundary; i < to; ++i )
         {
             res = qwtMergeBoundingRect( res, level[ i - 1] );
         }
