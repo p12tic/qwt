@@ -104,6 +104,38 @@ QRectF qwtBoundingRect( const QwtOHLCSample &sample )
     return QRectF( interval.minValue(), sample.time, interval.width(), 0.0 );
 }
 
+static inline QRectF qwtMergeBoundingRectNoCheck( const QRectF& rect1, const QRectF& rect2 )
+{
+    double top = qMin( rect1.top(), rect2.top() );
+    double bottom = qMax( rect1.bottom(), rect2.bottom() );
+    double left = qMin( rect1.left(), rect2.left() );
+    double right = qMax( rect1.right(), rect2.right() );
+
+    return QRectF( left, top, right - left, bottom - top );
+}
+
+/*!
+   \brief Merges two bounding rectangles
+
+    Differently from QRectF::united or QRectF::operator|, rectangles of zero size are
+    accepted. If either width or height of the rectangle is negative, the other rectangle
+    is returned.
+
+    \param rect1 Rectangle to merge
+    \param rect2 Rectangle to merge
+    \return Merged rectangle
+ */
+QRectF qwtMergeBoundingRect( const QRectF& rect1, const QRectF& rect2 )
+{
+    if ( rect1.width() < 0 || rect1.height() < 0 )
+        return rect2;
+    if ( rect2.width() < 0 || rect2.height() < 0 )
+        return rect1;
+
+    return qwtMergeBoundingRectNoCheck( rect1, rect2 );
+}
+
+
 /*!
   \brief Calculate the bounding rectangle of a series subset
 
@@ -158,10 +190,7 @@ QRectF qwtBoundingRectT(
         const QRectF rect = qwtBoundingRect( sample );
         if ( rect.width() >= 0.0 && rect.height() >= 0.0 )
         {
-            boundingRect.setLeft( qMin( boundingRect.left(), rect.left() ) );
-            boundingRect.setRight( qMax( boundingRect.right(), rect.right() ) );
-            boundingRect.setTop( qMin( boundingRect.top(), rect.top() ) );
-            boundingRect.setBottom( qMax( boundingRect.bottom(), rect.bottom() ) );
+            boundingRect = qwtMergeBoundingRectNoCheck( boundingRect, rect );
         }
     }
 

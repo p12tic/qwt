@@ -288,6 +288,8 @@ public:
     virtual QRectF boundingRect() const QWT_OVERRIDE;
 };
 
+QWT_EXPORT QRectF qwtMergeBoundingRect( const QRectF& rect1, const QRectF& rect2 );
+
 QWT_EXPORT QRectF qwtBoundingRect(
     const QwtSeriesData<QPointF> &, int from = 0, int to = -1 );
 
