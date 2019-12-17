@@ -29,10 +29,11 @@ class QwtHierarchicalRectStore
        as is in the trivial scanning implementation.
     */
 public:
+    // The first min(size, levelSize(0)) rectangles of the 0-th layer are guaranteed to be
+    // left intact
     void resize( size_t size )
     {
         d_levelSizes.clear();
-        d_rects.clear();
 
         d_levelSizes.push_back( size );
         size_t totalSize = size;
@@ -123,6 +124,12 @@ static inline QRectF rotateRect( const QRectF& rect )
     return QRectF( rect.top(), rect.left(), rect.height(), rect.width() );
 }
 
+static inline bool qwtIsNaN( const QRectF& rect )
+{
+    return qIsNaN( rect.x() ) || qIsNaN( rect.y() ) ||
+           qIsNaN( rect.width() ) || qIsNaN( rect.height() );
+}
+
 void QwtBoundingRectCache::build( QwtAbstractBoundingRectProducer* rectProducer,
                                   Qt::Orientation orientation )
 {
@@ -130,23 +137,31 @@ void QwtBoundingRectCache::build( QwtAbstractBoundingRectProducer* rectProducer,
     d_data->rectStore.resize( size );
 
     // fill first layer
-    size_t levelSize = d_data->rectStore.levelSize( 0 );
     QRectF* level = d_data->rectStore.getLevel( 0 );
 
+    size_t levelSize = 0;
     if ( orientation == Qt::Vertical )
     {
-        for ( size_t i = 0; i < levelSize ; ++i )
+        for ( size_t i = 0; i < size ; ++i )
         {
-            level[ i ] = rotateRect( rectProducer->sampleRect( i ) );
+            const QRectF& rect = rectProducer->sampleRect( i );
+            if ( qwtIsNaN( rect ) )
+                continue;
+            level[ levelSize++ ] = rotateRect( rectProducer->sampleRect( i ) );
         }
     }
     else
     {
-        for ( size_t i = 0; i < levelSize ; ++i )
+        for ( size_t i = 0; i < size ; ++i )
         {
-            level[ i ] = rectProducer->sampleRect( i );
+            const QRectF& rect = rectProducer->sampleRect( i );
+            if ( qwtIsNaN( rect ) )
+                continue;
+            level[ levelSize++ ] = rect;
         }
     }
+
+    d_data->rectStore.resize( levelSize );
 
     std::sort( level, level + levelSize, rectLeftLess );
 

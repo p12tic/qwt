@@ -28,6 +28,8 @@ public:
     /*!
         \brief Builds the cache
 
+        Any rectangles that contain NaN values are ignored.
+
         \param rectProducer The producer to retrieve the bounding rectangle data from
         \param orientation The orientation of the input data.
      */
