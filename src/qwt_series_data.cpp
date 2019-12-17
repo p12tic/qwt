@@ -57,28 +57,28 @@ QwtSeriesDataBase::SeriesFlags QwtSeriesDataBase::seriesFlags() const
     return d_data->seriesFlags;
 }
 
-static inline QRectF qwtBoundingRect( const QPointF &sample )
+QRectF qwtBoundingRect( const QPointF &sample )
 {
     return QRectF( sample.x(), sample.y(), 0.0, 0.0 );
 }
 
-static inline QRectF qwtBoundingRect( const QwtPoint3D &sample )
+QRectF qwtBoundingRect( const QwtPoint3D &sample )
 {
     return QRectF( sample.x(), sample.y(), 0.0, 0.0 );
 }
 
-static inline QRectF qwtBoundingRect( const QwtPointPolar &sample )
+QRectF qwtBoundingRect( const QwtPointPolar &sample )
 {
     return QRectF( sample.azimuth(), sample.radius(), 0.0, 0.0 );
 }
 
-static inline QRectF qwtBoundingRect( const QwtIntervalSample &sample )
+QRectF qwtBoundingRect( const QwtIntervalSample &sample )
 {
     return QRectF( sample.interval.minValue(), sample.value,
         sample.interval.maxValue() - sample.interval.minValue(), 0.0 );
 }
 
-static inline QRectF qwtBoundingRect( const QwtSetSample &sample )
+QRectF qwtBoundingRect( const QwtSetSample &sample )
 {
     if ( sample.set.empty() )
         return QRectF( sample.value, 0.0, 0.0, -1.0 );
@@ -98,7 +98,7 @@ static inline QRectF qwtBoundingRect( const QwtSetSample &sample )
     return QRectF( sample.value, minY, 0.0, maxY - minY );
 }
 
-static inline QRectF qwtBoundingRect( const QwtOHLCSample &sample )
+QRectF qwtBoundingRect( const QwtOHLCSample &sample )
 {
     const QwtInterval interval = sample.boundingInterval();
     return QRectF( interval.minValue(), sample.time, interval.width(), 0.0 );

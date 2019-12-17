@@ -306,6 +306,19 @@ QWT_EXPORT QRectF qwtBoundingRect(
 QWT_EXPORT QRectF qwtBoundingRect(
     const QwtSeriesData<QwtOHLCSample> &, int from = 0, int to = -1 );
 
+
+QWT_EXPORT QRectF qwtBoundingRect( const QPointF &sample );
+
+QWT_EXPORT QRectF qwtBoundingRect( const QwtPoint3D &sample );
+
+QWT_EXPORT QRectF qwtBoundingRect( const QwtPointPolar &sample );
+
+QWT_EXPORT QRectF qwtBoundingRect( const QwtIntervalSample &sample );
+
+QWT_EXPORT QRectF qwtBoundingRect( const QwtSetSample &sample );
+
+QWT_EXPORT QRectF qwtBoundingRect( const QwtOHLCSample &sample );
+
 /*!
     Binary search for a sorted series of samples
 
