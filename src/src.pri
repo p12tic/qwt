@@ -15,6 +15,7 @@ HEADERS += \
     qwt_clipper.h \
     qwt_color_map.h \
     qwt_column_symbol.h \
+    qwt_bounding_rect_cache.h \
     qwt_bounding_rect_producer.h \
     qwt_date.h \
     qwt_date_scale_draw.h \
@@ -58,6 +59,7 @@ HEADERS += \
 SOURCES += \
     qwt_abstract_scale_draw.cpp \
     qwt_bezier.cpp \
+    qwt_bounding_rect_cache.cpp \
     qwt_bounding_rect_producer.cpp \
     qwt_clipper.cpp \
     qwt_color_map.cpp \
